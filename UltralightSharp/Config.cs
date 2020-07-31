@@ -11,6 +11,7 @@ namespace Ultralight {
 
   }
 
+  [PublicAPI]
   public static class ConfigExtensions {
 
     public static unsafe void Destroy(in this Config _) {

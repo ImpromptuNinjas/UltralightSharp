@@ -8,6 +8,18 @@ namespace Ultralight {
   [PublicAPI]
   public readonly ref struct Bitmap {
 
+    public static unsafe Bitmap* CreateEmpty()
+      => Ultralight.CreateEmptyBitmap();
+
+    public static unsafe Bitmap* Create(uint width, uint height, BitmapFormat format)
+      => Ultralight.CreateBitmap(width, height, format);
+
+    public static unsafe Bitmap* Copy(Bitmap* existingBitmap)
+      => Ultralight.CreateBitmapFromCopy(existingBitmap);
+
+    public static unsafe Bitmap* CreateFromPixels(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
+      => Ultralight.CreateBitmapFromPixels(width, height, format, rowBytes, pixels, size, shouldCopy);
+
   }
 
   [PublicAPI]
