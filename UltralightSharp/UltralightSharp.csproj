@@ -1,12 +1,77 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
+        <IncludeSource>False</IncludeSource>
+        <LangVersion>8</LangVersion>
+        <TargetFrameworks>net45;netstandard1.1;netstandard1.4;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>ImpromptuNinjas.UltralightSharp</PackageId>
+        <Title>ImpromptuNinjas.UltralightSharp</Title>
+        <Description>A multi-platform .NET binding of the Ultralight project.</Description>
+        <Authors>Tyler Young</Authors>
+        <Copyright>Copyright © 2020 Tyler Young</Copyright>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageOutputDir>$(SolutionDir)</PackageOutputDir>
+        <RepositoryUrl>https://github.com/ImpromptuNinjas/ZStd.git</RepositoryUrl>
+        <PackageTags>ultralight webkit jscore webcore appcore ultralight-ux</PackageTags>
+        <PackageIcon>icon.png</PackageIcon>
+        <IsPackable>True</IsPackable>
+        <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
+        <Version>1.2.0-beta</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
+        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <Choose>
+        <When Condition="'$(TargetFramework)'=='net45'">
+            <ItemGroup>
+                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+            </ItemGroup>
+        </When>
+    </Choose>
+
+    <ItemGroup>
+        <None Include="..\icon.png">
+            <Pack>True</Pack>
+            <PackageCopyToOutput>False</PackageCopyToOutput>
+            <PackagePath />
+            <Link>icon.png</Link>
+        </None>
+        <None Include="..\README.md">
+            <Pack>True</Pack>
+            <PackageCopyToOutput>False</PackageCopyToOutput>
+            <PackagePath />
+            <Link>README.md</Link>
+        </None>
+        <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackageCopyToOutput>False</PackageCopyToOutput>
+            <PackagePath />
+            <Link>LICENSE</Link>
+        </None>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="resources\cacert.pem">
+            <Pack>True</Pack>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackageCopyToOutput>True</PackageCopyToOutput>
+        </Content>
+        <Content Include="runtimes\*\**">
+            <Pack>True</Pack>
+            <PackageCopyToOutput>True</PackageCopyToOutput>
+            <PackagePath>runtimes\</PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>%(Identity)</Link>
+        </Content>
     </ItemGroup>
 
 </Project>
