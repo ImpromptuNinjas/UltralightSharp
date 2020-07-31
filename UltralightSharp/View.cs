@@ -1,7 +1,7 @@
 using InlineIL;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public readonly ref struct View {

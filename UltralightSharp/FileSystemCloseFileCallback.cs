@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

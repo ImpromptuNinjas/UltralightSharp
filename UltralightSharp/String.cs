@@ -2,7 +2,7 @@ using System;
 using InlineIL;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public readonly ref struct String {
@@ -12,7 +12,7 @@ namespace Ultralight {
       fixed (char* p = str)
         return Ultralight.CreateStringUTF16(p, (UIntPtr) (uint) str.Length);
 #else
-      return Create((ReadOnlySpan<char>) str);
+        return Create((ReadOnlySpan<char>) str);
 #endif
     }
 
@@ -28,6 +28,7 @@ namespace Ultralight {
 
   }
 
+  [PublicAPI]
   public static class StringExtensions {
 
     public static unsafe void Destroy(in this String _) {

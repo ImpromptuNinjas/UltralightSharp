@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using Ultralight;
-using String = System.String;
-using static Ultralight.Ultralight;
+using ImpromptuNinjas.UltralightSharp;
 
-namespace UltralightSharp.Demo {
+namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
 
   public static class DemoProgram {
 
@@ -20,13 +18,13 @@ namespace UltralightSharp.Demo {
       var cfg = Config.Create();
 
       {
-        var cachePath = Ultralight.String.Create(Path.Combine(storagePath, "Cache"));
+        var cachePath = UltralightSharp.String.Create(Path.Combine(storagePath, "Cache"));
         cfg->SetCachePath(cachePath);
         cachePath->Destroy();
       }
 
       {
-        var resourcePath = Ultralight.String.Create(Path.Combine(asmDir, "resources"));
+        var resourcePath = UltralightSharp.String.Create(Path.Combine(asmDir, "resources"));
         cfg->SetResourcePath(resourcePath);
         resourcePath->Destroy();
       }
@@ -38,19 +36,19 @@ namespace UltralightSharp.Demo {
       AppCore.EnablePlatformFontLoader();
 
       {
-        var assetsPath = Ultralight.String.Create(Path.Combine(asmDir, "assets"));
+        var assetsPath = UltralightSharp.String.Create(Path.Combine(asmDir, "assets"));
         AppCore.EnablePlatformFileSystem(assetsPath);
         assetsPath->Destroy();
       }
 
       var renderer = Renderer.Create(cfg);
-      var sessionName = Ultralight.String.Create("Demo");
+      var sessionName = UltralightSharp.String.Create("Demo");
       var session = Session.Create(renderer, false, sessionName);
 
       var view = View.Create(renderer, 640, 480, false, session);
 
       {
-        var htmlString = Ultralight.String.Create("<i>Loading...</i>");
+        var htmlString = UltralightSharp.String.Create("<i>Loading...</i>");
         Console.WriteLine($"Loading HTML: {htmlString->Read()}");
         view->LoadHtml(htmlString);
         htmlString->Destroy();
@@ -75,8 +73,8 @@ namespace UltralightSharp.Demo {
       }, null);
 
       while (!loaded) {
-        Update(renderer);
-        Render(renderer);
+        Ultralight.Update(renderer);
+        Ultralight.Render(renderer);
       }
 
       {
@@ -94,15 +92,15 @@ namespace UltralightSharp.Demo {
       loaded = false;
 
       {
-        var htmlString = Ultralight.String.Create("file:///index.html");
+        var htmlString = UltralightSharp.String.Create("file:///index.html");
         Console.WriteLine($"Loading URL: {htmlString->Read()}");
         view->LoadUrl(htmlString);
         htmlString->Destroy();
       }
 
       while (!loaded) {
-        Update(renderer);
-        Render(renderer);
+        Ultralight.Update(renderer);
+        Ultralight.Render(renderer);
       }
 
       {

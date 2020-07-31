@@ -18,7 +18,7 @@ A multi-platform .NET binding of the **Ultralight** project.
 ### Known Issues:
 * Currently the native dependencies are shipped with this NuGet package for all platforms.
   _Separate NuGet runtime packages should be created to provide each specific platform dependency._
-* No tests, no AppCore or WebCore bindings yet.
+* Demo but no tests, no WebCore bindings yet.
 
 
 Acknowlegedments

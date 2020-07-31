@@ -1,7 +1,7 @@
 using InlineIL;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public readonly ref struct App {
@@ -61,6 +61,7 @@ namespace Ultralight {
       IL.Pop(out var p);
       return AppCore.AppGetMainMonitor((App*) p);
     }
+
   }
 
 }

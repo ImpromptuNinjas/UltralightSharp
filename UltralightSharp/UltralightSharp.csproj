@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <AssemblyName>ImpromptuNinjas.UltralightSharp</AssemblyName>
         <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
         <IncludeSource>False</IncludeSource>
         <LangVersion>8</LangVersion>
@@ -40,35 +41,35 @@
                 <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
             </ItemGroup>
         </When>
-    <When Condition="$(TargetFramework.StartsWith('netstandard'))">
-    <Choose>
-        <When Condition="$(TargetFramework.EndsWith('2.1'))">
-            <ItemGroup>
-            </ItemGroup>
+        <When Condition="$(TargetFramework.StartsWith('netstandard'))">
+            <Choose>
+                <When Condition="$(TargetFramework.EndsWith('2.1'))">
+                    <ItemGroup>
+                    </ItemGroup>
+                </When>
+                <When Condition="$(TargetFramework.EndsWith('2.0'))">
+                    <ItemGroup>
+                        <PackageReference Include="System.Memory" Version="4.5.4" />
+                    </ItemGroup>
+                </When>
+                <When Condition="$(TargetFramework.EndsWith('1.4'))">
+                    <PropertyGroup>
+                        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+                    </PropertyGroup>
+                    <ItemGroup>
+                        <PackageReference Include="System.Memory" Version="4.5.4" />
+                    </ItemGroup>
+                </When>
+                <When Condition="$(TargetFramework.EndsWith('1.1'))">
+                    <PropertyGroup>
+                        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+                    </PropertyGroup>
+                    <ItemGroup>
+                        <PackageReference Include="System.Memory" Version="4.5.4" />
+                    </ItemGroup>
+                </When>
+            </Choose>
         </When>
-        <When Condition="$(TargetFramework.EndsWith('2.0'))">
-            <ItemGroup>
-                <PackageReference Include="System.Memory" Version="4.5.4" />
-            </ItemGroup>
-        </When>
-        <When Condition="$(TargetFramework.EndsWith('1.4'))">
-            <PropertyGroup>
-                <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-            </PropertyGroup>
-            <ItemGroup>
-                <PackageReference Include="System.Memory" Version="4.5.4" />
-            </ItemGroup>
-        </When>
-        <When Condition="$(TargetFramework.EndsWith('1.1'))">
-            <PropertyGroup>
-                <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-            </PropertyGroup>
-            <ItemGroup>
-                <PackageReference Include="System.Memory" Version="4.5.4" />
-            </ItemGroup>
-        </When>
-    </Choose>
-    </When>
     </Choose>
 
     <ItemGroup>
@@ -91,11 +92,11 @@
             <Link>LICENSE</Link>
         </None>
     </ItemGroup>
-    
+
     <ItemGroup>
         <Content Include="resources\cacert.pem">
             <Pack>True</Pack>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>True</PackageCopyToOutput>
         </Content>
         <Content Include="runtimes\*\**">

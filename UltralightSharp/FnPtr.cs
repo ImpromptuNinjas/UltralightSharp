@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public struct FnPtr<TDelegate> where TDelegate : Delegate {

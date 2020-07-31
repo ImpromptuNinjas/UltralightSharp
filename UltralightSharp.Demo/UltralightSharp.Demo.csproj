@@ -12,7 +12,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
+        <ProjectReference Include="../UltralightSharp/UltralightSharp.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -22,9 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="assets\index.html" />
-      <Content Include="assets\index.html">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <None Remove="assets\index.html"/>
+        <Content Include="assets\index.html">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 </Project>

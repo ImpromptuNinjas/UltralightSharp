@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public enum BitmapFormat {

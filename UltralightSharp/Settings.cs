@@ -1,7 +1,7 @@
 using InlineIL;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   public readonly ref struct Settings {
@@ -11,6 +11,7 @@ namespace Ultralight {
 
   }
 
+  [PublicAPI]
   public static class SettingsExtensions {
 
     public static unsafe void Destroy(in this Settings _) {

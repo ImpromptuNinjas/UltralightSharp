@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Ultralight {
+namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [AttributeUsage(AttributeTargets.All)]
