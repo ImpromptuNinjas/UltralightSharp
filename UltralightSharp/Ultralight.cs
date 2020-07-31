@@ -321,7 +321,7 @@ namespace Ultralight {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateStringUTF16", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]
-    public static extern String* CreateStringUTF16([NativeTypeName("ULChar16 *")] ushort* str, [NativeTypeName("size_t")] UIntPtr len);
+    public static extern String* CreateStringUTF16([NativeTypeName("ULChar16 *")] char* str, [NativeTypeName("size_t")] UIntPtr len);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateStringFromCopy", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]

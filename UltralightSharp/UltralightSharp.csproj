@@ -22,20 +22,52 @@
         <PackageIcon>icon.png</PackageIcon>
         <IsPackable>True</IsPackable>
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
-        <Version>1.2.0-beta</Version>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Fody" Version="6.2.4" PrivateAssets="All" />
+        <PackageReference Include="InlineIL.Fody" Version="1.5.0" PrivateAssets="All" />
+        <PackageReference Include="InfoOf.Fody" Version="2.0.1" PrivateAssets="All" />
     </ItemGroup>
 
     <Choose>
         <When Condition="'$(TargetFramework)'=='net45'">
             <ItemGroup>
+                <PackageReference Include="System.Memory" Version="4.5.4" />
                 <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
             </ItemGroup>
         </When>
+    <When Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <Choose>
+        <When Condition="$(TargetFramework.EndsWith('2.1'))">
+            <ItemGroup>
+            </ItemGroup>
+        </When>
+        <When Condition="$(TargetFramework.EndsWith('2.0'))">
+            <ItemGroup>
+                <PackageReference Include="System.Memory" Version="4.5.4" />
+            </ItemGroup>
+        </When>
+        <When Condition="$(TargetFramework.EndsWith('1.4'))">
+            <PropertyGroup>
+                <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+            </PropertyGroup>
+            <ItemGroup>
+                <PackageReference Include="System.Memory" Version="4.5.4" />
+            </ItemGroup>
+        </When>
+        <When Condition="$(TargetFramework.EndsWith('1.1'))">
+            <PropertyGroup>
+                <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+            </PropertyGroup>
+            <ItemGroup>
+                <PackageReference Include="System.Memory" Version="4.5.4" />
+            </ItemGroup>
+        </When>
+    </Choose>
+    </When>
     </Choose>
 
     <ItemGroup>

@@ -1,0 +1,47 @@
+<Project>
+    <PropertyGroup>
+        <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)</SolutionDir>
+        <Version>1.2.0-beta</Version>
+    </PropertyGroup>
+
+    <Target Name="UpdatePackageCacheForDependencies" BeforeTargets="Build" Condition="'@(NuPkgRef->Count())'!='0'">
+        <ItemGroup>
+            <NuPkgRef Update="**">
+                <Id>$([System.Text.RegularExpressions.Regex]::Replace('%(NuPkgRef.Filename)', '^(.*?)\.(?:\.?[0-9]+){3,}(?:[-a-z]+)?$', '$1'))</Id>
+                <Version>$([System.Text.RegularExpressions.Regex]::Replace('%(NuPkgRef.Filename)', '^.*?\.((?:\.?[0-9]+){3,}(?:[-a-z]+)?)$', '$1'))</Version>
+            </NuPkgRef>
+            <NuPkgRef Update="**">
+                <LowerCaseId>$([System.String]::Copy('%(NuPkgRef.Id)').ToLowerInvariant())</LowerCaseId>
+            </NuPkgRef>
+        </ItemGroup>
+        <Message Importance="high" Text="Updating package cache: %(NuPkgRef.Id) %(NuPkgRef.Version)"/>
+        <Unzip SourceFiles="%(NuPkgRef.Identity)"
+               DestinationFolder="$(NuGetPackageRoot)%(NuPkgRef.LowerCaseId)\%(NuPkgRef.Version)\"
+               SkipUnchangedFiles="true" ContinueOnError="true">
+        </Unzip>
+    </Target>
+
+    <PropertyGroup>
+        <SignAssembly>True</SignAssembly>
+        <AssemblyOriginatorKeyFile Condition=" '$(IsOfficial)' == 'True' ">$(SolutionDir)official.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile Condition=" '$(IsOfficial)' != 'True' AND '$(IsOfficialCompatible)' != 'True' ">$(SolutionDir)unofficial.snk</AssemblyOriginatorKeyFile>
+        <AssemblyOriginatorKeyFile Condition=" '$(IsOfficial)' != 'True' AND '$(IsOfficialCompatible)' == 'True' ">$(SolutionDir)official-public.snk</AssemblyOriginatorKeyFile>
+        <PublicSign Condition=" '$(IsOfficial)' == 'True' AND '$(IsOfficialCompatible)' != 'True' ">False</PublicSign>
+        <PublicSign Condition=" '$(IsOfficial)' != 'True' OR '$(IsOfficialCompatible)' == 'True' ">True</PublicSign>
+    </PropertyGroup>
+
+
+    <PropertyGroup Condition=" '$(IsOfficial)' == 'True' ">
+        <DefineConstants Condition=" '$(DefineConstants)' != '' ">$(DefineConstants);OFFICIAL</DefineConstants>
+        <DefineConstants Condition=" '$(DefineConstants)' == '' ">OFFICIAL</DefineConstants>
+    </PropertyGroup>
+
+    <Target Name="PackageAssemblySigningReport" AfterTargets="Pack" Condition=" '$(IsPackable)' != 'False' ">
+        <Message Importance="high" Text="IsOfficial: $(IsOfficial)"/>
+        <Message Importance="high" Text="IsOfficialCompatible: $(IsOfficialCompatible)"/>
+        <Message Importance="high" Text="SignAssembly: $(SignAssembly)"/>
+        <Message Importance="high" Text="PublicSign: $(PublicSign)"/>
+        <Message Importance="high" Text="AssemblyOriginatorKeyFile: $(AssemblyOriginatorKeyFile)"/>
+        <Message Importance="high" Text="DefineConstants: $(DefineConstants)"/>
+    </Target>
+</Project>

@@ -1,9 +1,39 @@
+using System;
+using InlineIL;
 using JetBrains.Annotations;
 
 namespace Ultralight {
 
   [PublicAPI]
   public readonly ref struct String {
+
+    public static unsafe String* Create(string str) {
+#if NETFRAMEWORK || NETSTANDARD1_1 || NETSTANDARD1_4 || NETSTANDARD2_0
+      fixed (char* p = str)
+        return Ultralight.CreateStringUTF16(p, (UIntPtr) (uint) str.Length);
+#else
+      return Create((ReadOnlySpan<char>) str);
+#endif
+    }
+
+    public static unsafe String* Create(ReadOnlySpan<char> utf16) {
+      fixed (char* p = utf16)
+        return Ultralight.CreateStringUTF16(p, (UIntPtr) (uint) utf16.Length);
+    }
+
+    public static unsafe String* Create(ReadOnlySpan<byte> utf8) {
+      fixed (byte* p = utf8)
+        return Ultralight.CreateStringUTF8((sbyte*) p, (UIntPtr) (uint) utf8.Length);
+    }
+
+  }
+  public static class StringExtensions {
+
+    public static unsafe void Destroy(in this String _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.DestroyString((String*) p);
+    }
 
   }
 
