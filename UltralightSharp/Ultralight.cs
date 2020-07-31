@@ -197,10 +197,10 @@ namespace Ultralight {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewLockJSContext", ExactSpelling = true)]
     [return: NativeTypeName("JSContextRef")]
-    public static extern JsContext* ViewLockJSContext([NativeTypeName("ULView")] View* view);
+    public static extern JsContext* ViewLockJsContext([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewUnlockJSContext", ExactSpelling = true)]
-    public static extern void ViewUnlockJSContext([NativeTypeName("ULView")] View* view);
+    public static extern void ViewUnlockJsContext([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewEvaluateScript", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]
