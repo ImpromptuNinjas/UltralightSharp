@@ -21,14 +21,14 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Install dependencies
-      run: dotnet restore -f ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Write Official Strong Name Key
       run: echo ${{ secrets.OFFICIAL_SNK }} | base64 -d > official.snk
       env:
         OFFICIAL_SNK: ${{secrets.OFFICIAL_SNK}}
     - name: Build Library
-      run: dotnet build -c Release -p:IsOfficial=true ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet build -c Release -p:IsOfficial=true UltralightSharp/UltralightSharp.csproj
     - name: Pack Library
-      run: dotnet pack -c Release -p:IsOfficial=true --include-symbols ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp/UltralightSharp.csproj
     - name: Push Nupkg
       run: dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate *.nupkg

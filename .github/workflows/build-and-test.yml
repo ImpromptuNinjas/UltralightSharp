@@ -20,9 +20,9 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: Install dependencies
-      run: dotnet restore -f ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Linux
@@ -43,9 +43,9 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: Install dependencies
-      run: dotnet restore -f ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Win64
@@ -66,9 +66,9 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: Install dependencies
-      run: dotnet restore -f ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore ImpromptuNinjas.UltralightSharp\ImpromptuNinjas.UltralightSharp.csproj
+      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-OSX
