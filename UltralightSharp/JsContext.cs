@@ -1,3 +1,4 @@
+using InlineIL;
 using JetBrains.Annotations;
 
 namespace Ultralight {
