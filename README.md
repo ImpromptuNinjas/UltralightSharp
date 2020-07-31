@@ -15,6 +15,8 @@ A multi-platform .NET binding of the **Ultralight** project.
 * Apple OSX
   - 64-bit only
 
+Seems to work under Unity.
+
 ### Known Issues:
 * Currently the native dependencies are shipped with this NuGet package for all platforms.
   _Separate NuGet runtime packages should be created to provide each specific platform dependency._
@@ -28,4 +30,11 @@ Acknowlegedments
 * [Ultralight on GitHub](https://github.com/ultralight-ux/Ultralight)
 
 This project includes binary distributions of Ultralight SDK libraries.
+
+Examples
+--------
+
+See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.Demo) for a headless functional example.
+
+
 

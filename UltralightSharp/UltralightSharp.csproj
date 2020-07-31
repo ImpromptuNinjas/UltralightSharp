@@ -19,8 +19,8 @@
         <Copyright>Copyright © 2020 Tyler Young</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageOutputDir>$(SolutionDir)</PackageOutputDir>
-        <RepositoryUrl>https://github.com/ImpromptuNinjas/ZStd.git</RepositoryUrl>
-        <PackageTags>ultralight webkit jscore webcore appcore ultralight-ux</PackageTags>
+        <RepositoryUrl>https://github.com/ImpromptuNinjas/Ultralight.git</RepositoryUrl>
+        <PackageTags>ultralight webkit webcore appcore ultralight-ux</PackageTags>
         <PackageIcon>icon.png</PackageIcon>
         <IsPackable>True</IsPackable>
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>

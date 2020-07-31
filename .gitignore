@@ -60,3 +60,4 @@ project.lock.json
 TestResult.xml
 /Client
 /official.snk
+/.nuget-push-key
