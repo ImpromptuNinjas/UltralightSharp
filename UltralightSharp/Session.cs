@@ -19,6 +19,30 @@ namespace Ultralight {
       Ultralight.DestroySession((Session*) p);
     }
 
+    public static unsafe ulong GetId(in this Session _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.SessionGetId((Session*) p);
+    }
+
+    public static unsafe String* GetName(in this Session _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.SessionGetName((Session*) p);
+    }
+
+    public static unsafe String* GetDiskPath(in this Session _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.SessionGetDiskPath((Session*) p);
+    }
+
+    public static unsafe bool IsPersistent(in this Session _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.SessionIsPersistent((Session*) p);
+    }
+
   }
 
 }

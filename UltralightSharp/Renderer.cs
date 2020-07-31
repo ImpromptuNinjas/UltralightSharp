@@ -19,6 +19,12 @@ namespace Ultralight {
       Ultralight.DestroyRenderer((Renderer*) p);
     }
 
+    public static unsafe Session* GetDefaultSession(in this Renderer _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.DefaultSession((Renderer*) p);
+    }
+
   }
 
 }

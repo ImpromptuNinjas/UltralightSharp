@@ -27,7 +27,7 @@ namespace Ultralight {
     public static extern void SettingsSetLoadShadersFromFileSystem([NativeTypeName("ULSettings")] Settings* settings, bool enabled);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulSettingsSetForceCPURenderer", ExactSpelling = true)]
-    public static extern void SettingsSetForceCPURenderer([NativeTypeName("ULSettings")] Settings* settings, bool forceCpu);
+    public static extern void SettingsSetForceCpuRenderer([NativeTypeName("ULSettings")] Settings* settings, bool forceCpu);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateApp", ExactSpelling = true)]
     [return: NativeTypeName("ULApp")]
