@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 
 namespace Ultralight {
 
-
   [PublicAPI]
   public static unsafe class Ultralight {
 
@@ -162,7 +161,7 @@ namespace Ultralight {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewGetURL", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]
-    public static extern String* ViewGetURL([NativeTypeName("ULView")] View* view);
+    public static extern String* ViewGetUrl([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewGetTitle", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]
@@ -188,10 +187,10 @@ namespace Ultralight {
     public static extern Surface* ViewGetSurface([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewLoadHTML", ExactSpelling = true)]
-    public static extern void ViewLoadHTML([NativeTypeName("ULView")] View* view, [NativeTypeName("ULString")] String* htmlString);
+    public static extern void ViewLoadHtml([NativeTypeName("ULView")] View* view, [NativeTypeName("ULString")] String* htmlString);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewLoadURL", ExactSpelling = true)]
-    public static extern void ViewLoadURL([NativeTypeName("ULView")] View* view, [NativeTypeName("ULString")] String* urlString);
+    public static extern void ViewLoadUrl([NativeTypeName("ULView")] View* view, [NativeTypeName("ULString")] String* urlString);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewResize", ExactSpelling = true)]
     public static extern void ViewResize([NativeTypeName("ULView")] View* view, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height);
@@ -254,51 +253,88 @@ namespace Ultralight {
     public static extern void ViewFireScrollEvent([NativeTypeName("ULView")] View* view, [NativeTypeName("ULScrollEvent")] ScrollEvent* scrollEvent);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetChangeTitleCallback", ExactSpelling = true)]
-    public static extern void ViewSetChangeTitleCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeTitleCallback")]
-      FnPtr<ChangeTitleCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetChangeTitleCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeTitleCallback")]
+      /*FnPtr<ChangeTitleCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetChangeTitleCallback(View* view, FnPtr<ChangeTitleCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetChangeTitleCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetChangeURLCallback", ExactSpelling = true)]
-    public static extern void ViewSetChangeURLCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeURLCallback")]
-      FnPtr<ChangeUrlCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetChangeUrlCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeURLCallback")]
+      /*FnPtr<ChangeUrlCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetChangeUrlCallback(View* view, FnPtr<ChangeUrlCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetChangeUrlCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetChangeTooltipCallback", ExactSpelling = true)]
-    public static extern void ViewSetChangeTooltipCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeTooltipCallback")]
-      FnPtr<ChangeTooltipCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetChangeTooltipCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeTooltipCallback")]
+      /*FnPtr<ChangeTooltipCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetChangeTooltipCallback(View* view, FnPtr<ChangeTooltipCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetChangeTooltipCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetChangeCursorCallback", ExactSpelling = true)]
-    public static extern void ViewSetChangeCursorCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeCursorCallback")]
-      FnPtr<ChangeCursorCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetChangeCursorCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeCursorCallback")]
+      /*FnPtr<ChangeCursorCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetChangeCursorCallback(View* view, FnPtr<ChangeTooltipCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetChangeCursorCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetAddConsoleMessageCallback", ExactSpelling = true)]
-    public static extern void ViewSetAddConsoleMessageCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULAddConsoleMessageCallback")]
-      FnPtr<AddConsoleMessageCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetAddConsoleMessageCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULAddConsoleMessageCallback")]
+      /*FnPtr<AddConsoleMessageCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetAddConsoleMessageCallback(View* view, FnPtr<AddConsoleMessageCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetAddConsoleMessageCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetCreateChildViewCallback", ExactSpelling = true)]
-    public static extern void ViewSetCreateChildViewCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULCreateChildViewCallback")]
-      FnPtr<CreateChildViewCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetCreateChildViewCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULCreateChildViewCallback")]
+      /*FnPtr<CreateChildViewCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetCreateChildViewCallback(View* view, FnPtr<CreateChildViewCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetCreateChildViewCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetBeginLoadingCallback", ExactSpelling = true)]
-    public static extern void ViewSetBeginLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULBeginLoadingCallback")]
-      FnPtr<BeginLoadingCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetBeginLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULBeginLoadingCallback")]
+      /*FnPtr<BeginLoadingCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetBeginLoadingCallback(View* view, FnPtr<BeginLoadingCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetBeginLoadingCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetFinishLoadingCallback", ExactSpelling = true)]
-    public static extern void ViewSetFinishLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULFinishLoadingCallback")]
-      FnPtr<FinishLoadingCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetFinishLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULFinishLoadingCallback")]
+      /*FnPtr<FinishLoadingCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetFinishLoadingCallback(View* view, FnPtr<FinishLoadingCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetFinishLoadingCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetFailLoadingCallback", ExactSpelling = true)]
-    public static extern void ViewSetFailLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULFailLoadingCallback")]
-      FnPtr<FailLoadingCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetFailLoadingCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULFailLoadingCallback")]
+      /*FnPtr<FailLoadingCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetFailLoadingCallback(View* view, FnPtr<FailLoadingCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetFailLoadingCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetWindowObjectReadyCallback", ExactSpelling = true)]
-    public static extern void ViewSetWindowObjectReadyCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULWindowObjectReadyCallback")]
-      FnPtr<WindowObjectReadyCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetWindowObjectReadyCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULWindowObjectReadyCallback")]
+      /*FnPtr<WindowObjectReadyCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetWindowObjectReadyCallback(View* view, FnPtr<WindowObjectReadyCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetWindowObjectReadyCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetDOMReadyCallback", ExactSpelling = true)]
-    public static extern void ViewSetDOMReadyCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULDOMReadyCallback")] FnPtr<DomReadyCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetDomReadyCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULDOMReadyCallback")]
+      /*FnPtr<DomReadyCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetDomReadyCallback(View* view, FnPtr<DomReadyCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetDomReadyCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetUpdateHistoryCallback", ExactSpelling = true)]
-    public static extern void ViewSetUpdateHistoryCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULUpdateHistoryCallback")]
-      FnPtr<UpdateHistoryCallback> callback, [NativeTypeName("void *")] void* userData);
+    private static extern void ViewSetUpdateHistoryCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULUpdateHistoryCallback")]
+      /*FnPtr<UpdateHistoryCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
+
+    public static void ViewSetUpdateHistoryCallback(View* view, FnPtr<UpdateHistoryCallback> callback, [NativeTypeName("void *")] void* userData)
+      => ViewSetUpdateHistoryCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetNeedsPaint", ExactSpelling = true)]
     public static extern void ViewSetNeedsPaint([NativeTypeName("ULView")] View* view, bool needsPaint);

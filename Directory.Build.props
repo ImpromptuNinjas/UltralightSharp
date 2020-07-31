@@ -3,20 +3,14 @@
         <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)</SolutionDir>
         <Version>1.2.0-beta</Version>
     </PropertyGroup>
-
-    <Target Name="UpdatePackageCacheForDependencies" BeforeTargets="Build" Condition="'@(NuPkgRef->Count())'!='0'">
-        <ItemGroup>
-            <NuPkgRef Update="**">
-                <Id>$([System.Text.RegularExpressions.Regex]::Replace('%(NuPkgRef.Filename)', '^(.*?)\.(?:\.?[0-9]+){3,}(?:[-a-z]+)?$', '$1'))</Id>
-                <Version>$([System.Text.RegularExpressions.Regex]::Replace('%(NuPkgRef.Filename)', '^.*?\.((?:\.?[0-9]+){3,}(?:[-a-z]+)?)$', '$1'))</Version>
-            </NuPkgRef>
-            <NuPkgRef Update="**">
-                <LowerCaseId>$([System.String]::Copy('%(NuPkgRef.Id)').ToLowerInvariant())</LowerCaseId>
-            </NuPkgRef>
-        </ItemGroup>
-        <Message Importance="high" Text="Updating package cache: %(NuPkgRef.Id) %(NuPkgRef.Version)"/>
-        <Unzip SourceFiles="%(NuPkgRef.Identity)"
-               DestinationFolder="$(NuGetPackageRoot)%(NuPkgRef.LowerCaseId)\%(NuPkgRef.Version)\"
+    
+    <Target Name="UpdatePackageCacheForDependencies" AfterTargets="Pack">
+        <PropertyGroup>
+            <LowerCasePackageId>$([System.String]::Copy('$(PackageId)').ToLowerInvariant())</LowerCasePackageId>
+        </PropertyGroup>
+        <Message Importance="high" Text="Updating package cache for $(PackageId) $(Version)"/>
+        <Unzip SourceFiles="$(PackageOutputPath)\$(PackageId).$(Version).nupkg"
+               DestinationFolder="$(NuGetPackageRoot)$(LowerCasePackageId)\$(Version)\"
                SkipUnchangedFiles="true" ContinueOnError="true">
         </Unzip>
     </Target>
