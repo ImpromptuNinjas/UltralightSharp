@@ -182,6 +182,78 @@ namespace Ultralight {
       return Ultralight.ViewIsLoading((View*) p);
     }
 
+    public static unsafe String* EvaluateScript(this in View _, String* jsString, String** exception) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewEvaluateScript((View*) p, jsString, exception);
+    }
+
+    public static unsafe View* CreateInspector(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewCreateInspectorView((View*) p);
+    }
+
+    public static unsafe void FireKeyEvent(this in View _, KeyEvent* keyEvent) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewFireKeyEvent((View*) p, keyEvent);
+    }
+
+    public static unsafe void FireKeyEvent(this in View _, MouseEvent* mouseEvent) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewFireMouseEvent((View*) p, mouseEvent);
+    }
+
+    public static unsafe void FireKeyEvent(this in View _, ScrollEvent* scrollEvent) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewFireScrollEvent((View*) p, scrollEvent);
+    }
+
+    public static unsafe bool GetNeedsPaint(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewGetNeedsPaint((View*) p);
+    }
+
+    public static unsafe bool CanGoBack(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewCanGoBack((View*) p);
+    }
+
+    public static unsafe bool CanGoForward(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewCanGoForward((View*) p);
+    }
+
+    public static unsafe void GoToHistoryOffset(this in View _, int offset) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewGoToHistoryOffset((View*) p, offset);
+    }
+
+    public static unsafe void Stop(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewStop((View*) p);
+    }
+
+    public static unsafe void Reload(this in View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewReload((View*) p);
+    }
+
+    public static unsafe void Resize(this in View _, uint width, uint height) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.ViewResize((View*) p, width, height);
+    }
+
   }
 
 }
