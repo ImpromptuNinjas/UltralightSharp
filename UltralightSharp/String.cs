@@ -27,12 +27,29 @@ namespace Ultralight {
     }
 
   }
+
   public static class StringExtensions {
 
     public static unsafe void Destroy(in this String _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.DestroyString((String*) p);
+    }
+
+    public static unsafe string? Read(in this String _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      var chLen = Ultralight.StringGetLength((String*) p);
+      var strLen = checked((int) chLen.ToUInt64());
+
+      if (strLen < 0)
+        throw new NotImplementedException($"String length is {strLen}");
+
+      if (strLen == 0)
+        return null;
+
+      var pCh = Ultralight.StringGetData((String*) p);
+      return new string(pCh, 0, strLen);
     }
 
   }

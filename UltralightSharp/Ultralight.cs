@@ -368,7 +368,7 @@ namespace Ultralight {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulStringGetData", ExactSpelling = true)]
     [return: NativeTypeName("ULChar16 *")]
-    public static extern ushort* StringGetData([NativeTypeName("ULString")] String* str);
+    public static extern char* StringGetData([NativeTypeName("ULString")] String* str);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulStringGetLength", ExactSpelling = true)]
     [return: NativeTypeName("size_t")]
@@ -451,7 +451,7 @@ namespace Ultralight {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapWritePNG", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool BitmapWritePNG([NativeTypeName("ULBitmap")] Bitmap* bitmap, [NativeTypeName("const char *")] sbyte* path);
+    public static extern bool BitmapWritePng([NativeTypeName("ULBitmap")] Bitmap* bitmap, [NativeTypeName("const char *")] sbyte* path);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapSwapRedBlueChannels", ExactSpelling = true)]
     public static extern void BitmapSwapRedBlueChannels([NativeTypeName("ULBitmap")] Bitmap* bitmap);

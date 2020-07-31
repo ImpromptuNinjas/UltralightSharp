@@ -20,4 +20,11 @@
             <Visible>False</Visible>
         </NuPkgRef>
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="assets\index.html" />
+      <Content Include="assets\index.html">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>

@@ -37,6 +37,18 @@ namespace Ultralight {
       Ultralight.ViewLoadUrl((View*) p, url);
     }
 
+    public static unsafe String* GetUrl(in this View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewGetUrl((View*) p);
+    }
+
+    public static unsafe Surface* GetSurface(in this View _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.ViewGetSurface((View*) p);
+    }
+
   }
 
 }

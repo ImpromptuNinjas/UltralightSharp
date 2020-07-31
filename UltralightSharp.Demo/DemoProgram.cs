@@ -51,6 +51,7 @@ namespace UltralightSharp.Demo {
 
       {
         var htmlString = Ultralight.String.Create("<i>Loading...</i>");
+        Console.WriteLine($"Loading HTML: {htmlString->Read()}");
         view->LoadHtml(htmlString);
         htmlString->Destroy();
       }
@@ -58,13 +59,62 @@ namespace UltralightSharp.Demo {
       var loaded = false;
 
       view->SetFinishLoadingCallback((data, caller, id, frame, url) => {
-        Console.WriteLine("Our page has loaded!");
+        {
+          Console.WriteLine($"Callback URL Parameter: 0x{(ulong) url:X8}  {url->Read()}");
+        }
+
+        {
+          var urlStrPtr = caller->GetUrl();
+          Console.WriteLine($"Callback View Parameter GetURL: 0x{(ulong) urlStrPtr:X8} {urlStrPtr->Read()}");
+        }
+        {
+          var urlStrPtr = view->GetUrl();
+          Console.WriteLine($"View GetURL from Callback: 0x{(ulong) urlStrPtr:X8} {urlStrPtr->Read()}");
+        }
         loaded = true;
       }, null);
 
       while (!loaded) {
         Update(renderer);
         Render(renderer);
+      }
+
+      {
+        var urlStrPtr = view->GetUrl();
+        Console.WriteLine($"After Loaded View GetURL: 0x{(ulong) urlStrPtr:X8} {urlStrPtr->Read()}");
+      }
+
+      {
+        var surface = view->GetSurface();
+        var bitmap = surface->GetBitmap();
+        bitmap->SwapRedBlueChannels();
+        bitmap->WritePng("1.png");
+      }
+
+      loaded = false;
+
+      {
+        var htmlString = Ultralight.String.Create("file:///index.html");
+        Console.WriteLine($"Loading URL: {htmlString->Read()}");
+        view->LoadUrl(htmlString);
+        htmlString->Destroy();
+      }
+
+      while (!loaded) {
+        Update(renderer);
+        Render(renderer);
+      }
+
+      {
+        var urlStrPtr = view->GetUrl();
+        Console.WriteLine($"After Loaded View GetURL: 0x{(ulong) urlStrPtr:X8} {urlStrPtr->Read()}");
+      }
+
+      {
+        var surface = view->GetSurface();
+        var bitmap = surface->GetBitmap();
+        bitmap->SwapRedBlueChannels();
+        bitmap->WritePng("2.png");
       }
 
       view->Destroy();
