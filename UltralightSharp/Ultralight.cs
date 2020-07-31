@@ -41,7 +41,7 @@ namespace Ultralight {
     public static extern void ConfigSetCachePath([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("ULString")] String* cachePath);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetUseGPURenderer", ExactSpelling = true)]
-    public static extern void ConfigSetUseGPURenderer([NativeTypeName("ULConfig")] Config* config, bool useGpu);
+    public static extern void ConfigSetUseGpuRenderer([NativeTypeName("ULConfig")] Config* config, bool useGpu);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetDeviceScale", ExactSpelling = true)]
     public static extern void ConfigSetDeviceScale([NativeTypeName("ULConfig")] Config* config, double value);
