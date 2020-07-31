@@ -25,6 +25,12 @@ namespace Ultralight {
   [PublicAPI]
   public static class BitmapExtensions {
 
+    public static unsafe void Destroy(in this Bitmap _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.DestroyBitmap((Bitmap*) p);
+    }
+
     public static unsafe bool WritePng(in this Bitmap _, sbyte* path) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
