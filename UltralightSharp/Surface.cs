@@ -80,4 +80,57 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Surface {
+
+      internal readonly unsafe UltralightSharp.Surface* _;
+
+      public unsafe Surface(UltralightSharp.Surface* p)
+        => _ = p;
+
+      public unsafe void ClearDirtyBounds()
+        => _->ClearDirtyBounds();
+
+      public unsafe IntRect GetDirtyBounds()
+        => _->GetDirtyBounds();
+
+      public unsafe uint GetHeight()
+        => _->GetHeight();
+
+      public unsafe uint GetWidth()
+        => _->GetWidth();
+
+      public unsafe uint GetRowBytes()
+        => _->GetRowBytes();
+
+      public unsafe UIntPtr GetSize()
+        => _->GetSize();
+
+      public unsafe void* GetUserDataUnsafe()
+        => _->GetUserData();
+
+      public unsafe IntPtr GetUserData()
+        => (IntPtr) _->GetUserData();
+
+      public unsafe void* LockPixelsUnsafe()
+        => _->LockPixels();
+
+      public unsafe void UnlockPixels()
+        => _->UnlockPixels();
+
+      public unsafe void SetDirtyBounds(IntRect bounds)
+        => _->SetDirtyBounds(bounds);
+
+      public unsafe UltralightSharp.Bitmap* GetBitmapUnsafe()
+        => _->GetBitmap();
+
+      public unsafe Bitmap GetBitmap()
+        => new Bitmap(_->GetBitmap(), false);
+
+    }
+
+  }
+
 }

@@ -75,6 +75,18 @@ namespace ImpromptuNinjas.UltralightSharp {
       Ultralight.BitmapUnlockPixels((Bitmap*) p);
     }
 
+    public static unsafe void WithPixelsLocked(PixelBufferWorkerCallback callback) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      var pixels = Ultralight.BitmapLockPixels((Bitmap*) p);
+      try {
+        callback(pixels);
+      }
+      finally {
+        Ultralight.BitmapUnlockPixels((Bitmap*) p);
+      }
+    }
+
     public static unsafe BitmapFormat GetFormat(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
@@ -109,6 +121,87 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.BitmapSwapRedBlueChannels((Bitmap*) p);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Bitmap : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Bitmap* _;
+
+      public unsafe Bitmap()
+        => _ = UltralightSharp.Bitmap.CreateEmpty();
+
+      public unsafe Bitmap(uint width, uint height, BitmapFormat format)
+        => _ = UltralightSharp.Bitmap.Create(width, height, format);
+
+      public unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap, bool copy = true)
+        => _ = copy ? UltralightSharp.Bitmap.Copy(existingBitmap) : existingBitmap;
+
+      public unsafe Bitmap(Bitmap existingBitmap)
+        => _ = UltralightSharp.Bitmap.Copy(existingBitmap._);
+
+      public unsafe Bitmap(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
+        => _ = UltralightSharp.Bitmap.CreateFromPixels(width, height, format, rowBytes, pixels, size, shouldCopy);
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe bool WritePng(sbyte* path)
+        => _->WritePng(path);
+
+      public unsafe bool WritePng(string path) {
+        var bytes = Encoding.UTF8.GetBytes(path);
+        fixed (byte* pBytes = bytes)
+          return _->WritePng((sbyte*) pBytes);
+      }
+
+      public unsafe void Erase()
+        => _->Erase();
+
+      public unsafe uint GetBpp()
+        => _->GetBpp();
+
+      public unsafe void* RawPixels()
+        => _->RawPixels();
+
+      public unsafe void* LockPixels()
+        => _->LockPixels();
+
+      public unsafe void UnlockPixels()
+        => _->UnlockPixels();
+
+      public unsafe void WithPixelsLocked(PixelBufferWorkerCallback callback) {
+        var pixels = _->LockPixels();
+        try {
+          callback(pixels);
+        }
+        finally {
+          _->UnlockPixels();
+        }
+      }
+
+      public unsafe BitmapFormat GetFormat()
+        => _->GetFormat();
+
+      public unsafe uint GetHeight()
+        => _->GetHeight();
+
+      public unsafe uint GetWidth()
+        => _->GetWidth();
+
+      public unsafe UIntPtr GetSize()
+        => _->GetSize();
+
+      public unsafe uint GetRowBytes()
+        => _->GetRowBytes();
+
+      public unsafe void SwapRedBlueChannels()
+        => _->SwapRedBlueChannels();
+
     }
 
   }

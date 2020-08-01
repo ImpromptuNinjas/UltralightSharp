@@ -31,4 +31,27 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Monitor {
+
+      internal readonly unsafe UltralightSharp.Monitor* _;
+
+      public unsafe Monitor(UltralightSharp.Monitor* p)
+        => _ = p;
+
+      public unsafe uint GetHeight()
+        => _->GetHeight();
+
+      public unsafe uint GetWidth()
+        => _->GetWidth();
+
+      public unsafe double GetScale()
+        => _->GetScale();
+
+    }
+
+  }
+
 }

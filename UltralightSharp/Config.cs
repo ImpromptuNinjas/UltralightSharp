@@ -1,3 +1,4 @@
+using System;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -116,10 +117,10 @@ namespace ImpromptuNinjas.UltralightSharp {
       Ultralight.ConfigSetMinSmallHeapSize((Config*) p, size);
     }
 
-    public static unsafe void SetOverrideRAMSize(in this Config _, uint size) {
+    public static unsafe void SetOverrideRamSize(in this Config _, uint size) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
-      Ultralight.ConfigSetOverrideRAMSize((Config*) p, size);
+      Ultralight.ConfigSetOverrideRamSize((Config*) p, size);
     }
 
     public static unsafe void SetPageCacheSize(in this Config _, uint size) {
@@ -162,6 +163,121 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.ConfigSetUserStylesheet((Config*) p, cssString);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Config : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Config* _;
+      public unsafe Config(UltralightSharp.Config* p)
+        => _ = p;
+
+      public unsafe Config()
+        => _ = UltralightSharp.Config.Create();
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe void SetAnimationTimerDelay(double delay) {
+        _->SetAnimationTimerDelay(delay);
+      }
+
+      public unsafe void SetCachePath(String* cachePath) {
+        _->SetCachePath(cachePath);
+      }
+
+      public unsafe void SetDeviceScale(double value) {
+        _->SetDeviceScale(value);
+      }
+
+      public unsafe void SetEnableImages(bool enabled) {
+        _->SetEnableImages(enabled);
+      }
+
+      public unsafe void SetEnableJavaScript(bool enabled) {
+        _->SetEnableJavaScript(enabled);
+      }
+
+      public unsafe void SetFaceWinding(FaceWinding winding) {
+        _->SetFaceWinding(winding);
+      }
+
+      public unsafe void SetFontFamilyFixed(String* fontName) {
+        _->SetFontFamilyFixed(fontName);
+      }
+
+      public unsafe void SetFontFamilySansSerif(String* fontName) {
+        _->SetFontFamilySansSerif(fontName);
+      }
+
+      public unsafe void SetFontFamilySerif(String* fontName) {
+        _->SetFontFamilySerif(fontName);
+      }
+
+      public unsafe void SetFontFamilyStandard(String* fontName) {
+        _->SetFontFamilyStandard(fontName);
+      }
+
+      public unsafe void SetFontGamma(double fontGamma) {
+        _->SetFontGamma(fontGamma);
+      }
+
+      public unsafe void SetFontHinting(FontHinting fontHinting) {
+        _->SetFontHinting(fontHinting);
+      }
+
+      public unsafe void SetForceRepaint(bool enabled) {
+        _->SetForceRepaint(enabled);
+      }
+
+      public unsafe void SetMemoryCacheSize(uint size) {
+        _->SetMemoryCacheSize(size);
+      }
+
+      public unsafe void SetMinLargeHeapSize(uint size) {
+        _->SetMinLargeHeapSize(size);
+      }
+
+      public unsafe void SetMinSmallHeapSize(uint size) {
+        _->SetMinSmallHeapSize(size);
+      }
+
+      public unsafe void SetOverrideRamSize(uint size) {
+        _->SetOverrideRamSize(size);
+      }
+
+      public unsafe void SetPageCacheSize(uint size) {
+        _->SetPageCacheSize(size);
+      }
+
+      public unsafe void SetRecycleDelay(double delay) {
+        _->SetRecycleDelay(delay);
+      }
+
+      public unsafe void SetResourcePath(String* resourcePath) {
+        _->SetResourcePath(resourcePath);
+      }
+
+      public unsafe void SetScrollTimerDelay(double delay) {
+        _->SetScrollTimerDelay(delay);
+      }
+
+      public unsafe void SetUseGpuRenderer(bool useGpu) {
+        _->SetUseGpuRenderer(useGpu);
+      }
+
+      public unsafe void SetUserAgent(String* agentString) {
+        _->SetUserAgent(agentString);
+      }
+
+      public unsafe void SetUserStylesheet(String* cssString) {
+        _->SetUserStylesheet(cssString);
+      }
+
     }
 
   }

@@ -26,4 +26,25 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class KeyEvent : IDisposable {
+
+      internal readonly unsafe UltralightSharp.KeyEvent* _;
+
+      public unsafe KeyEvent(UltralightSharp.KeyEvent* p)
+        => _ = p;
+      public unsafe KeyEvent(KeyEventType type, uint modifiers, int virtualKeyCode, int nativeKeyCode, String* text, String* unmodifiedText, bool isKeypad, bool isAutoRepeat, bool isSystemKey)
+        => _ = UltralightSharp.KeyEvent.Create(type, modifiers, virtualKeyCode, nativeKeyCode, text, unmodifiedText, isKeypad, isAutoRepeat, isSystemKey);
+
+      public unsafe KeyEvent(KeyEventType type, UIntPtr wParam, IntPtr lParam, bool isSystemKey)
+        => _ = UltralightSharp.KeyEvent.CreateWindows(type, wParam, lParam, isSystemKey);
+
+      public unsafe void Dispose()
+        => _->Destroy();
+    }
+
+  }
+
 }

@@ -81,4 +81,54 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Window : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Window* _;
+
+      public unsafe Window(UltralightSharp.Window* p)
+        => _ = p;
+
+      public unsafe Window(UltralightSharp.Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
+        => _ = UltralightSharp.Window.Create(monitor, width, height, fullscreen, windowFlags);
+
+      public unsafe Window(Monitor monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
+        => _ = UltralightSharp.Window.Create(monitor._, width, height, fullscreen, windowFlags);
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe void Close()
+        => _->Close();
+
+      public unsafe int DeviceToPixel(int val)
+        => _->DeviceToPixel(val);
+
+      public unsafe void* GetNativeHandleUnsafe()
+        => _->GetNativeHandle();
+
+      public unsafe IntPtr GetNativeHandle()
+        => (IntPtr) _->GetNativeHandle();
+
+      public unsafe uint GetHeight()
+        => _->GetHeight();
+
+      public unsafe uint GetWidth()
+        => _->GetWidth();
+
+      public unsafe double GetScale()
+        => _->GetScale();
+
+      public unsafe bool IsFullscreen()
+        => _->IsFullscreen();
+
+      public unsafe void SetTitle(string title)
+        => _->SetTitle(title);
+
+    }
+
+  }
+
 }

@@ -36,5 +36,8 @@ Examples
 
 See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.Demo) for a headless functional example.
 
+![Demo Screenshot](https://raw.githubusercontent.com/ImpromptuNinjas/UltralightSharp/master/demo.png)
 
+The demo can produce PNGs or a scaled down low resolution 24-bit ANSI image to the console.
+(ANSI image on Windows console seen above.)
 

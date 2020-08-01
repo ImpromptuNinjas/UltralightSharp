@@ -128,9 +128,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         var surface = view->GetSurface();
         var bitmap = surface->GetBitmap();
         var pixels = bitmap->LockPixels();
-        Console.WriteLine();
         RenderAnsi24BitColor<Bgra32>(pixels, bitmap->GetWidth(), bitmap->GetHeight(), bitmap->GetBpp());
-        Console.WriteLine();
         bitmap->UnlockPixels();
         bitmap->SwapRedBlueChannels();
         //bitmap->WritePng("Loaded.png");

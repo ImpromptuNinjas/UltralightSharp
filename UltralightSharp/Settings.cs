@@ -1,3 +1,4 @@
+using System;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -48,6 +49,59 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.SettingsSetLoadShadersFromFileSystem((Settings*) p, enabled);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Settings : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Settings* _;
+
+      public unsafe Settings(UltralightSharp.Settings* p)
+        => _ = p;
+
+      public unsafe Settings()
+        => _ = UltralightSharp.Settings.Create();
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe void SetAppNameUnsafe(String* name)
+        => _->SetAppName(name);
+
+      public unsafe void SetAppName(string name) {
+        var s = String.Create(name);
+        _->SetAppName(s);
+        s->Destroy();
+      }
+
+      public unsafe void SetDeveloperNamehUnsafe(String* name)
+        => _->SetDeveloperName(name);
+
+      public unsafe void SetDeveloperName(string name) {
+        var s = String.Create(name);
+        _->SetDeveloperName(s);
+        s->Destroy();
+      }
+
+      public unsafe void SetFileSystemPathUnsafe(String* path)
+        => _->SetFileSystemPath(path);
+
+      public unsafe void SetFileSystemPath(string path) {
+        var s = String.Create(path);
+        _->SetFileSystemPath(s);
+        s->Destroy();
+      }
+
+      public unsafe void SetForceCpuRenderer(bool forceCpu)
+        => _->SetForceCpuRenderer(forceCpu);
+
+      public unsafe void SetLoadShadersFromFileSystem(bool enabled)
+        => _->SetLoadShadersFromFileSystem(enabled);
+
     }
 
   }

@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -86,6 +88,74 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayIsHidden((Overlay*) p);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Overlay : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Overlay* _;
+
+      public unsafe Overlay(UltralightSharp.Overlay* p)
+        => _ = p;
+
+      public unsafe Overlay(UltralightSharp.Window* window, uint width, uint height, int x, int y)
+        => _ = UltralightSharp.Overlay.Create(window, width, height, x, y);
+
+      public unsafe Overlay(UltralightSharp.Window* window, UltralightSharp.View* view, int x, int y)
+        => _ = UltralightSharp.Overlay.Create(window, view, x, y);
+
+      public unsafe Overlay(UltralightSharp.Window* window, View view, int x, int y)
+        => _ = UltralightSharp.Overlay.Create(window, view._, x, y);
+
+      public unsafe Overlay(Window window, UltralightSharp.View* view, int x, int y)
+        => _ = UltralightSharp.Overlay.Create(window._, view, x, y);
+
+      public unsafe Overlay(Window window, View view, int x, int y)
+        => _ = UltralightSharp.Overlay.Create(window._, view._, x, y);
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe void Focus()
+        => _->Focus();
+
+      public unsafe void Unfocus()
+        => _->Unfocus();
+
+      public unsafe void Show()
+        => _->Show();
+
+      public unsafe void Hide()
+        => _->Hide();
+
+      public unsafe UltralightSharp.View* GetViewUnsafe()
+        => _->GetView();
+
+      public unsafe View GetView()
+        => new View(_->GetView());
+
+      public unsafe uint GetHeight()
+        => _->GetHeight();
+
+      public unsafe uint GetWidth()
+        => _->GetWidth();
+
+      public unsafe int GetX()
+        => _->GetX();
+
+      public unsafe int GetY()
+        => _->GetY();
+
+      public unsafe bool HasFocus()
+        => _->HasFocus();
+
+      public unsafe bool IsHidden()
+        => _->IsHidden();
+
     }
 
   }

@@ -1,3 +1,4 @@
+using System;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -42,6 +43,59 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.SessionIsPersistent((Session*) p);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class Session : IDisposable {
+
+      internal readonly unsafe UltralightSharp.Session* _;
+
+      public unsafe Session(UltralightSharp.Session* p)
+        => _ = p;
+
+      public unsafe Session(UltralightSharp.Renderer* renderer, bool isPersistent, String* name)
+        => _ = UltralightSharp.Session.Create(renderer, isPersistent, name);
+
+      public unsafe Session(UltralightSharp.Renderer* renderer, bool isPersistent, string name) {
+        var str = String.Create(name);
+        _ = UltralightSharp.Session.Create(renderer, isPersistent, str);
+        str->Destroy();
+      }
+
+      public unsafe Session(Renderer renderer, bool isPersistent, String* name)
+        => _ = UltralightSharp.Session.Create(renderer._, isPersistent, name);
+
+      public unsafe Session(Renderer renderer, bool isPersistent, string name) {
+        var str = String.Create(name);
+        _ = UltralightSharp.Session.Create(renderer._, isPersistent, str);
+        str->Destroy();
+      }
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe ulong GetId()
+        => _->GetId();
+
+      public unsafe String* GetNameUnsafe()
+        => _->GetName();
+
+      public unsafe string? GetName()
+        => _->GetName()->Read();
+
+      public unsafe String* GetDiskPathUnsafe()
+        => _->GetDiskPath();
+
+      public unsafe string? GetDiskPath()
+        => _->GetDiskPath()->Read();
+
+      public unsafe bool IsPersistent()
+        => _->IsPersistent();
+
     }
 
   }

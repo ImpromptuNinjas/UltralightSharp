@@ -97,7 +97,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern void ConfigSetPageCacheSize([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("unsigned int")] uint size);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetOverrideRAMSize", ExactSpelling = true)]
-    public static extern void ConfigSetOverrideRAMSize([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("unsigned int")] uint size);
+    public static extern void ConfigSetOverrideRamSize([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("unsigned int")] uint size);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetMinLargeHeapSize", ExactSpelling = true)]
     public static extern void ConfigSetMinLargeHeapSize([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("unsigned int")] uint size);

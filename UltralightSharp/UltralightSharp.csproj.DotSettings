@@ -1,8 +1,17 @@
-﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Clinux_002Dx64/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Clinux_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cosx_002Dx64/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cosx_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cwin_002Dx64/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cwin_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+﻿<wpf:ResourceDictionary xml:space="preserve"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:s="clr-namespace:System;assembly=mscorlib"
+                        xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml"
+                        xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=callbacks/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=enums/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Clinux_002Dx64/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Clinux_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cosx_002Dx64/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cosx_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cwin_002Dx64/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=runtimes_005Cwin_002Dx64_005Cnative/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=structs/@EntryIndexedValue">True</s:Boolean>
+    <s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=utility/@EntryIndexedValue">True</s:Boolean>
+</wpf:ResourceDictionary>
