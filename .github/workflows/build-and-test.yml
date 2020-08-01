@@ -22,7 +22,9 @@ jobs:
     - name: Install dependencies
       run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
+      run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
+    - name: Run Demo
+      run: dotnet run -c Release --project UltralightSharp.Demo
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Linux
@@ -45,7 +47,9 @@ jobs:
     - name: Install dependencies
       run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
+      run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
+    - name: Run Demo
+      run: dotnet run -c Release --project UltralightSharp.Demo
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Win64
@@ -68,7 +72,9 @@ jobs:
     - name: Install dependencies
       run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
     - name: Build
-      run: dotnet build --configuration Release --no-restore UltralightSharp/UltralightSharp.csproj
+      run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
+    - name: Run Demo
+      run: dotnet run -c Release --project UltralightSharp.Demo
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-OSX
