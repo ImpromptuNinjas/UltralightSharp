@@ -57,6 +57,11 @@
                         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
                     </PropertyGroup>
                     <ItemGroup>
+                        <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
+                        <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+                        <PackageReference Include="System.Threading" Version="4.3.0" />
+                        <PackageReference Include="System.Collections" Version="4.3.0" />
+                        <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
                         <PackageReference Include="System.Memory" Version="4.5.4" />
                     </ItemGroup>
                 </When>
@@ -65,6 +70,9 @@
                         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
                     </PropertyGroup>
                     <ItemGroup>
+                        <PackageReference Include="System.Threading" Version="4.3.0" />
+                        <PackageReference Include="System.Collections" Version="4.3.0" />
+                        <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
                         <PackageReference Include="System.Memory" Version="4.5.4" />
                     </ItemGroup>
                 </When>
@@ -106,6 +114,12 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Link>%(Identity)</Link>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Utility\Native.Posix.cs">
+        <DependentUpon>Native.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
