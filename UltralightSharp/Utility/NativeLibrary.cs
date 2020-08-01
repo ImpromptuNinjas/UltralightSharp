@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -91,7 +92,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       var loaded = Loader.Load(libraryPath);
       if (loaded == default)
 #if NETSTANDARD1_1
-          throw new InvalidOperationException(libraryPath);
+        throw new InvalidOperationException(libraryPath);
 #else
         throw new InvalidProgramException(libraryPath);
 #endif
@@ -141,6 +142,22 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     }
 
+    private static unsafe string GetString(sbyte* err) {
+      var strLen = new ReadOnlySpan<sbyte>(err, 32768).IndexOf((sbyte) 0);
+      if (strLen == -1)
+        throw new InvalidOperationException();
+
+#if NETSTANDARD1_1
+      var errStrBytes = new byte[strLen];
+      fixed (byte* pErrStrBytes = errStrBytes)
+        Unsafe.CopyBlockUnaligned(pErrStrBytes, err, (uint) strLen);
+      var errStr = Encoding.UTF8.GetString(errStrBytes, 0, strLen);
+#else
+      var errStr = Encoding.UTF8.GetString((byte*) err, strLen);
+#endif
+      return errStr;
+    }
+
     private sealed class LibDl1 : INativeLibraryLoader {
 
       // ReSharper disable once MemberHidesStaticFromOuterClass
@@ -154,8 +171,25 @@ namespace ImpromptuNinjas.UltralightSharp {
       // ReSharper disable once MemberHidesStaticFromOuterClass
       private static extern IntPtr GetExport(IntPtr handle, string symbol);
 
-      IntPtr INativeLibraryLoader.Load(string libraryPath)
-        => Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+      [DllImport(LibName, EntryPoint = "dlerror")]
+      internal static extern unsafe sbyte* GetLastError();
+
+      unsafe IntPtr INativeLibraryLoader.Load(string libraryPath) {
+        var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+        if (lib != default)
+          return lib;
+
+        var err = GetLastError();
+        if (err == default)
+          return default;
+
+#if NETSTANDARD1_4 || NETSTANDARD1_1
+        var errStr = GetString(err);
+#else
+        var errStr = new string(err);
+#endif
+        throw new InvalidOperationException(errStr);
+      }
 
       IntPtr INativeLibraryLoader.GetExport(IntPtr handle, string name)
         => GetExport(handle, name);
@@ -178,8 +212,25 @@ namespace ImpromptuNinjas.UltralightSharp {
       // ReSharper disable once MemberHidesStaticFromOuterClass
       private static extern IntPtr GetExport(IntPtr handle, string symbol);
 
-      IntPtr INativeLibraryLoader.Load(string libraryPath)
-        => Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+      [DllImport(LibName, EntryPoint = "dlerror")]
+      internal static extern unsafe sbyte* GetLastError();
+
+      unsafe IntPtr INativeLibraryLoader.Load(string libraryPath) {
+        var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+        if (lib != default)
+          return lib;
+
+        var err = GetLastError();
+        if (err == default)
+          return default;
+
+#if NETSTANDARD1_4 || NETSTANDARD1_1
+        var errStr = GetString(err);
+#else
+        var errStr = new string(err);
+#endif
+        throw new InvalidOperationException(errStr);
+      }
 
       IntPtr INativeLibraryLoader.GetExport(IntPtr handle, string name)
         => GetExport(handle, name);
@@ -209,8 +260,17 @@ namespace ImpromptuNinjas.UltralightSharp {
       // ReSharper disable once MemberHidesStaticFromOuterClass
       private static extern IntPtr GetExport(IntPtr handle, string procedureName);
 
-      IntPtr INativeLibraryLoader.Load(string libraryPath)
-        => Load(libraryPath);
+      IntPtr INativeLibraryLoader.Load(string libraryPath) {
+        var lib = Load(libraryPath);
+        if (lib != default)
+          return lib;
+
+        var err = Marshal.GetLastWin32Error();
+        if (err == default)
+          return default;
+
+        throw Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
+      }
 
       IntPtr INativeLibraryLoader.GetExport(IntPtr handle, string name)
         => GetExport(handle, name);
