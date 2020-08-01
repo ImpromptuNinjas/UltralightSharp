@@ -1,4 +1,5 @@
 // ReSharper disable RedundantUsingDirective
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -39,18 +40,19 @@ namespace ImpromptuNinjas.UltralightSharp {
         default: throw new PlatformNotSupportedException(cpu.ToString());
       }
 #else
-      using (var proc = Process.GetCurrentProcess()) {
-        foreach (ProcessModule mod in proc.Modules) {
-          var fileName = mod.FileName;
+      using var proc = Process.GetCurrentProcess();
+      foreach (ProcessModule? mod in proc.Modules) {
+        if (mod == null) continue;
 
-          if (!fileName.Contains("libc"))
-            continue;
+        var fileName = mod.FileName;
 
-          if (fileName.Contains("musl"))
-            return true;
+        if (!fileName.Contains("libc"))
+          continue;
 
-          break;
-        }
+        if (fileName.Contains("musl"))
+          return true;
+
+        break;
       }
 
       return false;

@@ -28,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Linux
-        path: ImpromptuNinjas.UltralightSharp.*.nuget
+        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget
 
   build-and-test-win64:
     runs-on: windows-latest
@@ -53,7 +53,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Win64
-        path: ImpromptuNinjas.UltralightSharp.*.nuget
+        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget
 
   build-and-test-macos:
     runs-on: macos-latest
@@ -75,7 +75,12 @@ jobs:
       run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
     - name: Run Demo
       run: dotnet run -c Release --project UltralightSharp.Demo
+      env:
+        DYLD_PRINT_WARNINGS: 1
+        DYLD_PRINT_CS_NOTIFICATIONS: 1
+        DYLD_PRINT_INTERPOSING: 1
+        DYLD_PRINT_CODE_SIGNATURES: 1
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-OSX
-        path: ImpromptuNinjas.UltralightSharp.*.nuget
+        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget

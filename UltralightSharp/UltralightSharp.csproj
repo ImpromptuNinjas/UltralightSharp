@@ -112,14 +112,16 @@
             <PackageCopyToOutput>True</PackageCopyToOutput>
             <PackagePath>runtimes\</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <Link>%(Identity)</Link>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Utility\Native.Posix.cs">
-        <DependentUpon>Native.cs</DependentUpon>
-      </Compile>
+        <Compile Update="**\*.*.cs">
+            <WouldDependOn>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '^(.*?)\..*$', '$1.cs'))</WouldDependOn>
+            <DependentUpon Condition="'%(DependentUpon)' == '' And '%(WouldDependOn)' != '%(Filename)'">%(WouldDependOn)</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>
