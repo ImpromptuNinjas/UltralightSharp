@@ -1,4 +1,5 @@
 // ReSharper disable RedundantUsingDirective
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,7 +38,6 @@ namespace ImpromptuNinjas.UltralightSharp {
       // ReSharper disable once RedundantAssignment
       IntPtr lib = default;
 
-
 #if NETFRAMEWORK
       string libPath = Path.Combine(baseDir, $"{libName}.dll");
 #else
@@ -61,17 +61,19 @@ namespace ImpromptuNinjas.UltralightSharp {
 #endif
 
       // ReSharper disable once InvertIf
-      if (lib == default && !TryLoad(libPath, out lib)) {
+      if (lib == default) {
+        lib = NativeLibrary.Load(libPath);
 #if !NETSTANDARD1_1
-        if (File.Exists(libPath))
+        if (lib == default && File.Exists(libPath))
           throw new UnauthorizedAccessException(libPath);
 #endif
+        if (lib == default)
 #if !NETFRAMEWORK
-        throw new DllNotFoundException(libPath);
+          throw new DllNotFoundException(libPath);
 #else
-        throw new FileNotFoundException(libPath + "\n" +
-          $"You may need to specify <RuntimeIdentifier>{(ptrBits == 32 ? "win-x86" : "win-x64")}<RuntimeIdentifier> or <RuntimeIdentifier>win<RuntimeIdentifier> in your project file.",
-          libPath);
+          throw new FileNotFoundException(libPath + "\n" +
+            $"You may need to specify <RuntimeIdentifier>{(ptrBits == 32 ? "win-x86" : "win-x64")}<RuntimeIdentifier> or <RuntimeIdentifier>win<RuntimeIdentifier> in your project file.",
+            libPath);
 #endif
       }
 
@@ -82,7 +84,12 @@ namespace ImpromptuNinjas.UltralightSharp {
       try {
         lib = NativeLibrary.Load(libPath);
       }
+#if !NETSTANDARD1_1 && !NETSTANDARD1_4
+      catch (Exception ex) {
+        Console.Error.WriteLine($"Library loading error: {libPath}\n{ex}");
+#else
       catch {
+#endif
         lib = default;
         return false;
       }

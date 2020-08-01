@@ -28,7 +28,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Linux
-        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget
+        path: '**/*.nupkg'
+        if-no-files-found: error
 
   build-and-test-win64:
     runs-on: windows-latest
@@ -53,7 +54,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-Win64
-        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget
+        path: '**/*.nupkg'
+        if-no-files-found: error
 
   build-and-test-macos:
     runs-on: macos-latest
@@ -83,4 +85,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: NuPkg-OSX
-        path: UltralightSharp/ImpromptuNinjas.UltralightSharp.*.nuget
+        path: '**/*.nupkg'
+        if-no-files-found: error
