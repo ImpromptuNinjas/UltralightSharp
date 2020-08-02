@@ -159,31 +159,20 @@ namespace ImpromptuNinjas.UltralightSharp {
       internal static extern unsafe sbyte* GetLastError();
 
       unsafe IntPtr INativeLibraryLoader.Load(string libraryPath) {
-        try {
-          if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-            Environment.SetEnvironmentVariable("DYLD_FALLBACK_LIBRARY_PATH", Path.GetDirectoryName(libraryPath));
-          }
+        var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+        if (lib != default)
+          return lib;
 
-          var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
-          if (lib != default)
-            return lib;
-
-          var err = GetLastError();
-          if (err == default)
-            return default;
+        var err = GetLastError();
+        if (err == default)
+          return default;
 
 #if NETSTANDARD1_4
-          var errStr = GetString(err);
+        var errStr = GetString(err);
 #else
         var errStr = new string(err);
 #endif
-          throw new InvalidOperationException(errStr);
-        }
-        finally {
-          if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-            Environment.SetEnvironmentVariable("DYLD_FALLBACK_LIBRARY_PATH", null);
-          }
-        }
+        throw new InvalidOperationException(errStr);
       }
 
       IntPtr INativeLibraryLoader.GetExport(IntPtr handle, string name)

@@ -14,6 +14,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [PublicAPI]
   public static partial class Native {
 
+    private static readonly Lazy<IntPtr> LazyLoadedLibUltralightCore
+      = new Lazy<IntPtr>(
+        () => LoadLib("UltralightCore"),
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
     private static readonly Lazy<IntPtr> LazyLoadedLibUltralight
       = new Lazy<IntPtr>(
         () => LoadLib("Ultralight"),
@@ -93,6 +98,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       return true;
     }
 
+    public static IntPtr LibUltralightCore => LazyLoadedLibUltralightCore.Value;
+
     public static IntPtr LibUltralight => LazyLoadedLibUltralight.Value;
 
     public static IntPtr LibAppCore => LazyLoadedLibAppCore.Value;
@@ -104,6 +111,9 @@ namespace ImpromptuNinjas.UltralightSharp {
         (name, assembly, path)
           => {
           switch (name) {
+            case "UltralightCore":
+              Debug.Assert(LibUltralightCore != default);
+              return LibUltralightCore;
             case "Ultralight":
               Debug.Assert(LibUltralight != default);
               return LibUltralight;
@@ -119,6 +129,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         });
 
     internal static void Init() {
+      Debug.Assert(LibUltralightCore != default);
       Debug.Assert(LibUltralight != default);
       Debug.Assert(LibAppCore != default);
       Debug.Assert(LibWebCore != default);
