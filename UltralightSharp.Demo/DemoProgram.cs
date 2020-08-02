@@ -15,9 +15,6 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
   public static partial class DemoProgram {
 
     public static unsafe void Main(string[] args) {
-      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        Native.Init();
-      
       // setup logging
       LoggerLogMessageCallback cb = LoggerCallback;
       Ultralight.PlatformSetLogger(new Logger {LogMessage = cb});

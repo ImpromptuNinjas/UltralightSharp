@@ -39,7 +39,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       Ultralight.ViewSetBeginLoadingCallback((View*) p, callback, userData);
     }
 
-    public static unsafe void SetChangeCursorCallback(in this View _, ChangeTooltipCallback callback, void* userData) {
+    public static unsafe void SetChangeCursorCallback(in this View _, ChangeCursorCallback callback, void* userData) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.ViewSetChangeCursorCallback((View*) p, callback, userData);
@@ -264,8 +264,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       internal readonly unsafe UltralightSharp.View* _;
 
-      public unsafe View(UltralightSharp.View* p)
-        => _ = p;
+      private readonly bool _refOnly;
+
+      public unsafe View(UltralightSharp.View* p, bool refOnly = true) {
+        _ = p;
+        _refOnly = refOnly;
+      }
 
       public unsafe View(UltralightSharp.Renderer* renderer, uint width, uint height, bool transparent, UltralightSharp.Session* session)
         => _ = UltralightSharp.View.Create(renderer, width, height, transparent, session);
@@ -279,47 +283,69 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe View(Renderer renderer, uint width, uint height, bool transparent, Session session)
         => _ = UltralightSharp.View.Create(renderer._, width, height, transparent, session._);
 
-      public unsafe void Dispose()
-        => _->Destroy();
+      public unsafe void Dispose() {
+        if (!_refOnly) _->Destroy();
+      }
 
       public unsafe void SetFinishLoadingCallback(FinishLoadingCallback callback, IntPtr userData)
-        => _->SetFinishLoadingCallback(callback, (void*) userData);
+        => _->SetFinishLoadingCallback((ud, caller, frameId, isMainFrame, url) => {
+          callback((IntPtr) ud, new View(caller), frameId, isMainFrame, url->Read());
+        }, (void*) userData);
 
       public unsafe void SetAddConsoleMessageCallback(AddConsoleMessageCallback callback, IntPtr userData)
-        => _->SetAddConsoleMessageCallback(callback, (void*) userData);
+        => _->SetAddConsoleMessageCallback((ud, caller, source, level, message, lineNumber, columnNumber, sourceId)
+            => callback((IntPtr) ud, new View(caller), source, level, message->Read(), lineNumber, columnNumber, sourceId->Read()),
+          (void*) userData);
 
       public unsafe void SetAddConsoleMessageCallback(BeginLoadingCallback callback, IntPtr userData)
-        => _->SetBeginLoadingCallback(callback, (void*) userData);
+        => _->SetBeginLoadingCallback((ud, caller, frameId, isMainFrame, url)
+            => callback((IntPtr) ud, new View(caller), frameId, isMainFrame, url->Read()),
+          (void*) userData);
 
-      public unsafe void SetChangeCursorCallback(ChangeTooltipCallback callback, IntPtr userData)
-        => _->SetChangeCursorCallback(callback, (void*) userData);
+      public unsafe void SetChangeCursorCallback(ChangeCursorCallback callback, IntPtr userData)
+        => _->SetChangeCursorCallback((ud, caller, cursor)
+            => callback((IntPtr) ud, new View(caller), cursor),
+          (void*) userData);
 
       public unsafe void SetChangeTitleCallback(ChangeTitleCallback callback, IntPtr userData)
-        => _->SetChangeTitleCallback(callback, (void*) userData);
+        => _->SetChangeTitleCallback((ud, caller, title)
+            => callback((IntPtr) ud, new View(caller), title->Read()),
+          (void*) userData);
 
       public unsafe void SetChangeTooltipCallback(ChangeTooltipCallback callback, IntPtr userData)
-        => _->SetChangeTooltipCallback(callback, (void*) userData);
+        => _->SetChangeTooltipCallback((ud, caller, tooltip)
+            => callback((IntPtr) ud, new View(caller), tooltip->Read()),
+          (void*) userData);
 
       public unsafe void SetChangeUrlCallback(ChangeUrlCallback callback, IntPtr userData)
-        => _->SetChangeUrlCallback(callback, (void*) userData);
+        => _->SetChangeUrlCallback((ud, caller, url)
+            => callback((IntPtr) ud, new View(caller), url->Read()),
+          (void*) userData);
 
       public unsafe void SetCreateChildViewCallback(CreateChildViewCallback callback, IntPtr userData)
-        => _->SetCreateChildViewCallback(callback, (void*) userData);
+        => _->SetCreateChildViewCallback((ud, caller, url, targetUrl, popup, rect)
+            => callback((IntPtr) ud, new View(caller), url->Read(), targetUrl->Read(), popup, rect)._,
+          (void*) userData);
 
       public unsafe void SetDomReadyCallback(DomReadyCallback callback, IntPtr userData)
-        => _->SetDomReadyCallback(callback, (void*) userData);
+        => _->SetDomReadyCallback((ud, caller, id, frame, url)
+            => callback((IntPtr) ud, new View(caller), id, frame, url->Read()),
+          (void*) userData);
 
       public unsafe void SetFailLoadingCallback(FailLoadingCallback callback, IntPtr userData)
-        => _->SetFailLoadingCallback(callback, (void*) userData);
+        => _->SetFailLoadingCallback((ud, caller, id, frame, url, description, domain, code)
+            => callback((IntPtr) ud, new View(caller), id, frame, url->Read(), description->Read(), domain->Read(), code),
+          (void*) userData);
 
       public unsafe void SetUpdateHistoryCallback(UpdateHistoryCallback callback, IntPtr userData)
-        => _->SetUpdateHistoryCallback(callback, (void*) userData);
+        => _->SetUpdateHistoryCallback((ud, caller)
+            => callback((IntPtr) ud, new View(caller)),
+          (void*) userData);
 
       public unsafe void SetWindowObjectReadyCallback(WindowObjectReadyCallback callback, IntPtr userData)
-        => _->SetWindowObjectReadyCallback(callback, (void*) userData);
-
-      public unsafe void LoadHtmlUnsafe(String* htmlString)
-        => _->LoadHtml(htmlString);
+        => _->SetWindowObjectReadyCallback((ud, caller, id, frame, url)
+            => callback((IntPtr) ud, new View(caller), id, frame, url->Read()),
+          (void*) userData);
 
       public unsafe void LoadHtml(string htmlString) {
         var s = String.Create(htmlString);
@@ -327,23 +353,16 @@ namespace ImpromptuNinjas.UltralightSharp {
         s->Destroy();
       }
 
-      public unsafe void LoadUrlUnsafe(String* url)
-        => _->LoadUrl(url);
-
       public unsafe void LoadUrl(string url) {
         var s = String.Create(url);
         _->LoadUrl(s);
         s->Destroy();
       }
 
-      public unsafe String* GetUrlUnsafe()
-        => _->GetUrl();
 
       public unsafe string? GetUrl()
         => _->GetUrl()->Read();
 
-      public unsafe String* GetTitleUnsafe()
-        => _->GetTitle();
 
       public unsafe string? GetTitle()
         => _->GetTitle()->Read();
@@ -354,17 +373,12 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe uint GetWidth()
         => _->GetWidth();
 
-      public unsafe UltralightSharp.Surface* GetSurfaceUnsafe()
-        => _->GetSurface();
-
       public unsafe Surface GetSurface()
         => new Surface(_->GetSurface());
 
       public unsafe RenderTarget GetRenderTarget()
         => _->GetRenderTarget();
 
-      public unsafe UltralightSharp.JsContext* LockJsContextUnsafe()
-        => _->LockJsContext();
 
       public unsafe JsContext LockJsContext()
         => new JsContext(_->LockJsContext());
@@ -387,9 +401,6 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe bool IsLoading()
         => _->IsLoading();
 
-      public unsafe String* EvaluateScriptUnsafe(String* jsString, String** exception)
-        => _->EvaluateScript(jsString, exception);
-
       public unsafe string? EvaluateScript(string jsString, out string? exception) {
         var s = String.Create(jsString);
         String* pExc;
@@ -398,20 +409,9 @@ namespace ImpromptuNinjas.UltralightSharp {
         return r->Read();
       }
 
-      public unsafe UltralightSharp.View* CreateInspectorUnsafe()
-        => _->CreateInspector();
-
       public unsafe View CreateInspector()
         => new View(_->CreateInspector());
 
-      public unsafe void FireKeyEventUnsafe(UltralightSharp.KeyEvent* keyEvent)
-        => _->FireKeyEvent(keyEvent);
-
-      public unsafe void FireMouseEventUnsafe(UltralightSharp.MouseEvent* mouseEvent)
-        => _->FireMouseEvent(mouseEvent);
-
-      public unsafe void FireScrollEventUnsafe(UltralightSharp.ScrollEvent* scrollEvent)
-        => _->FireScrollEvent(scrollEvent);
 
       public unsafe void FireKeyEvent(KeyEvent keyEvent)
         => _->FireKeyEvent(keyEvent._);

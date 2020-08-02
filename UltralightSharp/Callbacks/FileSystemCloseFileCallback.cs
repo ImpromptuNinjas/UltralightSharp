@@ -8,4 +8,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate void FileSystemCloseFileCallback([NativeTypeName("ULFileHandle")] UIntPtr handle);
 
+  namespace Safe {
+
+    [PublicAPI]
+    public delegate void FileSystemCloseFileCallback(UIntPtr handle);
+
+  }
+
 }

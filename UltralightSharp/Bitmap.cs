@@ -132,6 +132,9 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       internal readonly unsafe UltralightSharp.Bitmap* _;
 
+      internal unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap)
+        => _ = existingBitmap;
+
       public unsafe Bitmap()
         => _ = UltralightSharp.Bitmap.CreateEmpty();
 
@@ -150,12 +153,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe void Dispose()
         => _->Destroy();
 
-      public unsafe bool WritePng(sbyte* path)
-        => _->WritePng(path);
-
       public unsafe bool WritePng(string path) {
-        var bytes = Encoding.UTF8.GetBytes(path);
-        fixed (byte* pBytes = bytes)
+        fixed (byte* pBytes = Encoding.UTF8.GetBytes(path))
           return _->WritePng((sbyte*) pBytes);
       }
 
@@ -165,11 +164,11 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe uint GetBpp()
         => _->GetBpp();
 
-      public unsafe void* RawPixels()
-        => _->RawPixels();
+      public unsafe IntPtr RawPixels()
+        => (IntPtr) _->RawPixels();
 
-      public unsafe void* LockPixels()
-        => _->LockPixels();
+      public unsafe IntPtr LockPixels()
+        => (IntPtr) _->LockPixels();
 
       public unsafe void UnlockPixels()
         => _->UnlockPixels();
@@ -177,7 +176,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe void WithPixelsLocked(PixelBufferWorkerCallback callback) {
         var pixels = _->LockPixels();
         try {
-          callback(pixels);
+          callback((IntPtr) pixels);
         }
         finally {
           _->UnlockPixels();

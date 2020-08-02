@@ -44,11 +44,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       var export = Loader.GetExport(handle, name);
       if (export == default)
-#if !NETSTANDARD1_4
-        throw new EntryPointNotFoundException(name);
-#else
         throw new TypeLoadException($"Entry point not found: {name}");
-#endif
 
       return export;
     }
@@ -208,11 +204,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         if (err == default)
           return default;
 
-#if NETSTANDARD1_4
-        var errStr = GetString(err);
-#else
         var errStr = new string(err);
-#endif
         throw new InvalidOperationException(errStr);
       }
 

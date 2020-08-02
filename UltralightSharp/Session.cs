@@ -54,8 +54,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       internal readonly unsafe UltralightSharp.Session* _;
 
-      public unsafe Session(UltralightSharp.Session* p)
-        => _ = p;
+      private readonly bool _refOnly;
+
+      public unsafe Session(UltralightSharp.Session* p, bool refOnly = true) {
+        _ = p;
+        _refOnly = refOnly;
+      }
 
       public unsafe Session(UltralightSharp.Renderer* renderer, bool isPersistent, String* name)
         => _ = UltralightSharp.Session.Create(renderer, isPersistent, name);
@@ -75,20 +79,15 @@ namespace ImpromptuNinjas.UltralightSharp {
         str->Destroy();
       }
 
-      public unsafe void Dispose()
-        => _->Destroy();
+      public unsafe void Dispose() {
+        if (!_refOnly) _->Destroy();
+      }
 
       public unsafe ulong GetId()
         => _->GetId();
 
-      public unsafe String* GetNameUnsafe()
-        => _->GetName();
-
       public unsafe string? GetName()
         => _->GetName()->Read();
-
-      public unsafe String* GetDiskPathUnsafe()
-        => _->GetDiskPath();
 
       public unsafe string? GetDiskPath()
         => _->GetDiskPath()->Read();

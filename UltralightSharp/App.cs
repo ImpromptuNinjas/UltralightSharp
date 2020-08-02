@@ -1,3 +1,4 @@
+using System;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -60,6 +61,56 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.AppGetMainMonitor((App*) p);
+    }
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public sealed class App : IDisposable {
+
+      internal readonly unsafe UltralightSharp.App* _;
+
+      public unsafe App(UltralightSharp.App* p)
+        => _ = p;
+
+      public unsafe App(UltralightSharp.Settings* settings, UltralightSharp.Config* config)
+        => _ = UltralightSharp.App.Create(settings, config);
+
+      public unsafe App(Settings settings, UltralightSharp.Config* config)
+        => _ = UltralightSharp.App.Create(settings._, config);
+
+      public unsafe App(UltralightSharp.Settings* settings, Config config)
+        => _ = UltralightSharp.App.Create(settings, config._);
+
+      public unsafe App(Settings settings, Config config)
+        => _ = UltralightSharp.App.Create(settings._, config._);
+
+      public unsafe void Dispose()
+        => _->Destroy();
+
+      public unsafe void SetWindow(Window window)
+        => _->SetWindow(window._);
+
+      public unsafe Window GetWindow()
+        => new Window(_->GetWindow());
+
+      public unsafe bool IsRunning()
+        => _->IsRunning();
+
+      public unsafe void Quit()
+        => _->Quit();
+
+      public unsafe void Run()
+        => _->Run();
+
+      public unsafe Renderer GetRenderer()
+        => new Renderer(_->GetRenderer());
+
+      public unsafe Monitor GetMainMonitor()
+        => new Monitor(_->GetMainMonitor());
+
     }
 
   }

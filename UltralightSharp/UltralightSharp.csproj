@@ -5,7 +5,7 @@
         <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
         <IncludeSource>False</IncludeSource>
         <LangVersion>8</LangVersion>
-        <TargetFrameworks>net45;netstandard1.4;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
+        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
         <Nullable>enable</Nullable>
@@ -51,19 +51,6 @@
                 </When>
                 <When Condition="$(TargetFramework.EndsWith('2.0'))">
                     <ItemGroup>
-                        <PackageReference Include="System.Memory" Version="4.5.4" />
-                    </ItemGroup>
-                </When>
-                <When Condition="$(TargetFramework.EndsWith('1.4'))">
-                    <PropertyGroup>
-                        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-                    </PropertyGroup>
-                    <ItemGroup>
-                        <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
-                        <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-                        <PackageReference Include="System.Threading" Version="4.3.0" />
-                        <PackageReference Include="System.Collections" Version="4.3.0" />
-                        <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
                         <PackageReference Include="System.Memory" Version="4.5.4" />
                     </ItemGroup>
                 </When>
@@ -113,6 +100,9 @@
         <Compile Update="**\*.*.cs">
             <WouldDependOn>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '^(.*?)\..*$', '$1.cs'))</WouldDependOn>
             <DependentUpon Condition="'%(DependentUpon)' == '' And '%(WouldDependOn)' != '%(Filename)'">%(WouldDependOn)</DependentUpon>
+        </Compile>
+        <Compile Update="Utility\PtrWrapperMarshaller.cs">
+          <WouldDependOn>RefMarshaller</WouldDependOn>
         </Compile>
     </ItemGroup>
 

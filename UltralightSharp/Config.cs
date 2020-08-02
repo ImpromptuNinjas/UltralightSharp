@@ -186,8 +186,10 @@ namespace ImpromptuNinjas.UltralightSharp {
         _->SetAnimationTimerDelay(delay);
       }
 
-      public unsafe void SetCachePath(String* cachePath) {
-        _->SetCachePath(cachePath);
+      public unsafe void SetCachePath(string cachePath) {
+        var s = String.Create(cachePath);
+        _->SetCachePath(s);
+        s->Destroy();
       }
 
       public unsafe void SetDeviceScale(double value) {
@@ -206,20 +208,27 @@ namespace ImpromptuNinjas.UltralightSharp {
         _->SetFaceWinding(winding);
       }
 
-      public unsafe void SetFontFamilyFixed(String* fontName) {
-        _->SetFontFamilyFixed(fontName);
+      public unsafe void SetFontFamilyFixed(string fontName) {
+        var s = String.Create(fontName);
+        _->SetFontFamilyFixed(s);
       }
 
-      public unsafe void SetFontFamilySansSerif(String* fontName) {
-        _->SetFontFamilySansSerif(fontName);
+      public unsafe void SetFontFamilySansSerif(string fontName) {
+        var s = String.Create(fontName);
+        _->SetFontFamilySansSerif(s);
+        s->Destroy();
       }
 
-      public unsafe void SetFontFamilySerif(String* fontName) {
-        _->SetFontFamilySerif(fontName);
+      public unsafe void SetFontFamilySerif(string fontName) {
+        var s = String.Create(fontName);
+        _->SetFontFamilySerif(s);
+        s->Destroy();
       }
 
-      public unsafe void SetFontFamilyStandard(String* fontName) {
-        _->SetFontFamilyStandard(fontName);
+      public unsafe void SetFontFamilyStandard(string fontName) {
+        var s = String.Create(fontName);
+        _->SetFontFamilyStandard(s);
+        s->Destroy();
       }
 
       public unsafe void SetFontGamma(double fontGamma) {
@@ -258,8 +267,10 @@ namespace ImpromptuNinjas.UltralightSharp {
         _->SetRecycleDelay(delay);
       }
 
-      public unsafe void SetResourcePath(String* resourcePath) {
-        _->SetResourcePath(resourcePath);
+      public unsafe void SetResourcePath(string resourcePath) {
+        var s = String.Create(resourcePath);
+        _->SetResourcePath(s);
+        s->Destroy();
       }
 
       public unsafe void SetScrollTimerDelay(double delay) {
@@ -270,12 +281,16 @@ namespace ImpromptuNinjas.UltralightSharp {
         _->SetUseGpuRenderer(useGpu);
       }
 
-      public unsafe void SetUserAgent(String* agentString) {
-        _->SetUserAgent(agentString);
+      public unsafe void SetUserAgent(string agentString) {
+        var s = String.Create(agentString);
+        _->SetUserAgent(s);
+        s->Destroy();
       }
 
-      public unsafe void SetUserStylesheet(String* cssString) {
-        _->SetUserStylesheet(cssString);
+      public unsafe void SetUserStylesheet(string cssString) {
+        var s = String.Create(cssString);
+        _->SetUserStylesheet(s);
+        s->Destroy();
       }
 
     }

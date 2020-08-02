@@ -7,4 +7,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public unsafe delegate bool FileSystemFileExistsCallback([NativeTypeName("ULString")] String* path);
 
+  namespace Safe {
+
+    [PublicAPI]
+    public delegate bool FileSystemFileExistsCallback(string path);
+
+  }
+
 }

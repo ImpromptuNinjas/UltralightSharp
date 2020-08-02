@@ -8,7 +8,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   public readonly ref struct String {
 
     public static unsafe String* Create(string str) {
-#if NETFRAMEWORK || NETSTANDARD1_4 || NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD2_0
       fixed (char* p = str)
         return Ultralight.CreateStringUTF16(p, (UIntPtr) (uint) str.Length);
 #else
@@ -40,6 +40,9 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static unsafe string? Read(in this String _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
+      if (p == null)
+        return null;
+
       var chLen = Ultralight.StringGetLength((String*) p);
       var strLen = checked((int) chLen.ToUInt64());
 
@@ -47,7 +50,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         throw new NotImplementedException($"String length is {strLen}");
 
       if (strLen == 0)
-        return null;
+        return "";
 
       var pCh = Ultralight.StringGetData((String*) p);
       return new string(pCh, 0, strLen);

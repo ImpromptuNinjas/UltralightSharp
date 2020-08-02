@@ -279,7 +279,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     private static extern void ViewSetChangeCursorCallback([NativeTypeName("ULView")] View* view, [NativeTypeName("ULChangeCursorCallback")]
       /*FnPtr<ChangeCursorCallback>*/IntPtr callback, [NativeTypeName("void *")] void* userData);
 
-    public static void ViewSetChangeCursorCallback(View* view, FnPtr<ChangeTooltipCallback> callback, [NativeTypeName("void *")] void* userData)
+    public static void ViewSetChangeCursorCallback(View* view, FnPtr<ChangeCursorCallback> callback, [NativeTypeName("void *")] void* userData)
       => ViewSetChangeCursorCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetAddConsoleMessageCallback", ExactSpelling = true)]

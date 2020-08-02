@@ -88,8 +88,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       internal readonly unsafe UltralightSharp.Window* _;
 
-      public unsafe Window(UltralightSharp.Window* p)
-        => _ = p;
+      private readonly bool _refOnly;
+
+      public unsafe Window(UltralightSharp.Window* p, bool refOnly = true) {
+        _ = p;
+        _refOnly = refOnly;
+      }
 
       public unsafe Window(UltralightSharp.Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
         => _ = UltralightSharp.Window.Create(monitor, width, height, fullscreen, windowFlags);
@@ -97,8 +101,9 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe Window(Monitor monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
         => _ = UltralightSharp.Window.Create(monitor._, width, height, fullscreen, windowFlags);
 
-      public unsafe void Dispose()
-        => _->Destroy();
+      public unsafe void Dispose() {
+        if (!_refOnly) _->Destroy();
+      }
 
       public unsafe void Close()
         => _->Close();

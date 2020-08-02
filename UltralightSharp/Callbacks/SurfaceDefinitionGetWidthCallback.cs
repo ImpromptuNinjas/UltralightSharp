@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
@@ -7,5 +8,12 @@ namespace ImpromptuNinjas.UltralightSharp {
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   [return: NativeTypeName("unsigned int")]
   public unsafe delegate uint SurfaceDefinitionGetWidthCallback([NativeTypeName("void *")] void* userData);
+
+  namespace Safe {
+
+    [PublicAPI]
+    public unsafe delegate uint SurfaceDefinitionGetWidthCallback(IntPtr userData);
+
+  }
 
 }

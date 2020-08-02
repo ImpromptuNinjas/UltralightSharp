@@ -9,4 +9,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [return: NativeTypeName("size_t")]
   public unsafe delegate UIntPtr SurfaceDefinitionGetSizeCallback([NativeTypeName("void *")] void* userData);
 
+  namespace Safe {
+
+    [PublicAPI]
+    public delegate UIntPtr SurfaceDefinitionGetSizeCallback(IntPtr userData);
+
+  }
+
 }

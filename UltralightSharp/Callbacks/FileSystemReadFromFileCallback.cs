@@ -9,4 +9,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [return: NativeTypeName("long long")]
   public unsafe delegate long FileSystemReadFromFileCallback([NativeTypeName("ULFileHandle")] UIntPtr handle, [NativeTypeName("char *")] sbyte* data, [NativeTypeName("long long")] long length);
 
+  namespace Safe {
+
+    [PublicAPI]
+    public unsafe delegate long FileSystemReadFromFileCallback(UIntPtr handle, ReadOnlySpan<byte> data);
+
+  }
+
 }

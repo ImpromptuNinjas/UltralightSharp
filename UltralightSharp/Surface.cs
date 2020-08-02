@@ -108,14 +108,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe UIntPtr GetSize()
         => _->GetSize();
 
-      public unsafe void* GetUserDataUnsafe()
-        => _->GetUserData();
-
       public unsafe IntPtr GetUserData()
         => (IntPtr) _->GetUserData();
-
-      public unsafe void* LockPixelsUnsafe()
-        => _->LockPixels();
 
       public unsafe void UnlockPixels()
         => _->UnlockPixels();

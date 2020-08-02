@@ -35,8 +35,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       internal readonly unsafe UltralightSharp.Renderer* _;
 
-      public unsafe Renderer(UltralightSharp.Renderer* p)
-        => _ = p;
+      private readonly bool _refOnly;
+
+      public unsafe Renderer(UltralightSharp.Renderer* p, bool refOnly = true) {
+        _ = p;
+        _refOnly = refOnly;
+      }
 
       public unsafe Renderer(UltralightSharp.Config* config)
         => _ = UltralightSharp.Renderer.Create(config);
@@ -44,11 +48,9 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe Renderer(Config config)
         => _ = UltralightSharp.Renderer.Create(config._);
 
-      public unsafe void Dispose()
-        => _->Destroy();
-
-      public unsafe UltralightSharp.Session* GetDefaultSessionUnsafe()
-        => _->GetDefaultSession();
+      public unsafe void Dispose() {
+        if (!_refOnly) _->Destroy();
+      }
 
       public unsafe Session GetDefaultSession()
         => new Session(_->GetDefaultSession());

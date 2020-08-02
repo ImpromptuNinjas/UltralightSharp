@@ -102,12 +102,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       try {
         lib = NativeLibrary.Load(libPath);
       }
-#if !NETSTANDARD1_1 && !NETSTANDARD1_4
       catch (Exception ex) {
         Console.Error.WriteLine($"Library loading error: {libPath}\n{ex}");
-#else
-      catch {
-#endif
         lib = default;
         return false;
       }

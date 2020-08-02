@@ -132,9 +132,6 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe void Hide()
         => _->Hide();
 
-      public unsafe UltralightSharp.View* GetViewUnsafe()
-        => _->GetView();
-
       public unsafe View GetView()
         => new View(_->GetView());
 
