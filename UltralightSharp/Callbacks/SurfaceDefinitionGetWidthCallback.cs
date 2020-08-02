@@ -12,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public unsafe delegate uint SurfaceDefinitionGetWidthCallback(IntPtr userData);
+    public delegate uint SurfaceDefinitionGetWidthCallback(IntPtr userData);
 
   }
 

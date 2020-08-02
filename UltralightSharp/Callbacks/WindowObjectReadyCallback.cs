@@ -13,7 +13,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     public delegate void WindowObjectReadyCallback(IntPtr userData, View caller, ulong frameId, bool isMainFrame,
-      string url);
+      string? url);
 
   }
 
