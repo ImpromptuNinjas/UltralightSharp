@@ -8,7 +8,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   public readonly ref struct String {
 
     public static unsafe String* Create(string str) {
-#if NETFRAMEWORK || NETSTANDARD1_1 || NETSTANDARD1_4 || NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD1_4 || NETSTANDARD2_0
       fixed (char* p = str)
         return Ultralight.CreateStringUTF16(p, (UIntPtr) (uint) str.Length);
 #else

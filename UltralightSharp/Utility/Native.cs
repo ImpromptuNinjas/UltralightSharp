@@ -63,10 +63,6 @@ namespace ImpromptuNinjas.UltralightSharp {
       // ReSharper disable once InvertIf
       if (lib == default) {
         lib = NativeLibrary.Load(libPath);
-#if !NETSTANDARD1_1
-        if (lib == default && File.Exists(libPath))
-          throw new UnauthorizedAccessException(libPath);
-#endif
         if (lib == default)
 #if !NETFRAMEWORK
           throw new DllNotFoundException(libPath);

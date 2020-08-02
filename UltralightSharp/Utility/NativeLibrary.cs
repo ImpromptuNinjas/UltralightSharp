@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -27,13 +28,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       => Kernel32.Instance;
 #endif
 
-#if !NETSTANDARD1_1
     private static readonly ConditionalWeakTable<Assembly, LinkedList<DllImportResolver>> Resolvers
       = new ConditionalWeakTable<Assembly, LinkedList<DllImportResolver>>();
-#else
-    private static readonly Dictionary<Assembly, LinkedList<DllImportResolver>> Resolvers
-      = new Dictionary<Assembly, LinkedList<DllImportResolver>>();
-#endif
 
     public static void SetDllImportResolver(Assembly assembly, DllImportResolver resolver) {
       lock (Resolvers)
@@ -48,7 +44,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       var export = Loader.GetExport(handle, name);
       if (export == default)
-#if !NETSTANDARD1_4 && !NETSTANDARD1_1
+#if !NETSTANDARD1_4
         throw new EntryPointNotFoundException(name);
 #else
         throw new TypeLoadException($"Entry point not found: {name}");
@@ -75,11 +71,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
         var loaded = Load(libraryName);
         if (loaded == default)
-#if NETSTANDARD1_1
-          throw new Exception(libraryName);
-#else
           throw new InvalidProgramException(libraryName);
-#endif
 
         return loaded;
       }
@@ -91,11 +83,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       var loaded = Loader.Load(libraryPath);
       if (loaded == default)
-#if NETSTANDARD1_1
-        throw new InvalidOperationException(libraryPath);
-#else
         throw new InvalidProgramException(libraryPath);
-#endif
 
       return loaded;
     }
@@ -147,14 +135,10 @@ namespace ImpromptuNinjas.UltralightSharp {
       if (strLen == -1)
         throw new InvalidOperationException();
 
-#if NETSTANDARD1_1
       var errStrBytes = new byte[strLen];
       fixed (byte* pErrStrBytes = errStrBytes)
-        Unsafe.CopyBlockUnaligned(pErrStrBytes, err, (uint) strLen);
+        System.Runtime.CompilerServices.Unsafe.CopyBlockUnaligned(pErrStrBytes, err, (uint) strLen);
       var errStr = Encoding.UTF8.GetString(errStrBytes, 0, strLen);
-#else
-      var errStr = Encoding.UTF8.GetString((byte*) err, strLen);
-#endif
       return errStr;
     }
 
@@ -175,20 +159,31 @@ namespace ImpromptuNinjas.UltralightSharp {
       internal static extern unsafe sbyte* GetLastError();
 
       unsafe IntPtr INativeLibraryLoader.Load(string libraryPath) {
-        var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
-        if (lib != default)
-          return lib;
+        try {
+          if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+            Environment.SetEnvironmentVariable("DYLD_FALLBACK_LIBRARY_PATH", Path.GetDirectoryName(libraryPath));
+          }
 
-        var err = GetLastError();
-        if (err == default)
-          return default;
+          var lib = Load(libraryPath, 0x0002 /*RTLD_NOW*/);
+          if (lib != default)
+            return lib;
 
-#if NETSTANDARD1_4 || NETSTANDARD1_1
-        var errStr = GetString(err);
+          var err = GetLastError();
+          if (err == default)
+            return default;
+
+#if NETSTANDARD1_4
+          var errStr = GetString(err);
 #else
         var errStr = new string(err);
 #endif
-        throw new InvalidOperationException(errStr);
+          throw new InvalidOperationException(errStr);
+        }
+        finally {
+          if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+            Environment.SetEnvironmentVariable("DYLD_FALLBACK_LIBRARY_PATH", null);
+          }
+        }
       }
 
       IntPtr INativeLibraryLoader.GetExport(IntPtr handle, string name)
@@ -224,7 +219,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         if (err == default)
           return default;
 
-#if NETSTANDARD1_4 || NETSTANDARD1_1
+#if NETSTANDARD1_4
         var errStr = GetString(err);
 #else
         var errStr = new string(err);

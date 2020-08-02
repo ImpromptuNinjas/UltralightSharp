@@ -3,11 +3,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-using ImpromptuNinjas.UltralightSharp;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
+using ImpromptuNinjas.UltralightSharp;
 using String = ImpromptuNinjas.UltralightSharp.String;
 
 namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
@@ -21,15 +21,6 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         Ansi.WindowsConsole.TryEnableVirtualTerminalProcessing();
-
-      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        NativeLibrary.SetDllImportResolver(typeof(Ultralight).Assembly,
-          (name, assembly, path) => name switch {
-            "Ultralight" => NativeLibrary.Load("libUltralight.dylib"),
-            "AppCore" => NativeLibrary.Load("libAppCore.dylib"),
-            "WebCore" => NativeLibrary.Load("libWebCore.dylib"),
-            _ => default
-          });
 
       var asmPath = new Uri(typeof(DemoProgram).Assembly.CodeBase!).LocalPath;
       var asmDir = Path.GetDirectoryName(asmPath)!;

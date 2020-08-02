@@ -15,7 +15,7 @@
         </Unzip>
     </Target>
 
-    <PropertyGroup>
+    <PropertyGroup Condition="!$(ProjectTypeGuids.Contains('{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1}'))">
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile Condition=" '$(IsOfficial)' == 'True' ">$(SolutionDir)official.snk</AssemblyOriginatorKeyFile>
         <AssemblyOriginatorKeyFile Condition=" '$(IsOfficial)' != 'True' AND '$(IsOfficialCompatible)' != 'True' ">$(SolutionDir)unofficial.snk</AssemblyOriginatorKeyFile>
