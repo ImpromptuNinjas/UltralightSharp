@@ -13,6 +13,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public float Bottom;
 
+    public bool IsEmpty()
+      => Ultralight.RectIsEmpty(this);
+
+    public static Rect Create()
+      => Ultralight.RectMakeEmpty();
+
   }
 
 }

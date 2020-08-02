@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -7,6 +8,29 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [NativeTypeName("ULLoggerLogMessageCallback")]
     public FnPtr<LoggerLogMessageCallback> LogMessage;
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    public struct Logger {
+
+      internal UltralightSharp.Logger _;
+
+      public static implicit operator UltralightSharp.Logger(in Logger x)
+        => x._;
+
+      public unsafe LoggerLogMessageCallback LogMessage {
+        set {
+          UltralightSharp.LoggerLogMessageCallback cb = (level, message)
+            => value(level, message->Read());
+          _.LogMessage = cb;
+        }
+      }
+
+    }
 
   }
 

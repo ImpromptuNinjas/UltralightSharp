@@ -9,7 +9,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
 
   public static partial class DemoProgram {
 
-    private static unsafe void RenderAnsi24BitColor<TColor>(void* pixels, uint w, uint h, uint bpp) where TColor : unmanaged, IPixel<TColor> {
+    private static unsafe void RenderAnsi24BitColor<TColor>(IntPtr pixels, uint w, uint h, uint bpp) where TColor : unmanaged, IPixel<TColor> {
       //Console.WriteLine($"0x{(ulong) pixels} {w}x{h}x{bpp * 8}");
       if (bpp != 4) throw new NotImplementedException();
 

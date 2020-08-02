@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace ImpromptuNinjas.UltralightSharp {
+namespace UltralightSharp.Enums {
 
   [PublicAPI]
   public enum MouseButton {

@@ -12,6 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  [PublicAPI]
   public static class RendererExtensions {
 
     public static unsafe void Destroy(in this Renderer _) {
@@ -24,6 +25,30 @@ namespace ImpromptuNinjas.UltralightSharp {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.DefaultSession((Renderer*) p);
+    }
+
+    public static unsafe void Update(in this Renderer _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.Update((Renderer*) p);
+    }
+
+    public static unsafe void Render(in this Renderer _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.Render((Renderer*) p);
+    }
+
+    public static unsafe void PurgeMemory(in this Renderer _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.PurgeMemory((Renderer*) p);
+    }
+
+    public static unsafe void LogMemoryUsage(in this Renderer _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      Ultralight.LogMemoryUsage((Renderer*) p);
     }
 
   }
@@ -54,6 +79,18 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public unsafe Session GetDefaultSession()
         => new Session(_->GetDefaultSession());
+
+      public unsafe void Update()
+        => _->Update();
+
+      public unsafe void Render()
+        => _->Render();
+
+      public unsafe void PurgeMemory()
+        => _->PurgeMemory();
+
+      public unsafe void LogMemoryUsage()
+        => _->LogMemoryUsage();
 
     }
 

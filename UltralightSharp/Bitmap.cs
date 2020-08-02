@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using InlineIL;
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -128,12 +130,16 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class Bitmap : IDisposable {
+    public sealed class Bitmap : IDisposable, ICloneable {
 
       internal readonly unsafe UltralightSharp.Bitmap* _;
 
-      internal unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap)
-        => _ = existingBitmap;
+      private readonly bool _refOnly;
+
+      internal unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap, bool refOnly = true) {
+        _ = existingBitmap;
+        _refOnly = refOnly;
+      }
 
       public unsafe Bitmap()
         => _ = UltralightSharp.Bitmap.CreateEmpty();
@@ -141,17 +147,12 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe Bitmap(uint width, uint height, BitmapFormat format)
         => _ = UltralightSharp.Bitmap.Create(width, height, format);
 
-      public unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap, bool copy = true)
-        => _ = copy ? UltralightSharp.Bitmap.Copy(existingBitmap) : existingBitmap;
-
-      public unsafe Bitmap(Bitmap existingBitmap)
-        => _ = UltralightSharp.Bitmap.Copy(existingBitmap._);
-
       public unsafe Bitmap(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
         => _ = UltralightSharp.Bitmap.CreateFromPixels(width, height, format, rowBytes, pixels, size, shouldCopy);
 
-      public unsafe void Dispose()
-        => _->Destroy();
+      public unsafe void Dispose() {
+        if (!_refOnly) _->Destroy();
+      }
 
       public unsafe bool WritePng(string path) {
         fixed (byte* pBytes = Encoding.UTF8.GetBytes(path))
@@ -200,6 +201,12 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public unsafe void SwapRedBlueChannels()
         => _->SwapRedBlueChannels();
+
+      unsafe Bitmap Clone()
+        => new Bitmap(UltralightSharp.Bitmap.Copy(_));
+
+      object ICloneable.Clone()
+        => Clone();
 
     }
 

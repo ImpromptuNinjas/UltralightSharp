@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -10,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public delegate void LoggerLogMessageCallback(LogLevel logLevel, string message);
+    public delegate void LoggerLogMessageCallback(LogLevel logLevel, string? message);
 
   }
 

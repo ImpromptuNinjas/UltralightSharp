@@ -1,4 +1,6 @@
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 

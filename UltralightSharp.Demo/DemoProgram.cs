@@ -8,6 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using ImpromptuNinjas.UltralightSharp;
+using UltralightSharp.Enums;
 using String = ImpromptuNinjas.UltralightSharp.String;
 
 namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
@@ -19,8 +20,10 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
       LoggerLogMessageCallback cb = LoggerCallback;
       Ultralight.PlatformSetLogger(new Logger {LogMessage = cb});
 
-      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+        Console.OutputEncoding = Encoding.UTF8;
         Ansi.WindowsConsole.TryEnableVirtualTerminalProcessing();
+      }
 
       var asmPath = new Uri(typeof(DemoProgram).Assembly.CodeBase!).LocalPath;
       var asmDir = Path.GetDirectoryName(asmPath)!;
@@ -72,7 +75,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
 
       var loaded = false;
 
-      view->SetFinishLoadingCallback((data, caller, id, frame, url) => {
+      view->SetFinishLoadingCallback((data, caller, frameId, isMainFrame, url) => {
         Console.WriteLine($"Loading Finished, URL: 0x{(ulong) url:X8}  {url->Read()}");
 
         loaded = true;
@@ -106,8 +109,10 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
       }
 
       while (!loaded) {
-        Ultralight.Update(renderer);
-        Ultralight.Render(renderer);
+        //Ultralight.Update(renderer);
+        renderer->Update();
+        //Ultralight.Render(renderer);
+        renderer->Render();
       }
 
       {

@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 

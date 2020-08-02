@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public delegate bool FileSystemGetFileMimeTypeCallback(string path, string result);
+    public delegate bool FileSystemGetFileMimeTypeCallback(string? path, string? result);
 
   }
 

@@ -117,11 +117,8 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe void SetDirtyBounds(IntRect bounds)
         => _->SetDirtyBounds(bounds);
 
-      public unsafe UltralightSharp.Bitmap* GetBitmapUnsafe()
-        => _->GetBitmap();
-
       public unsafe Bitmap GetBitmap()
-        => new Bitmap(_->GetBitmap(), false);
+        => new Bitmap(_->GetBitmap());
 
     }
 

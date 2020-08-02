@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltralightSharp", "Ultralig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltralightSharp.Demo", "UltralightSharp.Demo\UltralightSharp.Demo.csproj", "{B02BAE78-39EE-457A-92EC-10AF4220154C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltralightSharp.SafeDemo", "UltralightSharp.SafeDemo\UltralightSharp.SafeDemo.csproj", "{34340938-DCF4-4F86-90B1-39BD877F7ED7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{B02BAE78-39EE-457A-92EC-10AF4220154C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B02BAE78-39EE-457A-92EC-10AF4220154C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B02BAE78-39EE-457A-92EC-10AF4220154C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

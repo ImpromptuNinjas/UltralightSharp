@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public delegate bool FileSystemFileExistsCallback(string path);
+    public delegate bool FileSystemFileExistsCallback(string? path);
 
   }
 

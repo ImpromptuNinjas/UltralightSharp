@@ -12,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public delegate UIntPtr FileSystemOpenFileCallback(string path, bool openForWriting);
+    public delegate UIntPtr FileSystemOpenFileCallback(string? path, bool openForWriting);
 
   }
 

@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -197,6 +199,29 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulEnableDefaultLogger", ExactSpelling = true)]
     public static extern void EnableDefaultLogger([NativeTypeName("ULString")] String* logPath);
+
+  }
+
+  namespace Safe {
+
+    public static unsafe class AppCore {
+
+      public static void EnablePlatformFontLoader()
+        => UltralightSharp.AppCore.EnablePlatformFontLoader();
+
+      public static void EnablePlatformFileSystem(string baseDir) {
+        var s = String.Create(baseDir);
+        UltralightSharp.AppCore.EnablePlatformFileSystem(s);
+        s->Destroy();
+      }
+
+      public static void EnableDefaultLogger(string logPath) {
+        var s = String.Create(logPath);
+        UltralightSharp.AppCore.EnableDefaultLogger(s);
+        s->Destroy();
+      }
+
+    }
 
   }
 

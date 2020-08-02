@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using UltralightSharp;
+using UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -549,6 +551,38 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetSurfaceDefinition", ExactSpelling = true)]
     public static extern void PlatformSetSurfaceDefinition(SurfaceDefinition surfaceDefinition);
+
+  }
+
+  namespace Safe {
+
+    [PublicAPI]
+    public static class Ultralight {
+
+      public static readonly UIntPtr InvalidFileHandle = (UIntPtr) (-1);
+
+      public static unsafe string VersionString()
+        => new string(UltralightSharp.Ultralight.VersionString());
+
+      public static uint VersionMajor()
+        => UltralightSharp.Ultralight.VersionMajor();
+
+      public static uint VersionMinor()
+        => UltralightSharp.Ultralight.VersionMinor();
+
+      public static uint VersionPatch()
+        => UltralightSharp.Ultralight.VersionPatch();
+
+      public static void PlatformSetLogger(Logger logger)
+        => UltralightSharp.Ultralight.PlatformSetLogger(logger._);
+
+      public static void PlatformSetFileSystem(FileSystem fileSystem)
+        => UltralightSharp.Ultralight.PlatformSetFileSystem(fileSystem);
+
+      public static void PlatformSetSurfaceDefinition(SurfaceDefinition surfaceDefinition)
+        => UltralightSharp.Ultralight.PlatformSetSurfaceDefinition(surfaceDefinition);
+
+    }
 
   }
 
