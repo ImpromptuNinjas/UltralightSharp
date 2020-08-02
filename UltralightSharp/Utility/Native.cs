@@ -34,6 +34,23 @@ namespace ImpromptuNinjas.UltralightSharp {
         () => LoadLib("WebCore"),
         LazyThreadSafetyMode.ExecutionAndPublication);
 
+    // these following 3 are only preloaded by osx, their file names differ per platform
+
+    private static readonly Lazy<IntPtr> LazyLoadedIcudata
+      = new Lazy<IntPtr>(
+        () => LoadLib("icudata"),
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
+    private static readonly Lazy<IntPtr> LazyLoadedIcuuc
+      = new Lazy<IntPtr>(
+        () => LoadLib("icuuc"),
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
+    private static readonly Lazy<IntPtr> LazyLoadedIcui18n
+      = new Lazy<IntPtr>(
+        () => LoadLib("icui18n"),
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
     private static unsafe IntPtr LoadLib(string libName) {
       var asm = typeof(Native).GetAssembly();
       var baseDir = asm.GetLocalCodeBaseDirectory();
@@ -106,6 +123,13 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public static IntPtr LibWebCore => LazyLoadedLibWebCore.Value;
 
+    // these following 3 are only preloaded by osx, their file names differ per platform
+    private static IntPtr LibIcudata => LazyLoadedIcudata.Value;
+
+    private static IntPtr LibIcuuc => LazyLoadedIcuuc.Value;
+
+    private static IntPtr LibIcui18n => LazyLoadedIcui18n.Value;
+
     static Native()
       => NativeLibrary.SetDllImportResolver(typeof(Native).GetAssembly(),
         (name, assembly, path)
@@ -123,6 +147,15 @@ namespace ImpromptuNinjas.UltralightSharp {
             case "WebCoreCore":
               Debug.Assert(LibWebCore != default);
               return LibWebCore;
+            case "icudata":
+              Debug.Assert(LibIcudata != default);
+              return LibIcudata;
+            case "icuuc":
+              Debug.Assert(LibIcuuc != default);
+              return LibIcuuc;
+            case "icui18n":
+              Debug.Assert(LibIcui18n != default);
+              return LibIcui18n;
             default:
               return default;
           }
@@ -130,8 +163,25 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public static void Init() {
 #if !NETFRAMEWORK
-      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && LibUltralightCore == default)
-        throw new PlatformNotSupportedException("Can't preload LibUltralightCore");
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+        // deal with osx dylib load path ordeal
+        if (LibUltralightCore == default)
+          throw new PlatformNotSupportedException("Can't preload LibUltralightCore");
+        
+        if (LibIcudata == default)
+          throw new PlatformNotSupportedException("Can't preload LibIcudata");
+        if (LibIcuuc == default)
+          throw new PlatformNotSupportedException("Can't preload LibIcuuc");
+        if (LibIcui18n == default)
+          throw new PlatformNotSupportedException("Can't preload LibIcui18n");
+        
+        if (LibWebCore == default)
+          throw new PlatformNotSupportedException("Can't preload LibWebCore");
+        if (LibUltralight == default)
+          throw new PlatformNotSupportedException("Can't preload LibUltralight");
+        if (LibAppCore == default)
+          throw new PlatformNotSupportedException("Can't preload LibAppCore");
+      }
 #endif
 
       Debug.Assert(LibUltralight != default);
