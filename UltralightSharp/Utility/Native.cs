@@ -128,7 +128,7 @@ namespace ImpromptuNinjas.UltralightSharp {
           }
         });
 
-    internal static void Init() {
+    public static void Init() {
 #if !NETFRAMEWORK
       if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && LibUltralightCore == default)
         throw new PlatformNotSupportedException("Can't preload LibUltralightCore");
