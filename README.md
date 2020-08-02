@@ -34,9 +34,9 @@ This project includes binary distributions of Ultralight SDK libraries.
 Examples
 --------
 
-See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.Demo) for a headless functional example.
+See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.Demo) and Safe [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.SafeDemo) for headless functional examples.
 
-![Demo Screenshot](https://raw.githubusercontent.com/ImpromptuNinjas/UltralightSharp/master/demo.png)
+![Demo Screenshot](https://cdn.discordapp.com/attachments/738836157923852368/739599229709844520/unknown.png)
 
 The demo can produce PNGs or a scaled down low resolution 24-bit ANSI image to the console.
 (ANSI image on Windows console seen above.)
