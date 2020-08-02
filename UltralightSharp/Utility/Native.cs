@@ -129,7 +129,11 @@ namespace ImpromptuNinjas.UltralightSharp {
         });
 
     internal static void Init() {
-      Debug.Assert(LibUltralightCore != default);
+#if !NETFRAMEWORK
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && LibUltralightCore == default)
+        throw new PlatformNotSupportedException("Can't preload LibUltralightCore");
+#endif
+
       Debug.Assert(LibUltralight != default);
       Debug.Assert(LibAppCore != default);
       Debug.Assert(LibWebCore != default);
