@@ -88,8 +88,23 @@ jobs:
         path: '**/*.nupkg'
         if-no-files-found: error
 
+  request-unity-2018-4-lts-alf:
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, '[unity alf]')"
+    steps:
+    - name: Request ALF
+      id: getManualLicenseFile
+      uses: webbertakken/unity-request-manual-activation-file@v1.1
+      with:
+        unityVersion: 2018.4.25f1
+    - name: Upload ALF as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{ steps.getManualLicenseFile.outputs.filePath }}
+
   unity-2018-4-lts-tests:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[unity alf]')"
     env:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
