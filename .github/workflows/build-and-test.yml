@@ -116,7 +116,7 @@ jobs:
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
-          args: -quit -executeMethod NugetForUnity.NugetHelper.Restore
+          args: -quit -executeMethod NugetForUnity.NugetHelper.Restore -nographics -noUpm
       - name: Run the Unity Test Runner
         uses: webbertakken/unity-test-runner@v1.4
         with:
