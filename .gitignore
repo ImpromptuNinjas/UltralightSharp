@@ -61,3 +61,5 @@ TestResult.xml
 /Client
 /official.snk
 /.nuget-push-key
+!.keep
+*.log
