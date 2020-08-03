@@ -134,6 +134,7 @@ jobs:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - run: git lfs pull || git lfs pull gitlab
+      - uses: satackey/action-docker-layer-caching@v0.0.4
       - name: "Unity: Restore NuGet Packages"
         uses: ImpromptuNinjas/unity-runner@master
         #timeout-minutes: 6
@@ -154,4 +155,4 @@ jobs:
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
-          args: -noUpm -runTests -testPlatform playmode -testResults ouput.xml
+          args: -noUpm -runTests -testPlatform playmode
