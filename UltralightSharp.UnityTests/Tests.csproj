@@ -293,6 +293,9 @@
     <Reference Include="NugetForUnity">
       <HintPath>C:/Users/Tyler/Documents/Projects/IN/UltralightSharp/UltralightSharp.UnityTests/Assets/NuGet/Editor/NugetForUnity.dll</HintPath>
     </Reference>
+    <Reference Include="ImpromptuNinjas.UltralightSharp">
+      <HintPath>C:/Users/Tyler/Documents/Projects/IN/UltralightSharp/UltralightSharp.UnityTests/Assets/Packages/ImpromptuNinjas.UltralightSharp.1.2.0-beta-r3/lib/netstandard2.0/ImpromptuNinjas.UltralightSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers">
       <HintPath>C:/Users/Tyler/Documents/Projects/IN/UltralightSharp/UltralightSharp.UnityTests/Assets/Packages/System.Buffers.4.5.1/lib/netstandard2.0/System.Buffers.dll</HintPath>
     </Reference>
@@ -307,9 +310,6 @@
     </Reference>
     <Reference Include="JetBrains.Rider.Unity.Editor.Plugin.Repacked">
       <HintPath>C:/Users/Tyler/Documents/Projects/IN/UltralightSharp/UltralightSharp.UnityTests/Assets/Plugins/Editor/JetBrains/JetBrains.Rider.Unity.Editor.Plugin.Repacked.dll</HintPath>
-    </Reference>
-    <Reference Include="ImpromptuNinjas.UltralightSharp">
-      <HintPath>C:/Users/Tyler/Documents/Projects/IN/UltralightSharp/UltralightSharp.UnityTests/Assets/Packages/ImpromptuNinjas.UltralightSharp.1.2.0-beta-r3/lib/netstandard2.0/ImpromptuNinjas.UltralightSharp.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.4.25f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

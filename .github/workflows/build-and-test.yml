@@ -133,11 +133,11 @@ jobs:
       - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
       - name: Unity - Command Runner
         uses: ImpromptuNinjas/unity-runner@master
-        timeout-minutes: 6
+        #timeout-minutes: 6
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
-          args: -quit -executeMethod NugetForUnity.NugetHelper.Restore -nographics -noUpm
+          args: -quit -nographics -noUpm -executeMethod ExecutableServices.RestoreNuGetPackages
       - name: Run the Unity Test Runner
         uses: webbertakken/unity-test-runner@v1.4
         with:
