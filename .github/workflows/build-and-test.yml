@@ -121,7 +121,7 @@ jobs:
 
   unity-2018-4-lts-tests:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[unity alf]')"
+    if: "!contains(github.event.head_commit.message, '[skip unity]')"
     env:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
@@ -134,14 +134,21 @@ jobs:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
       - run: git lfs pull || git lfs pull gitlab
-      - name: Unity - Command Runner
+      - name: "Unity: Restore NuGet Packages"
         uses: ImpromptuNinjas/unity-runner@master
         #timeout-minutes: 6
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
           args: -quit -nographics -noUpm -executeMethod ExecutableServices.RestoreNuGetPackages
-      - name: Run the Unity Test Runner
+      - name: "Unity: Probe Ultralight Library"
+        uses: ImpromptuNinjas/unity-runner@master
+        #timeout-minutes: 6
+        with:
+          projectPath: UltralightSharp.UnityTests
+          unityVersion: 2018.4.25f1
+          args: -quit -nographics -noUpm -executeMethod ExecutableServices.UltralightLibraryProbe
+      - name: "Unity: Test Runner"
         uses: webbertakken/unity-test-runner@v1.4
         with:
           testMode: playmode
