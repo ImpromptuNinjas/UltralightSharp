@@ -113,6 +113,7 @@ jobs:
           lfs: true
       - name: Unity - Command Runner
         uses: ImpromptuNinjas/unity-runner@master
+        timeout-minutes: 6
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
