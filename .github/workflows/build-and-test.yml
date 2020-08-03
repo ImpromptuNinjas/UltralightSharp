@@ -148,14 +148,10 @@ jobs:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
           args: -quit -nographics -noUpm -executeMethod ExecutableServices.UltralightLibraryProbe
-      - name: "Unity: Test Runner"
-        uses: webbertakken/unity-test-runner@v1.4
+      - name: "Unity: Run Tests"
+        uses: ImpromptuNinjas/unity-runner@master
+        #timeout-minutes: 6
         with:
-          testMode: playmode
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        with:
-          name: Test results
-          path: ${{ steps.myTestStep.outputs.artifactsPath }}
+          args: -noUpm -runTests -testPlatform playmode -testResults ouput.xml
