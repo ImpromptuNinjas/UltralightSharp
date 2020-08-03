@@ -13,13 +13,14 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - uses: actions/checkout@v2
+      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
       - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
       - uses: actions/cache@v2
         id: lfs-cache
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
+      - run: git lfs pull || git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -50,7 +51,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
+      - run: git lfs pull || git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -75,13 +76,14 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - uses: actions/checkout@v2
+      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
       - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
       - uses: actions/cache@v2
         id: lfs-cache
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
+      - run: git lfs pull || git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -124,13 +126,14 @@ jobs:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
       - uses: actions/checkout@v2
+      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
       - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
       - uses: actions/cache@v2
         id: lfs-cache
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
+      - run: git lfs pull || git lfs pull gitlab
       - name: Unity - Command Runner
         uses: ImpromptuNinjas/unity-runner@master
         #timeout-minutes: 6
