@@ -90,6 +90,8 @@ jobs:
 
   unity-2018-4-lts-tests:
     runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -102,8 +104,6 @@ jobs:
           args: -quit -executeMethod NugetForUnity.NugetHelper.Restore
       - name: Run the Unity Test Runner
         uses: webbertakken/unity-test-runner@v1.4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           testMode: playmode
           projectPath: UltralightSharp.UnityTests
