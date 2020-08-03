@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
 
 public static class ExecutableServices {
@@ -8,12 +9,17 @@ public static class ExecutableServices {
       //Environment.Exit(Environment.ExitCode);
       Application.Quit(Environment.ExitCode);
 
+    UnityEngine.Debug.LogFormat("Entering RestoreNuGetPackages");
+
     try {
       NugetForUnity.NugetHelper.Restore();
     }
-    catch {
+    catch (Exception ex) {
+      UnityEngine.Debug.LogFormat($"Error in RestoreNuGetPackages: {ex}");
       Environment.ExitCode = 1;
     }
+
+    UnityEngine.Debug.LogFormat("Exiting RestoreNuGetPackages");
 
     //Environment.Exit(Environment.ExitCode);
     Application.Quit(Environment.ExitCode);
