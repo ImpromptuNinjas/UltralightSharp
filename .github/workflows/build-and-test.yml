@@ -19,7 +19,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull
+      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -50,7 +50,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull
+      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -81,7 +81,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull
+      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -130,7 +130,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull
+      - run: git lfs pull || git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git && git lfs pull gitlab
       - name: Unity - Command Runner
         uses: ImpromptuNinjas/unity-runner@master
         timeout-minutes: 6
