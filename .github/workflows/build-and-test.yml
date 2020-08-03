@@ -97,7 +97,7 @@ jobs:
         with:
           lfs: true
       - name: Unity - Command Runner
-        uses: ImpromptuNinjas/unity-runner@v1.6-r3
+        uses: ImpromptuNinjas/unity-runner@v1.6-r4
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
