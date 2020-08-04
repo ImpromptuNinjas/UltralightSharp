@@ -15,7 +15,8 @@ A multi-platform .NET binding of the **Ultralight** project.
 * Apple OSX
   - 64-bit only
 
-Seems to work under Unity.
+Work under Unity, currently testing under 2018.4 LTS.
+Full support for all LTS versions and the latest version of Unity is planned.
 
 ### Known Issues:
 * Currently the native dependencies are shipped with this NuGet package for all platforms.
@@ -34,6 +35,8 @@ This project includes binary distributions of Ultralight SDK libraries.
 Examples
 --------
 
+## .NET Core Headless / Console Demo
+
 See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.Demo) and Safe [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/master/UltralightSharp.SafeDemo) for headless functional examples.
 
 ![Demo Screenshot](https://cdn.discordapp.com/attachments/738836157923852368/739599229709844520/unknown.png)
@@ -41,7 +44,15 @@ See the [DemoProgram](https://github.com/ImpromptuNinjas/UltralightSharp/tree/ma
 The demo can produce PNGs or a scaled down low resolution 24-bit ANSI image to the console.
 (ANSI image on Windows console seen above.)
 
+## Unity Demo (2018.4 LTS)
+
 ![Unity Demo](https://cdn.discordapp.com/attachments/738836157923852368/739376040970944572/unknown.png)
 ![Unity Tests](https://cdn.discordapp.com/attachments/738836157923852368/739376118435414096/unknown.png)
 
-A Unity demo test project will exist as a submodule to this repo. The CI will test against LTS branches of Unity.
+A Unity demo and test has been added to this repo.
+
+The CI will test against LTS branches of Unity.
+
+Currently only 2018.4 LTS is tested.
+
+It is forward compatible up to at least 2020.1, but may require some tweaking of dependency versions.
