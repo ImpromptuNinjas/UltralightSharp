@@ -23,9 +23,10 @@ namespace Tests {
       browser.Url = "file:///index.html";
 
       Assert.AreNotEqual("UltralightSharp Demo", browser.Title, "Browser should not be load immediately.");
-      yield return null;
 
-      Assert.IsFalse(browser.IsLoading, "Should not be loading.");
+      do yield return null;
+      while (browser.IsLoading);
+
       Assert.IsFalse(browser.Failed, "Should not fail to load.");
       Assert.IsTrue(browser.IsLoaded, "Should be loaded.");
       Assert.IsTrue(browser.IsDomReady, "DOM should be ready.");
