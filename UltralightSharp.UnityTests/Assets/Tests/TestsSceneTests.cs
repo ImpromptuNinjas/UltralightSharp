@@ -16,19 +16,19 @@ namespace Tests {
       yield return null;
 
       var browser = Object.FindObjectOfType<UltralightBrowserDemo>();
-      Assert.IsNotNull(browser);
+      Assert.IsNotNull(browser, "Browser should exist.");
 
-      Assert.AreNotEqual("UltralightSharp Demo", browser.Title);
+      Assert.AreNotEqual("UltralightSharp Demo", browser.Title, "Browser should not be pre-loaded.");
 
       browser.Url = "file:///index.html";
 
-      Assert.AreNotEqual("UltralightSharp Demo", browser.Title);
+      Assert.AreNotEqual("UltralightSharp Demo", browser.Title, "Browser should not be load immediately.");
       yield return null;
 
-      Assert.IsFalse(browser.IsLoading);
-      Assert.IsFalse(browser.Failed);
-      Assert.IsTrue(browser.IsLoaded);
-      Assert.IsTrue(browser.IsDomReady);
+      Assert.IsFalse(browser.IsLoading, "Should not be loading.");
+      Assert.IsFalse(browser.Failed, "Should not fail to load.");
+      Assert.IsTrue(browser.IsLoaded, "Should be loaded.");
+      Assert.IsTrue(browser.IsDomReady, "DOM should be ready.");
 
       Assert.AreEqual("UltralightSharp Demo", browser.Title);
     }
