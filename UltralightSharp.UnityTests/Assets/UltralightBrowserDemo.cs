@@ -37,6 +37,8 @@ public class UltralightBrowserDemo : MonoBehaviour {
   [NonSerialized]
   private bool _isLoaded;
 
+  private bool _willRender;
+
   public unsafe string Title => _ulView != null ? _ulView->GetTitle()->Read() : null;
 
   public unsafe bool IsLoading => _ulView != null && _ulView->IsLoading();
@@ -48,6 +50,8 @@ public class UltralightBrowserDemo : MonoBehaviour {
   public bool Failed => _failed;
 
   public bool IsLoaded => _isLoaded;
+
+  public bool WillRender => _willRender;
 
   public unsafe string Url {
     get => url;
@@ -197,7 +201,8 @@ public class UltralightBrowserDemo : MonoBehaviour {
     url = null;
   }
 
-  private unsafe void OnWillRenderObject() {
+  public unsafe void OnWillRenderObject() {
+    _willRender = true;
     if (_ulRenderer == null || _ulView == null || _texture == null)
       return;
 
@@ -213,6 +218,9 @@ public class UltralightBrowserDemo : MonoBehaviour {
     _texture.Apply();
     bitmap->UnlockPixels();
   }
+
+  private void OnPostRender()
+    => _willRender = false;
 
   static unsafe UltralightBrowserDemo() {
     // setup logging

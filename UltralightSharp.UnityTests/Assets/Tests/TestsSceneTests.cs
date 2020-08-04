@@ -26,8 +26,14 @@ namespace Tests {
 
       Assert.AreNotEqual("UltralightSharp Demo", browser.Title, "Browser should not be load immediately.");
 
-      do yield return null;
-      while (browser.IsLoading);
+      do {
+        yield return null;
+
+        if (!browser.WillRender)
+          browser.OnWillRenderObject();
+
+        Assert.IsTrue(browser.WillRender, "Should update and render.");
+      } while (browser.IsLoading);
 
       Assert.IsFalse(browser.Failed, "Should not fail to load.");
       Assert.IsTrue(browser.IsLoaded, "Should be loaded.");
