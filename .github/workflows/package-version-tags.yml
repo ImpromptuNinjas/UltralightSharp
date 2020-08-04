@@ -10,25 +10,30 @@ jobs:
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
     steps:
-    - uses: actions/checkout@v2
-      with:
-        lfs: true
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.300
-        source-url: https://nuget.pkg.github.com/space-wizards/index.json
-      env:
-        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - name: Install dependencies
-      run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
-    - name: Write Official Strong Name Key
-      run: echo ${{ secrets.OFFICIAL_SNK }} | base64 -d > official.snk
-      env:
-        OFFICIAL_SNK: ${{secrets.OFFICIAL_SNK}}
-    - name: Build Library
-      run: dotnet build -c Release -p:IsOfficial=true UltralightSharp/UltralightSharp.csproj
-    - name: Pack Library
-      run: dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp/UltralightSharp.csproj
-    - name: Push Nupkg
-      run: dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate *.nupkg
+      - uses: actions/checkout@v2
+      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
+      - run: git lfs pull || git lfs pull gitlab
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.300
+          source-url: https://nuget.pkg.github.com/space-wizards/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Install dependencies
+        run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
+      - name: Write Official Strong Name Key
+        run: echo ${{ secrets.OFFICIAL_SNK }} | base64 -d > official.snk
+        env:
+          OFFICIAL_SNK: ${{secrets.OFFICIAL_SNK}}
+      - name: Build Library
+        run: dotnet build -c Release -p:IsOfficial=true UltralightSharp/UltralightSharp.csproj
+      - name: Pack Library
+        run: dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp/UltralightSharp.csproj
+      - name: Push Nupkg
+        run: dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate *.nupkg
