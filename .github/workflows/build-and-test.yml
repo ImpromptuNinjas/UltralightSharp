@@ -148,7 +148,7 @@ jobs:
         with:
           projectPath: UltralightSharp.UnityTests
           unityVersion: 2018.4.25f1
-          args: -quit -nographics -noUpm -executeMethod ExecutableServices.UltralightLibraryProbe
+          args: -quit -noUpm -executeMethod ExecutableServices.UltralightLibraryProbe
       - name: "Unity: Run Tests"
         uses: ImpromptuNinjas/unity-runner@master
         #timeout-minutes: 6
