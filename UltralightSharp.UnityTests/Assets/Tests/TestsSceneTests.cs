@@ -1,15 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using Object = UnityEngine.Object;
 
 namespace Tests {
 
   public class TestsSceneTests {
 
     [UnityTest]
+    [Timeout(int.MaxValue)]
     public IEnumerator CheckUltralightBrowserDemo() {
       if (SceneManager.GetActiveScene().name != "TestsScene")
         SceneManager.LoadScene("TestsScene");
