@@ -5,8 +5,12 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  build-and-test-ubuntu:
-    runs-on: ubuntu-latest
+  build-and-test:
+    name: Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     env:
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -33,127 +37,6 @@ jobs:
         run: dotnet run -c Release --project UltralightSharp.Demo
       - uses: actions/upload-artifact@v2
         with:
-          name: NuPkg-Linux
+          name: NuGet Package(s)
           path: '**/*.nupkg'
           if-no-files-found: error
-
-  build-and-test-win64:
-    runs-on: windows-latest
-    env:
-      DOTNET_NOLOGO: 1
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - uses: actions/checkout@v2
-      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
-      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-      - uses: actions/cache@v2
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git lfs pull gitlab
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.300
-      - name: Install dependencies
-        run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
-      - name: Build
-        run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
-      - name: Run Demo
-        run: dotnet run -c Release --project UltralightSharp.Demo
-      - uses: actions/upload-artifact@v2
-        with:
-          name: NuPkg-Win64
-          path: '**/*.nupkg'
-          if-no-files-found: error
-
-  build-and-test-macos:
-    runs-on: macos-latest
-    env:
-      DOTNET_NOLOGO: 1
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - uses: actions/checkout@v2
-      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
-      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-      - uses: actions/cache@v2
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git lfs pull gitlab
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.300
-      - name: Install dependencies
-        run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
-      - name: Build
-        run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
-      - name: Run Demo
-        run: dotnet run -c Release --project UltralightSharp.Demo
-        env:
-          DYLD_PRINT_WARNINGS: 1
-          DYLD_PRINT_CS_NOTIFICATIONS: 1
-          DYLD_PRINT_INTERPOSING: 1
-          DYLD_PRINT_CODE_SIGNATURES: 1
-      - uses: actions/upload-artifact@v2
-        with:
-          name: NuPkg-OSX
-          path: '**/*.nupkg'
-          if-no-files-found: error
-
-  request-unity-2018-4-lts-alf:
-    runs-on: ubuntu-latest
-    if: "contains(github.event.head_commit.message, '[unity alf]')"
-    steps:
-      - name: Request ALF
-        id: getManualLicenseFile
-        uses: webbertakken/unity-request-manual-activation-file@v1.1
-        with:
-          unityVersion: 2018.4.25f1
-      - name: Upload ALF as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          path: ${{ steps.getManualLicenseFile.outputs.filePath }}
-
-  unity-2018-4-lts-tests:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip unity]')"
-    env:
-      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-    steps:
-      - uses: actions/checkout@v2
-      - run: git remote add gitlab https://gitlab.com/tyler-in/UltralightSharp.git
-      - run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-      - uses: actions/cache@v2
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull || git lfs pull gitlab
-      - uses: satackey/action-docker-layer-caching@v0.0.4
-      - name: "Unity: Restore NuGet Packages"
-        uses: ImpromptuNinjas/unity-runner@master
-        #timeout-minutes: 6
-        with:
-          projectPath: UltralightSharp.UnityTests
-          unityVersion: 2018.4.25f1
-          args: -quit -nographics -noUpm -executeMethod ExecutableServices.RestoreNuGetPackages
-      - name: "Unity: Probe Ultralight Library"
-        uses: ImpromptuNinjas/unity-runner@master
-        #timeout-minutes: 6
-        with:
-          projectPath: UltralightSharp.UnityTests
-          unityVersion: 2018.4.25f1
-          args: -quit -noUpm -executeMethod ExecutableServices.UltralightLibraryProbe
-      - name: "Unity: Run Tests"
-        uses: ImpromptuNinjas/unity-runner@master
-        #timeout-minutes: 6
-        with:
-          projectPath: UltralightSharp.UnityTests
-          unityVersion: 2018.4.25f1
-          args: -noUpm -runTests -testPlatform playmode
