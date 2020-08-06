@@ -84,7 +84,7 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-      - run: git lfs pull gitlab || git lfs pull
+      - run: git lfs pull || git lfs pull gitlab
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
