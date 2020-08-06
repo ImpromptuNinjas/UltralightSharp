@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -48,6 +49,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         => x._;
 
       public unsafe SurfaceDefinitionCreateCallback Create {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionCreateCallback cb
             = (width, height) => (void*) value(width, height);
@@ -56,6 +58,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionDestroyCallback Destroy {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionDestroyCallback cb
             = ud => value((IntPtr) ud);
@@ -64,6 +67,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionGetWidthCallback GetWidth {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionGetWidthCallback cb
             = ud => value((IntPtr) ud);
@@ -72,6 +76,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionGetHeightCallback GetHeight {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionGetHeightCallback cb
             = ud => value((IntPtr) ud);
@@ -80,6 +85,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionGetRowBytesCallback GetRowBytes {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionGetRowBytesCallback cb
             = ud => value((IntPtr) ud);
@@ -88,6 +94,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionGetSizeCallback GetSize {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionGetSizeCallback cb
             = ud => value((IntPtr) ud);
@@ -96,6 +103,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionLockPixelsCallback LockPixels {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionLockPixelsCallback cb
             = ud => (void*) value((IntPtr) ud);
@@ -104,6 +112,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionUnlockPixelsCallback UnlockPixels {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionUnlockPixelsCallback cb
             = ud => value((IntPtr) ud);
@@ -112,6 +121,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe SurfaceDefinitionResizeCallback Resize {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.SurfaceDefinitionResizeCallback cb
             = (ud, width, height) => value((IntPtr) ud, width, height);

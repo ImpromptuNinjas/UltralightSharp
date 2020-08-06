@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace UltralightSharp.Enums {
+namespace ImpromptuNinjas.UltralightSharp.Enums {
 
   [PublicAPI]
   public enum MessageLevel {

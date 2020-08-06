@@ -2,8 +2,7 @@ using System;
 using System.Text;
 using InlineIL;
 using JetBrains.Annotations;
-using UltralightSharp;
-using UltralightSharp.Enums;
+using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 

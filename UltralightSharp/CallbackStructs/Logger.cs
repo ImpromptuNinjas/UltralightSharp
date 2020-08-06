@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -23,6 +24,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         => x._;
 
       public unsafe LoggerLogMessageCallback LogMessage {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.LoggerLogMessageCallback cb = (level, message)
             => value(level, message->Read());

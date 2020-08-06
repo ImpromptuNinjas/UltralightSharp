@@ -23,11 +23,11 @@ namespace ImpromptuNinjas.UltralightSharp.Safe {
         return ft.IsPointer || ft == typeof(IntPtr) || ft == typeof(UIntPtr);
       });
 
-    public unsafe object MarshalNativeToManaged(IntPtr p)
+    public object MarshalNativeToManaged(IntPtr p)
       => CtorInfo.Invoke(new object[] {p});
 
     public IntPtr MarshalManagedToNative(object o)
-      => (IntPtr) FieldInfo.GetValue(o);
+      => (IntPtr) FieldInfo.GetValue(o)!;
 
     public void CleanUpNativeData(IntPtr p) {
       // ...

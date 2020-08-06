@@ -126,18 +126,6 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     }
 
-    private static unsafe string GetString(sbyte* err) {
-      var strLen = new ReadOnlySpan<sbyte>(err, 32768).IndexOf((sbyte) 0);
-      if (strLen == -1)
-        throw new InvalidOperationException();
-
-      var errStrBytes = new byte[strLen];
-      fixed (byte* pErrStrBytes = errStrBytes)
-        System.Runtime.CompilerServices.Unsafe.CopyBlockUnaligned(pErrStrBytes, err, (uint) strLen);
-      var errStr = Encoding.UTF8.GetString(errStrBytes, 0, strLen);
-      return errStr;
-    }
-
     private sealed class LibDl1 : INativeLibraryLoader {
 
       // ReSharper disable once MemberHidesStaticFromOuterClass
@@ -163,11 +151,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         if (err == default)
           return default;
 
-#if NETSTANDARD1_4
-        var errStr = GetString(err);
-#else
         var errStr = new string(err);
-#endif
         throw new InvalidOperationException(errStr);
       }
 

@@ -12,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public unsafe delegate void FailLoadingCallback(IntPtr userData, View caller, ulong frameId, bool isMainFrame,
+    public delegate void FailLoadingCallback(IntPtr userData, View caller, ulong frameId, bool isMainFrame,
       string? url, string? description, string? errorDomain, int errorCode);
 
   }

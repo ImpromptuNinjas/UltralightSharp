@@ -12,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public unsafe delegate long FileSystemReadFromFileCallback(UIntPtr handle, ReadOnlySpan<byte> data);
+    public delegate long FileSystemReadFromFileCallback(UIntPtr handle, ReadOnlySpan<byte> data);
 
   }
 

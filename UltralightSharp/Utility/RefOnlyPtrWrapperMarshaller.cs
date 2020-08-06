@@ -8,7 +8,7 @@ namespace ImpromptuNinjas.UltralightSharp.Safe {
       => CtorInfo.Invoke(new object[] {p, true});
 
     public override IntPtr MarshalManagedToNative(object o)
-      => (IntPtr) FieldInfo.GetValue(o);
+      => (IntPtr) FieldInfo.GetValue(o)!;
 
     public override void CleanUpNativeData(IntPtr p) {
       // ...

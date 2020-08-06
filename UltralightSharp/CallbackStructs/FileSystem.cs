@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -39,6 +40,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         => x._;
 
       public unsafe FileSystemFileExistsCallback FileExists {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemFileExistsCallback cb
             = path => value(path->Read());
@@ -47,6 +49,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe FileSystemGetFileSizeCallback GetFileSize {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemGetFileSizeCallback cb
             = (handle, result) => {
@@ -59,6 +62,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe FileSystemGetFileMimeTypeCallback GetFileMimeType {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemGetFileMimeTypeCallback cb
             = (path, result) => value(path->Read(), result->Read());
@@ -67,6 +71,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe FileSystemOpenFileCallback OpenFile {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemOpenFileCallback cb
             = (path, openForWriting) => value(path->Read(), openForWriting);
@@ -74,7 +79,8 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
-      public unsafe FileSystemCloseFileCallback CloseFile {
+      public FileSystemCloseFileCallback CloseFile {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemCloseFileCallback cb
             = handle => value(handle);
@@ -83,6 +89,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
 
       public unsafe FileSystemReadFromFileCallback ReadFromFile {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.FileSystemReadFromFileCallback cb
             = (handle, data, length) => value(handle, new ReadOnlySpan<byte>(data, (int) length));

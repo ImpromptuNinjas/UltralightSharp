@@ -1,8 +1,8 @@
 using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using UltralightSharp;
-using UltralightSharp.Enums;
+using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -552,6 +552,14 @@ namespace ImpromptuNinjas.UltralightSharp {
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetSurfaceDefinition", ExactSpelling = true)]
     public static extern void PlatformSetSurfaceDefinition(SurfaceDefinition surfaceDefinition);
 
+    [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulApplyProjection", ExactSpelling = true)]
+    public static extern Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, byte flipY);
+
+    [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetGPUDriver", ExactSpelling = true)]
+    public static extern void PlatformSetGPUDriver(GpuDriver gpuDriver);
+
+    [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetClipboard", ExactSpelling = true)]
+    public static extern void PlatformSetClipboard(Clipboard clipboard);
   }
 
   namespace Safe {

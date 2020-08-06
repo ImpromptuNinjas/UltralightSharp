@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -13,9 +14,11 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public float Bottom;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty()
       => Ultralight.RectIsEmpty(this);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Rect Create()
       => Ultralight.RectMakeEmpty();
 

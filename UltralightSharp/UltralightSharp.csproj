@@ -39,6 +39,7 @@
         <When Condition="'$(TargetFramework)'=='net45'">
             <ItemGroup>
                 <PackageReference Include="System.Memory" Version="4.5.4" />
+                <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
                 <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
             </ItemGroup>
         </When>
@@ -86,6 +87,12 @@
             <PackageCopyToOutput>True</PackageCopyToOutput>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
+        <Content Include="Ultralight*.txt">
+            <Pack>True</Pack>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
             <PackageCopyToOutput>True</PackageCopyToOutput>
@@ -103,6 +110,126 @@
         </Compile>
         <Compile Update="Utility\PtrWrapperMarshaller.cs">
           <WouldDependOn>RefMarshaller</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\VertexBufferFormat.cs">
+          <WouldDependOn>VertexBufferFormat</WouldDependOn>
+        </Compile>
+        <Compile Update="Structs\VertexBuffer.cs">
+          <WouldDependOn>VertexBuffer</WouldDependOn>
+        </Compile>
+        <Compile Update="Structs\Vertex2F4Ub2F2F28F.cs">
+          <WouldDependOn>Vertex2F4Ub2F2F28F</WouldDependOn>
+        </Compile>
+        <Compile Update="Structs\Vertex2F4Ub2F.cs">
+          <WouldDependOn>Vertex2F4Ub2F</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ClipboardClearCallback.cs">
+          <WouldDependOn>ClipboardClearCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ClipboardReadPlainTextCallback.cs">
+          <WouldDependOn>ClipboardReadPlainTextCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ClipboardWritePlainTextCallback.cs">
+          <WouldDependOn>ClipboardWritePlainTextCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\ClipMatrices.cs">
+          <WouldDependOn>ClipMatrices</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\Command.cs">
+          <WouldDependOn>Command</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\CommandList.cs">
+          <WouldDependOn>CommandList</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\CommandType.cs">
+          <WouldDependOn>CommandType</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\DataVectors.cs">
+          <WouldDependOn>DataVectors</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\Clipboard.cs">
+          <WouldDependOn>Clipboard</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\FileSystem.cs">
+          <WouldDependOn>FileSystem</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\GpuDriver.cs">
+          <WouldDependOn>GpuDriver</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\Logger.cs">
+          <WouldDependOn>Logger</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\SurfaceDefinition.cs">
+          <WouldDependOn>SurfaceDefinition</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\GpuState.cs">
+          <WouldDependOn>GpuState</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\ShaderType.cs">
+          <WouldDependOn>ShaderType</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\IndexBuffer.cs">
+          <WouldDependOn>IndexBuffer</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\RenderBuffer.cs">
+          <WouldDependOn>NewStuff</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\UniformScalars.cs">
+          <WouldDependOn>UniformScalars</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\UniformVectors.cs">
+          <WouldDependOn>UniformVectors</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverBeginSynchronizeCallback.cs">
+          <WouldDependOn>GpuDriverBeginSynchronizeCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverCreateGeometryCallback.cs">
+          <WouldDependOn>GpuDriverCreateGeometryCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverCreateRenderBufferCallback.cs">
+          <WouldDependOn>GpuDriverCreateRenderBufferCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverCreateTextureCallback.cs">
+          <WouldDependOn>GpuDriverCreateTextureCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverDestroyGeometryCallback.cs">
+          <WouldDependOn>GpuDriverDestroyGeometryCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverDestroyRenderBufferCallback.cs">
+          <WouldDependOn>GpuDriverDestroyRenderBufferCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverDestroyTextureCallback.cs">
+          <WouldDependOn>GpuDriverDestroyTextureCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverEndSynchronizeCallback.cs">
+          <WouldDependOn>GpuDriverEndSynchronizeCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverNextGeometryIdCallback.cs">
+          <WouldDependOn>GpuDriverNextGeometryIdCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverNextRenderBufferIdCallback.cs">
+          <WouldDependOn>GpuDriverNextRenderBufferIdCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverNextTextureIdCallback.cs">
+          <WouldDependOn>GpuDriverNextTextureIdCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverUpdateCommandListCallback.cs">
+          <WouldDependOn>GpuDriverUpdateCommandListCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverUpdateGeometryCallback.cs">
+          <WouldDependOn>GpuDriverUpdateGeometryCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\GpuDriverUpdateTextureCallback.cs">
+          <WouldDependOn>GpuDriverUpdateTextureCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\Safe\SafeBuffer.cs">
+          <WouldDependOn>SafeBuffer</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\Safe\SafeVertexBuffer.cs">
+          <WouldDependOn>SafeVertexBuffer</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\SafeOnly\VertexBufferExtensions.cs">
+          <WouldDependOn>VertexBufferExtensions</WouldDependOn>
         </Compile>
     </ItemGroup>
 

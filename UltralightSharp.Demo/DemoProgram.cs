@@ -8,7 +8,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using ImpromptuNinjas.UltralightSharp;
-using UltralightSharp.Enums;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using String = ImpromptuNinjas.UltralightSharp.String;
 
 namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
