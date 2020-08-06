@@ -1,0 +1,8 @@
+[lfs]
+	url = http://gitlab.com/tyler-in/UltralightSharp.git
+[remote "origin"]
+	lfsurl = https://gitlab.com/tyler-in/UltralightSharp.git
+[remote "github"]
+	lfsurl = https://gitlab.com/tyler-in/UltralightSharp.git
+[remote]
+	lfsurl = https://gitlab.com/tyler-in/UltralightSharp.git
