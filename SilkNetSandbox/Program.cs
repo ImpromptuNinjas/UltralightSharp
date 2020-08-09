@@ -243,7 +243,7 @@ partial class Program {
           LabelObject(ObjectIdentifier.Framebuffer, fb, $"Ultralight RenderBuffer {id}");
           CheckGl();
 
-          var texIndex = (int) buffer.TextureId;
+          var texIndex = (int) buffer.TextureId - 1;
           var texEntry = TextureEntries[texIndex];
           var tex = texEntry.Texure;
           _gl.BindTexture(TextureTarget.Texture2D, tex);
@@ -284,21 +284,22 @@ partial class Program {
           entry.Height = texHeight;
           Console.WriteLine($"CreateTexture: {id} {texWidth}x{texHeight}");
 
+          var tex = _gl.GenTexture();
+          entry.Texure = tex;
+          _gl.ActiveTexture(TextureUnit.Texture0);
+          _gl.BindTexture(TextureTarget.Texture2D, tex);
+          
+          var linear = (int) GLEnum.Linear;
+          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
+          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
+          CheckGl();
+
+          var clampToEdge = (int) GLEnum.ClampToEdge;
+          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
+          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
+          CheckGl();
+          
           if (bitmap.IsEmpty()) {
-            var linear = (int) GLEnum.Linear;
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
-            CheckGl();
-
-            var clampToEdge = (int) GLEnum.ClampToEdge;
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
-            CheckGl();
-
-            var tex = _gl.GenTexture();
-            entry.Texure = tex;
-            _gl.ActiveTexture(TextureUnit.Texture0);
-            _gl.BindTexture(TextureTarget.Texture2D, tex);
             LabelObject(ObjectIdentifier.Texture, tex, $"Ultralight Texture {id} (RT)");
             CheckGl();
 
@@ -312,20 +313,6 @@ partial class Program {
             CheckGl();
           }
           else {
-            var linear = (int) GLEnum.Linear;
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
-            CheckGl();
-
-            var clampToEdge = (int) GLEnum.ClampToEdge;
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
-            _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
-            CheckGl();
-
-            var tex = _gl.GenTexture();
-            entry.Texure = tex;
-            _gl.ActiveTexture(TextureUnit.Texture0);
-            _gl.BindTexture(TextureTarget.Texture2D, tex);
             LabelObject(ObjectIdentifier.Texture, tex, $"Ultralight Texture {id}");
             CheckGl();
 
@@ -348,8 +335,8 @@ partial class Program {
               case BitmapFormat.Bgra8UNormSrgb: {
                 _gl.TexImage2D(TextureTarget.Texture2D, 0,
                   (int) InternalFormat.Srgb8Alpha8, texWidth, texHeight, 0,
-                  PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-                Utilities.RenderAnsi<Bgra32>(pixels, texWidth, texHeight, 1, 20);
+                  PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
+                Utilities.RenderAnsi<Rgba32>(pixels, texWidth, texHeight, 1, 20);
                 break;
               }
               default: throw new ArgumentOutOfRangeException(nameof(BitmapFormat));
@@ -395,7 +382,7 @@ partial class Program {
             case BitmapFormat.Bgra8UNormSrgb: {
               _gl.TexImage2D(TextureTarget.Texture2D, 0,
                 (int) InternalFormat.Srgb8Alpha8, texWidth, texHeight, 0,
-                PixelFormat.Bgra, PixelType.UnsignedByte, (void*) pixels);
+                PixelFormat.Rgba, PixelType.UnsignedByte, (void*) pixels);
               break;
             }
             default: throw new ArgumentOutOfRangeException(nameof(BitmapFormat));

@@ -21,8 +21,8 @@ partial class Program {
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
       _gl.Viewport(0, 0, wndWidth, wndHeight);
-      //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, rb);
-      //_gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
+      _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+      _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
       _gl.ClearColor(0.5f, 0.5f, 0.5f, 0);
       _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
@@ -50,9 +50,17 @@ partial class Program {
             Console.WriteLine("Clearing Render Buffer");
             var index = (int) command.GpuState.RenderBufferId - 1;
             var rb = RenderBufferEntries[index];
+
+            // bind render buffer
             _gl.BindFramebuffer(FramebufferTarget.Framebuffer, rb.FrameBuffer);
+
+            // disable scissor state
             _gl.Disable(GLEnum.ScissorTest);
+
+            // set clear color
             _gl.ClearColor(0, 0, 0, 0);
+
+            // clear
             _gl.Clear((uint) GLEnum.ColorBufferBit);
             break;
           }
@@ -64,7 +72,7 @@ partial class Program {
 
             // bind render buffer
             _gl.BindFramebuffer(FramebufferTarget.Framebuffer, rb.FrameBuffer);
-            
+
             // set viewport
             _gl.Viewport(0, 0, state.ViewportWidth, state.ViewportHeight);
             var entry = GeometryEntries[(int) command.GeometryId - 1];
@@ -139,8 +147,11 @@ partial class Program {
               _gl.BindTexture(GLEnum.Texture2D, texEntry1.Texure);
               CheckGl();
             }
-            else
+            else {
               Console.WriteLine($"Texture1 Invalid: {texIndex1 + 1}");
+              _gl.ActiveTexture(TextureUnit.Texture0);
+              _gl.BindTexture(GLEnum.Texture2D, 0);
+            }
 
             var texIndex2 = (int) state.Texture2Id - 1;
             if (texIndex2 > 0) {
@@ -149,8 +160,11 @@ partial class Program {
               _gl.BindTexture(GLEnum.Texture2D, texEntry2.Texure);
               CheckGl();
             }
-            else
+            else {
               Console.WriteLine($"Texture2 Invalid: {texIndex2 + 1}");
+              _gl.ActiveTexture(TextureUnit.Texture1);
+              _gl.BindTexture(GLEnum.Texture2D, 0);
+            }
 
             var texIndex3 = (int) state.Texture3Id - 1;
             if (texIndex3 > 0) {
@@ -159,8 +173,11 @@ partial class Program {
               _gl.BindTexture(GLEnum.Texture2D, texEntry3.Texure);
               CheckGl();
             }
-            else
+            else {
               Console.WriteLine($"Texture3 Invalid: {texIndex3 + 1}");
+              _gl.ActiveTexture(TextureUnit.Texture2);
+              _gl.BindTexture(GLEnum.Texture2D, 0);
+            }
 
             // scissor state
             if (state.EnableScissor) {
@@ -190,7 +207,7 @@ partial class Program {
               command.IndicesCount, DrawElementsType.UnsignedInt,
               (void*) (command.IndicesOffset * sizeof(uint)));
             CheckGl();
-            
+
             // reset vertex array
             _gl.BindVertexArray(0);
 
@@ -207,8 +224,8 @@ partial class Program {
       var wndHeight = (uint) wndSize.Height;
 
       var rbEntry = RenderBufferEntries[0];
-      //var rb = rbEntry.Framebuffer;
-      var texEntry = rbEntry.TextureEntry;
+      //var rb = rbEntry.FrameBuffer;
+      var texEntry = TextureEntries[0]; //rbEntry.TextureEntry;
       var tex = texEntry.Texure;
 
       _gl.Disable(EnableCap.FramebufferSrgb);

@@ -37,6 +37,6 @@ jobs:
         run: dotnet run -c Release --project UltralightSharp.Demo
       - uses: actions/upload-artifact@v2
         with:
-          name: NuGet Package(s)
+          name: NuGet Package(s) built by ${{ matrix.os }}
           path: '**/*.nupkg'
           if-no-files-found: error

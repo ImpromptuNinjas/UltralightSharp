@@ -165,5 +165,4 @@ void applyClip() {
 void main(void) {
   out_Color = ex_Color;
   applyClip();
-  out_Color = vec4(0,0,1,1);
 }

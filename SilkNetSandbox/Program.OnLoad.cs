@@ -13,6 +13,23 @@ partial class Program {
 
     EnableDebugExtension();
 
+    _gl.Disable(EnableCap.Dither);
+    CheckGl();
+    //_gl.Disable(EnableCap.PointSmooth);
+    //CheckGl();
+    //_gl.Disable(EnableCap.LineSmooth);
+    //CheckGl();
+    //_gl.Disable(EnableCap.PolygonSmooth);
+    //CheckGl();
+    //_gl.Hint(HintTarget.PointSmoothHint, HintMode.DontCare);
+    //CheckGl();
+    //_gl.Hint(HintTarget.LineSmoothHint, HintMode.DontCare);
+    //CheckGl();
+    //_gl.Hint(HintTarget.PolygonSmoothHint, HintMode.DontCare);
+    //CheckGl();
+    _gl.Disable(EnableCap.Multisample);
+    CheckGl();
+
     //Vertex data, uploaded to the VBO.
     ReadOnlySpan<float> vertices = stackalloc float[] {
       //X    Y      Z
@@ -321,7 +338,7 @@ partial class Program {
     var input = _wnd.CreateInput();
     foreach (var kb in input.Keyboards)
       kb.KeyDown += KeyDown;
-
+    
     Console.WriteLine("Loading index.html");
     _view.LoadUrl("file:///index.html");
   }
