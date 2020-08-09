@@ -5,7 +5,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("ULRenderBuffer")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct RenderBuffer {
 
     [NativeTypeName("unsigned int")]
@@ -17,9 +17,9 @@ namespace ImpromptuNinjas.UltralightSharp {
     [NativeTypeName("unsigned int")]
     public uint Height;
 
-    public bool HasStencilBuffer;
+    public OneByteBoolean HasStencilBuffer;
 
-    public bool HasDepthBuffer;
+    public OneByteBoolean HasDepthBuffer;
 
   }
 

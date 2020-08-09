@@ -8,7 +8,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("ULVertex_2f_4ub_2f_2f_28f")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct Vertex2F4Ub2F2F28F {
 
     [NativeTypeName("float [2]")]
@@ -33,53 +33,64 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Vertex2F4Ub2F2F28F : SafeVertexBuffer {
 
-      public override unsafe IntPtr Pointer => (IntPtr) Unsafe.AsPointer(ref _);
+      internal override bool Owned { get; }
 
-      private UltralightSharp.Vertex2F4Ub2F2F28F _;
+      internal override unsafe void Free() {
+        if (!Owned) return;
+
+        Marshal.FreeHGlobal((IntPtr) _ptr);
+      }
+
+      private Vertex2F4Ub2F2F28F(bool owned) => Owned = owned;
+
+      public unsafe Vertex2F4Ub2F2F28F() : this(true) {
+        var size = sizeof(UltralightSharp.Vertex2F4Ub2F2F28F);
+        _ptr = (UltralightSharp.Vertex2F4Ub2F2F28F*)
+          Marshal.AllocHGlobal(size);
+        Unsafe.InitBlockUnaligned(_ptr, 0, (uint) size);
+      }
+
+      private unsafe UltralightSharp.Vertex2F4Ub2F2F28F* _ptr;
+
+      private unsafe ref UltralightSharp.Vertex2F4Ub2F2F28F Ref {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ref Unsafe.AsRef<UltralightSharp.Vertex2F4Ub2F2F28F>(_ptr);
+      }
 
       public ref Vector2 Pos {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Pos;
-        }
+        get => ref Ref.Pos;
       }
 
       public ref uint Color {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Color;
-        }
+        get => ref Ref.Color;
       }
 
       public ref Vector2 Tex {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Tex;
-        }
+        get => ref Ref.Tex;
       }
 
       public ref Vector2 Obj {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Obj;
-        }
+        get => ref Ref.Obj;
       }
 
       public Span<Vector4> Data {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return _.Data;
-        }
+        get => Ref.Data;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set {
-          ThrowIfDisposed();
-          _.Data = MemoryMarshal.Cast<Vector4, DataVectors>(value)[0];
-        }
+        set => Ref.Data = MemoryMarshal.Cast<Vector4, DataVectors>(value)[0];
+      }
+
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public static unsafe Vertex2F4Ub2F2F28F FromUnsafe(void* p)
+        => new Vertex2F4Ub2F2F28F(false) {_ptr = (UltralightSharp.Vertex2F4Ub2F2F28F*) p};
+
+      public override unsafe void* Pointer {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _ptr;
       }
 
     }

@@ -18,7 +18,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
     public static unsafe void Main(string[] args) {
       // setup logging
       LoggerLogMessageCallback cb = LoggerCallback;
-      Ultralight.PlatformSetLogger(new Logger {LogMessage = cb});
+      Ultralight.SetLogger(new Logger {LogMessage = cb});
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
         Console.OutputEncoding = Encoding.UTF8;
@@ -124,7 +124,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         var surface = view->GetSurface();
         var bitmap = surface->GetBitmap();
         var pixels = bitmap->LockPixels();
-        RenderAnsi24BitColor<Bgra32>(pixels, bitmap->GetWidth(), bitmap->GetHeight(), bitmap->GetBpp());
+        RenderAnsi<Bgra32>(pixels, bitmap->GetWidth(), bitmap->GetHeight());
         bitmap->UnlockPixels();
         bitmap->SwapRedBlueChannels();
         //bitmap->WritePng("Loaded.png");

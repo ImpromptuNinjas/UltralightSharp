@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("ULvec4 [8]")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct UniformVectors : IReadOnlyList<Vector4> {
 
     [NativeTypeName("ULvec4")]
@@ -48,9 +48,19 @@ namespace ImpromptuNinjas.UltralightSharp {
 #else
     public Span<Vector4> AsSpan() => MemoryMarshal.CreateSpan(ref _0, 8);
 #endif
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NETFRAMEWORK || NETSTANDARD2_0
+    public unsafe Span<float> AsFloatSpan() => new Span<float>(Unsafe.AsPointer(ref _0), 8*4);
+#else
+    public Span<float> AsFloatSpan() => MemoryMarshal.CreateSpan(ref _0.W, 8*4);
+#endif
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Span<Vector4>(UniformVectors o) => o.AsSpan();
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator Span<float>(UniformVectors o) => o.AsFloatSpan();
 
     Vector4 IReadOnlyList<Vector4>.this[int index] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

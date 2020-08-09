@@ -1,10 +1,10 @@
 using JetBrains.Annotations;
 
-namespace ImpromptuNinjas.UltralightSharp {
+namespace ImpromptuNinjas.UltralightSharp.Enums {
 
   [PublicAPI]
   [NativeTypeName("ULShaderType")]
-  public enum ShaderType {
+  public enum ShaderType : byte {
 
     Fill,
 

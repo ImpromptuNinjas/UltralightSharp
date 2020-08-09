@@ -27,32 +27,52 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Vertex2F4Ub2F : SafeVertexBuffer {
 
-      public override unsafe IntPtr Pointer => (IntPtr) Unsafe.AsPointer(ref _);
+      internal override bool Owned { get; }
 
-      private UltralightSharp.Vertex2F4Ub2F _;
+      internal override unsafe void Free() {
+        if (!Owned) return;
+
+        Marshal.FreeHGlobal((IntPtr) _ptr);
+      }
+
+      private Vertex2F4Ub2F(bool owned) => Owned = owned;
+
+      public unsafe Vertex2F4Ub2F() : this(true) {
+        var size = sizeof(UltralightSharp.Vertex2F4Ub2F);
+        _ptr = (UltralightSharp.Vertex2F4Ub2F*)
+          Marshal.AllocHGlobal(size);
+        Unsafe.InitBlockUnaligned(_ptr, 0, (uint) size);
+      }
+
+      private unsafe UltralightSharp.Vertex2F4Ub2F* _ptr;
+
+      private unsafe ref UltralightSharp.Vertex2F4Ub2F Ref {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ref Unsafe.AsRef<UltralightSharp.Vertex2F4Ub2F>(_ptr);
+      }
 
       public ref Vector2 Pos {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Pos;
-        }
+        get => ref Ref.Pos;
       }
 
       public ref uint Color {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Color;
-        }
+        get => ref Ref.Color;
       }
 
       public ref Vector2 Obj {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get {
-          ThrowIfDisposed();
-          return ref _.Obj;
-        }
+        get => ref Ref.Obj;
+      }
+
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public static unsafe Vertex2F4Ub2F FromUnsafe(void* p)
+        => new Vertex2F4Ub2F(false) {_ptr = (UltralightSharp.Vertex2F4Ub2F*) p};
+
+      public override unsafe void* Pointer {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _ptr;
       }
 
     }

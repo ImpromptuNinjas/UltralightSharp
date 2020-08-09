@@ -1,12 +1,12 @@
 using JetBrains.Annotations;
 
-namespace ImpromptuNinjas.UltralightSharp {
+namespace ImpromptuNinjas.UltralightSharp.Enums {
 
   [PublicAPI]
   [NativeTypeName("ULCommandType")]
-  public enum CommandType {
+  public enum CommandType : byte {
 
-    ClearRenderBuffer,
+    ClearRenderBuffer = 0,
 
     DrawGeometry,
 

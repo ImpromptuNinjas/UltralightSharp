@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("ULMatrix4x4 [8]")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct ClipMatrices : IReadOnlyList<Matrix4x4> {
 
     [NativeTypeName("ULMatrix4x4")]
@@ -58,7 +58,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     }
 
     public IEnumerator<Matrix4x4> GetEnumerator() {
-      for (var i = 0; i < 7; ++i)
+      for (var i = 0; i < 8; ++i)
         yield return this[i];
     }
 
@@ -67,7 +67,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public int Count {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => 7;
+      get => 8;
     }
 
   }

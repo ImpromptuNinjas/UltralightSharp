@@ -16,19 +16,19 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulVersionString", ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
-    public static extern sbyte* VersionString();
+    public static extern sbyte* GetVersionString();
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulVersionMajor", ExactSpelling = true)]
     [return: NativeTypeName("unsigned int")]
-    public static extern uint VersionMajor();
+    public static extern uint GetVersionMajor();
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulVersionMinor", ExactSpelling = true)]
     [return: NativeTypeName("unsigned int")]
-    public static extern uint VersionMinor();
+    public static extern uint GetVersionMinor();
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulVersionPatch", ExactSpelling = true)]
     [return: NativeTypeName("unsigned int")]
-    public static extern uint VersionPatch();
+    public static extern uint GetVersionPatch();
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateConfig", ExactSpelling = true)]
     [return: NativeTypeName("ULConfig")]
@@ -44,7 +44,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern void ConfigSetCachePath([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("ULString")] String* cachePath);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetUseGPURenderer", ExactSpelling = true)]
-    public static extern void ConfigSetUseGpuRenderer([NativeTypeName("ULConfig")] Config* config, bool useGpu);
+    public static extern void ConfigSetUseGpuRenderer([NativeTypeName("ULConfig")] Config* config, OneByteBoolean useGpu);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetDeviceScale", ExactSpelling = true)]
     public static extern void ConfigSetDeviceScale([NativeTypeName("ULConfig")] Config* config, double value);
@@ -53,10 +53,10 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern void ConfigSetFaceWinding([NativeTypeName("ULConfig")] Config* config, FaceWinding winding);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetEnableImages", ExactSpelling = true)]
-    public static extern void ConfigSetEnableImages([NativeTypeName("ULConfig")] Config* config, bool enabled);
+    public static extern void ConfigSetEnableImages([NativeTypeName("ULConfig")] Config* config, OneByteBoolean enabled);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetEnableJavaScript", ExactSpelling = true)]
-    public static extern void ConfigSetEnableJavaScript([NativeTypeName("ULConfig")] Config* config, bool enabled);
+    public static extern void ConfigSetEnableJavaScript([NativeTypeName("ULConfig")] Config* config, OneByteBoolean enabled);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetFontHinting", ExactSpelling = true)]
     public static extern void ConfigSetFontHinting([NativeTypeName("ULConfig")] Config* config, FontHinting fontHinting);
@@ -83,7 +83,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern void ConfigSetUserStylesheet([NativeTypeName("ULConfig")] Config* config, [NativeTypeName("ULString")] String* cssString);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetForceRepaint", ExactSpelling = true)]
-    public static extern void ConfigSetForceRepaint([NativeTypeName("ULConfig")] Config* config, bool enabled);
+    public static extern void ConfigSetForceRepaint([NativeTypeName("ULConfig")] Config* config, OneByteBoolean enabled);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulConfigSetAnimationTimerDelay", ExactSpelling = true)]
     public static extern void ConfigSetAnimationTimerDelay([NativeTypeName("ULConfig")] Config* config, double delay);
@@ -130,7 +130,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateSession", ExactSpelling = true)]
     [return: NativeTypeName("ULSession")]
-    public static extern Session* CreateSession([NativeTypeName("ULRenderer")] Renderer* renderer, bool isPersistent, [NativeTypeName("ULString")] String* name);
+    public static extern Session* CreateSession([NativeTypeName("ULRenderer")] Renderer* renderer, OneByteBoolean isPersistent, [NativeTypeName("ULString")] String* name);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulDestroySession", ExactSpelling = true)]
     public static extern void DestroySession([NativeTypeName("ULSession")] Session* session);
@@ -141,7 +141,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulSessionIsPersistent", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool SessionIsPersistent([NativeTypeName("ULSession")] Session* session);
+    public static extern OneByteBoolean SessionIsPersistent([NativeTypeName("ULSession")] Session* session);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulSessionGetName", ExactSpelling = true)]
     [return: NativeTypeName("ULString")]
@@ -157,7 +157,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateView", ExactSpelling = true)]
     [return: NativeTypeName("ULView")]
-    public static extern View* CreateView([NativeTypeName("ULRenderer")] Renderer* renderer, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, bool transparent,
+    public static extern View* CreateView([NativeTypeName("ULRenderer")] Renderer* renderer, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, OneByteBoolean transparent,
       [NativeTypeName("ULSession")] Session* session);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulDestroyView", ExactSpelling = true)]
@@ -181,7 +181,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewIsLoading", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewIsLoading([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewIsLoading([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewGetRenderTarget", ExactSpelling = true)]
     public static extern RenderTarget ViewGetRenderTarget([NativeTypeName("ULView")] View* view);
@@ -212,11 +212,11 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewCanGoBack", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewCanGoBack([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewCanGoBack([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewCanGoForward", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewCanGoForward([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewCanGoForward([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewGoBack", ExactSpelling = true)]
     public static extern void ViewGoBack([NativeTypeName("ULView")] View* view);
@@ -241,11 +241,11 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewHasFocus", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewHasFocus([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewHasFocus([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewHasInputFocus", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewHasInputFocus([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewHasInputFocus([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewFireKeyEvent", ExactSpelling = true)]
     public static extern void ViewFireKeyEvent([NativeTypeName("ULView")] View* view, [NativeTypeName("ULKeyEvent")] KeyEvent* keyEvent);
@@ -341,11 +341,11 @@ namespace ImpromptuNinjas.UltralightSharp {
       => ViewSetUpdateHistoryCallback(view, (IntPtr) callback, userData);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewSetNeedsPaint", ExactSpelling = true)]
-    public static extern void ViewSetNeedsPaint([NativeTypeName("ULView")] View* view, bool needsPaint);
+    public static extern void ViewSetNeedsPaint([NativeTypeName("ULView")] View* view, OneByteBoolean needsPaint);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewGetNeedsPaint", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool ViewGetNeedsPaint([NativeTypeName("ULView")] View* view);
+    public static extern OneByteBoolean ViewGetNeedsPaint([NativeTypeName("ULView")] View* view);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulViewCreateInspectorView", ExactSpelling = true)]
     [return: NativeTypeName("ULView")]
@@ -380,7 +380,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulStringIsEmpty", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool StringIsEmpty([NativeTypeName("ULString")] String* str);
+    public static extern OneByteBoolean StringIsEmpty([NativeTypeName("ULString")] String* str);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulStringAssignString", ExactSpelling = true)]
     public static extern void StringAssignString([NativeTypeName("ULString")] String* str, [NativeTypeName("ULString")] String* newStr);
@@ -399,7 +399,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateBitmapFromPixels", ExactSpelling = true)]
     [return: NativeTypeName("ULBitmap")]
     public static extern Bitmap* CreateBitmapFromPixels([NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, BitmapFormat format, [NativeTypeName("unsigned int")] uint rowBytes,
-      [NativeTypeName("const void *")] void* pixels, [NativeTypeName("size_t")] UIntPtr size, bool shouldCopy);
+      [NativeTypeName("const void *")] void* pixels, [NativeTypeName("size_t")] UIntPtr size, OneByteBoolean shouldCopy);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateBitmapFromCopy", ExactSpelling = true)]
     [return: NativeTypeName("ULBitmap")]
@@ -433,7 +433,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapOwnsPixels", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool BitmapOwnsPixels([NativeTypeName("ULBitmap")] Bitmap* bitmap);
+    public static extern OneByteBoolean BitmapOwnsPixels([NativeTypeName("ULBitmap")] Bitmap* bitmap);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapLockPixels", ExactSpelling = true)]
     [return: NativeTypeName("void *")]
@@ -448,14 +448,14 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapIsEmpty", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool BitmapIsEmpty([NativeTypeName("ULBitmap")] Bitmap* bitmap);
+    public static extern OneByteBoolean BitmapIsEmpty([NativeTypeName("ULBitmap")] Bitmap* bitmap);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapErase", ExactSpelling = true)]
     public static extern void BitmapErase([NativeTypeName("ULBitmap")] Bitmap* bitmap);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapWritePNG", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool BitmapWritePng([NativeTypeName("ULBitmap")] Bitmap* bitmap, [NativeTypeName("const char *")] sbyte* path);
+    public static extern OneByteBoolean BitmapWritePng([NativeTypeName("ULBitmap")] Bitmap* bitmap, [NativeTypeName("const char *")] sbyte* path);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulBitmapSwapRedBlueChannels", ExactSpelling = true)]
     public static extern void BitmapSwapRedBlueChannels([NativeTypeName("ULBitmap")] Bitmap* bitmap);
@@ -463,11 +463,11 @@ namespace ImpromptuNinjas.UltralightSharp {
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateKeyEvent", ExactSpelling = true)]
     [return: NativeTypeName("ULKeyEvent")]
     public static extern KeyEvent* CreateKeyEvent(KeyEventType type, [NativeTypeName("unsigned int")] uint modifiers, int virtualKeyCode, int nativeKeyCode, [NativeTypeName("ULString")] String* text,
-      [NativeTypeName("ULString")] String* unmodifiedText, bool isKeypad, bool isAutoRepeat, bool isSystemKey);
+      [NativeTypeName("ULString")] String* unmodifiedText, OneByteBoolean isKeypad, OneByteBoolean isAutoRepeat, OneByteBoolean isSystemKey);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateKeyEventWindows", ExactSpelling = true)]
     [return: NativeTypeName("ULKeyEvent")]
-    public static extern KeyEvent* CreateKeyEventWindows(KeyEventType type, [NativeTypeName("uintptr_t")] UIntPtr wParam, [NativeTypeName("intptr_t")] IntPtr lParam, bool isSystemKey);
+    public static extern KeyEvent* CreateKeyEventWindows(KeyEventType type, [NativeTypeName("uintptr_t")] UIntPtr wParam, [NativeTypeName("intptr_t")] IntPtr lParam, OneByteBoolean isSystemKey);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulDestroyKeyEvent", ExactSpelling = true)]
     public static extern void DestroyKeyEvent([NativeTypeName("ULKeyEvent")] KeyEvent* evt);
@@ -488,14 +488,14 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulRectIsEmpty", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool RectIsEmpty(Rect rect);
+    public static extern OneByteBoolean RectIsEmpty(Rect rect);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulRectMakeEmpty", ExactSpelling = true)]
     public static extern Rect RectMakeEmpty();
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulIntRectIsEmpty", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool IntRectIsEmpty(IntRect rect);
+    public static extern OneByteBoolean IntRectIsEmpty(IntRect rect);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulIntRectMakeEmpty", ExactSpelling = true)]
     public static extern IntRect IntRectMakeEmpty();
@@ -544,22 +544,23 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern Bitmap* BitmapSurfaceGetBitmap([NativeTypeName("ULBitmapSurface")] Surface* surface);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetLogger", ExactSpelling = true)]
-    public static extern void PlatformSetLogger(Logger logger);
+    public static extern void SetLogger(Logger logger);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetFileSystem", ExactSpelling = true)]
-    public static extern void PlatformSetFileSystem(FileSystem fileSystem);
+    public static extern void SetFileSystem(FileSystem fileSystem);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetSurfaceDefinition", ExactSpelling = true)]
-    public static extern void PlatformSetSurfaceDefinition(SurfaceDefinition surfaceDefinition);
+    public static extern void SetSurfaceDefinition(SurfaceDefinition surfaceDefinition);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulApplyProjection", ExactSpelling = true)]
-    public static extern Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, byte flipY);
+    public static extern Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, OneByteBoolean flipY);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetGPUDriver", ExactSpelling = true)]
-    public static extern void PlatformSetGPUDriver(GpuDriver gpuDriver);
+    public static extern void SetGpuDriver(GpuDriver gpuDriver);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulPlatformSetClipboard", ExactSpelling = true)]
-    public static extern void PlatformSetClipboard(Clipboard clipboard);
+    public static extern void SetClipboard(Clipboard clipboard);
+
   }
 
   namespace Safe {
@@ -569,26 +570,35 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public static readonly UIntPtr InvalidFileHandle = (UIntPtr) (-1);
 
-      public static unsafe string VersionString()
-        => new string(UltralightSharp.Ultralight.VersionString());
+      public static unsafe string GetVersionString()
+        => new string(UltralightSharp.Ultralight.GetVersionString());
 
-      public static uint VersionMajor()
-        => UltralightSharp.Ultralight.VersionMajor();
+      public static uint GetVersionMajor()
+        => UltralightSharp.Ultralight.GetVersionMajor();
 
-      public static uint VersionMinor()
-        => UltralightSharp.Ultralight.VersionMinor();
+      public static uint GetVersionMinor()
+        => UltralightSharp.Ultralight.GetVersionMinor();
 
-      public static uint VersionPatch()
-        => UltralightSharp.Ultralight.VersionPatch();
+      public static uint GetVersionPatch()
+        => UltralightSharp.Ultralight.GetVersionPatch();
 
-      public static void PlatformSetLogger(Logger logger)
-        => UltralightSharp.Ultralight.PlatformSetLogger(logger._);
+      public static void SetLogger(Logger logger)
+        => UltralightSharp.Ultralight.SetLogger(logger._);
 
-      public static void PlatformSetFileSystem(FileSystem fileSystem)
-        => UltralightSharp.Ultralight.PlatformSetFileSystem(fileSystem);
+      public static void SetFileSystem(FileSystem fileSystem)
+        => UltralightSharp.Ultralight.SetFileSystem(fileSystem);
 
-      public static void PlatformSetSurfaceDefinition(SurfaceDefinition surfaceDefinition)
-        => UltralightSharp.Ultralight.PlatformSetSurfaceDefinition(surfaceDefinition);
+      public static void SetSurfaceDefinition(SurfaceDefinition surfaceDefinition)
+        => UltralightSharp.Ultralight.SetSurfaceDefinition(surfaceDefinition);
+
+      public static void SetGpuDriver(GpuDriver gpuDriver)
+        => UltralightSharp.Ultralight.SetGpuDriver(gpuDriver);
+
+      public static void SetClipboard(Clipboard clipboard)
+        => UltralightSharp.Ultralight.SetClipboard(clipboard);
+
+      public static Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, OneByteBoolean flipY)
+        => UltralightSharp.Ultralight.ApplyProjection(transform, viewportWidth, viewportHeight, flipY);
 
     }
 

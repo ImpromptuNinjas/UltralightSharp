@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("float [4][7]")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct DataVectors : IReadOnlyList<Vector4> {
 
     internal Vector4 _0;

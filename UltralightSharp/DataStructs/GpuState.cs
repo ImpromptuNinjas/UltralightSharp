@@ -1,57 +1,41 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [NativeTypeName("ULGPUState")]
-  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  [StructLayout(LayoutKind.Sequential)]
   public struct GpuState {
-
     [NativeTypeName("unsigned int")]
-    public uint ViewportWidth;
-
+    public uint ViewportWidth; // 4
     [NativeTypeName("unsigned int")]
-    public uint ViewportHeight;
-
-    public Matrix4x4 Transform;
-
-    public bool EnableTexturing;
-
-    public bool EnableBlend;
-
+    public uint ViewportHeight; // 4
+    public Matrix4x4 Transform; // 64
+    public OneByteBoolean EnableTexturing; // 1
+    public OneByteBoolean EnableBlend; // 1
     [NativeTypeName("unsigned char")]
-    public byte ShaderType;
-
+    public ShaderType ShaderType; // 1
     [NativeTypeName("unsigned int")]
-    public uint RenderBufferId;
-
+    public uint RenderBufferId; // 4
     [NativeTypeName("unsigned int")]
-    public uint Texture1Id;
-
+    public uint Texture1Id; // 4
     [NativeTypeName("unsigned int")]
-    public uint Texture2Id;
-
+    public uint Texture2Id; // 4
     [NativeTypeName("unsigned int")]
-    public uint Texture3Id;
-
+    public uint Texture3Id; // 4
     [NativeTypeName("float [8]")]
-    public UniformScalars UniformScalars;
-
+    public UniformScalars UniformScalars; // 32
     [NativeTypeName("ULvec4 [8]")]
-    public UniformVectors UniformVectors;
-
+    public UniformVectors UniformVectors; // 128
     [NativeTypeName("unsigned int")]
-    public uint ClipSize;
-
+    public byte ClipSize; // 1
     [NativeTypeName("ULMatrix4x4 [8]")]
-    public ClipMatrices Clip;
-
-    public bool EnableScissor;
-
-    public IntRect ScissorRect;
-
+    public ClipMatrices Clip; // 512
+    public OneByteBoolean EnableScissor; // 1
+    public IntRect ScissorRect; // 16
   }
 
 }

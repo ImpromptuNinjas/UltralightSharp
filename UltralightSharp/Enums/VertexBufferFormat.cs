@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace ImpromptuNinjas.UltralightSharp {
+namespace ImpromptuNinjas.UltralightSharp.Enums {
 
   [PublicAPI]
   [NativeTypeName("ULVertexBufferFormat")]

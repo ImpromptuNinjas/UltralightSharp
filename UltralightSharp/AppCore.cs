@@ -27,10 +27,10 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static extern void SettingsSetFileSystemPath([NativeTypeName("ULSettings")] Settings* settings, [NativeTypeName("ULString")] String* path);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulSettingsSetLoadShadersFromFileSystem", ExactSpelling = true)]
-    public static extern void SettingsSetLoadShadersFromFileSystem([NativeTypeName("ULSettings")] Settings* settings, bool enabled);
+    public static extern void SettingsSetLoadShadersFromFileSystem([NativeTypeName("ULSettings")] Settings* settings, OneByteBoolean enabled);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulSettingsSetForceCPURenderer", ExactSpelling = true)]
-    public static extern void SettingsSetForceCpuRenderer([NativeTypeName("ULSettings")] Settings* settings, bool forceCpu);
+    public static extern void SettingsSetForceCpuRenderer([NativeTypeName("ULSettings")] Settings* settings, OneByteBoolean forceCpu);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateApp", ExactSpelling = true)]
     [return: NativeTypeName("ULApp")]
@@ -54,7 +54,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulAppIsRunning", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool AppIsRunning([NativeTypeName("ULApp")] App* app);
+    public static extern OneByteBoolean AppIsRunning([NativeTypeName("ULApp")] App* app);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulAppGetMainMonitor", ExactSpelling = true)]
     [return: NativeTypeName("ULMonitor")]
@@ -83,7 +83,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateWindow", ExactSpelling = true)]
     [return: NativeTypeName("ULWindow")]
-    public static extern Window* CreateWindow([NativeTypeName("ULMonitor")] Monitor* monitor, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, bool fullscreen,
+    public static extern Window* CreateWindow([NativeTypeName("ULMonitor")] Monitor* monitor, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, OneByteBoolean fullscreen,
       [NativeTypeName("unsigned int")] WindowFlags windowFlags);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulDestroyWindow", ExactSpelling = true)]
@@ -111,7 +111,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulWindowIsFullscreen", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool WindowIsFullscreen([NativeTypeName("ULWindow")] Window* window);
+    public static extern OneByteBoolean WindowIsFullscreen([NativeTypeName("ULWindow")] Window* window);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulWindowGetScale", ExactSpelling = true)]
     public static extern double WindowGetScale([NativeTypeName("ULWindow")] Window* window);
@@ -172,7 +172,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulOverlayIsHidden", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool OverlayIsHidden([NativeTypeName("ULOverlay")] Overlay* overlay);
+    public static extern OneByteBoolean OverlayIsHidden([NativeTypeName("ULOverlay")] Overlay* overlay);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulOverlayHide", ExactSpelling = true)]
     public static extern void OverlayHide([NativeTypeName("ULOverlay")] Overlay* overlay);
@@ -182,7 +182,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulOverlayHasFocus", ExactSpelling = true)]
     [return: NativeTypeName("bool")]
-    public static extern bool OverlayHasFocus([NativeTypeName("ULOverlay")] Overlay* overlay);
+    public static extern OneByteBoolean OverlayHasFocus([NativeTypeName("ULOverlay")] Overlay* overlay);
 
     [DllImport("AppCore", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulOverlayFocus", ExactSpelling = true)]
     public static extern void OverlayFocus([NativeTypeName("ULOverlay")] Overlay* overlay);

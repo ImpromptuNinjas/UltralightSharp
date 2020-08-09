@@ -111,7 +111,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverDestroyTextureCallback cb
-            = (id) => value(id);
+            = id => value(id);
           _.DestroyTexture = cb;
         }
       }
@@ -138,7 +138,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverDestroyRenderBufferCallback cb
-            = (id) => value(id);
+            = id => value(id);
           _.DestroyRenderBuffer = cb;
         }
       }
@@ -156,7 +156,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverCreateGeometryCallback cb
-            = (id, vertices, indices) => value(id, vertices.AsSafe(), indices);
+            = (id, vertices, indices) => value(id, vertices.AsSafe(), indices.AsSafe());
           _.CreateGeometry = cb;
         }
       }
@@ -165,7 +165,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverUpdateGeometryCallback cb
-            = (id, vertices, indices) => value(id, vertices.AsSafe(), indices);
+            = (id, vertices, indices) => value(id, vertices.AsSafe(), indices.AsSafe());
           _.UpdateGeometry = cb;
         }
       }
@@ -174,7 +174,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverDestroyGeometryCallback cb
-            = (id) => value(id);
+            = id => value(id);
           _.DestroyGeometry = cb;
         }
       }
@@ -183,7 +183,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverUpdateCommandListCallback cb
-            = (list) => value(list);
+            = list => value(list);
           _.UpdateCommandList = cb;
         }
       }

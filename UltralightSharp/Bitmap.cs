@@ -46,6 +46,12 @@ namespace ImpromptuNinjas.UltralightSharp {
         return Ultralight.BitmapWritePng((Bitmap*) p, (sbyte*) pBytes);
     }
 
+    public static unsafe bool IsEmpty(in this Bitmap _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var p);
+      return Ultralight.BitmapIsEmpty((Bitmap*) p);
+    }
+
     public static unsafe void Erase(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
@@ -157,6 +163,9 @@ namespace ImpromptuNinjas.UltralightSharp {
         fixed (byte* pBytes = Encoding.UTF8.GetBytes(path))
           return _->WritePng((sbyte*) pBytes);
       }
+
+      public unsafe bool IsEmpty()
+        => _->IsEmpty();
 
       public unsafe void Erase()
         => _->Erase();

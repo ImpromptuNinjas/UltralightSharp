@@ -9,30 +9,44 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
 
   public static partial class DemoProgram {
 
-    private static unsafe void RenderAnsi24BitColor<TColor>(IntPtr pixels, uint w, uint h, uint bpp) where TColor : unmanaged, IPixel<TColor> {
-      //Console.WriteLine($"0x{(ulong) pixels} {w}x{h}x{bpp * 8}");
-      if (bpp != 4) throw new NotImplementedException();
-
+    public static unsafe void RenderAnsi<TColor>(IntPtr pixels,
+      uint w, uint h,
+      uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
+      bool borderless = false
+    ) where TColor : unmanaged, IPixel<TColor> {
       var aspect = w / (double) h;
 
+      // get the console size
+      // @formatter:off
       var cw = 0;
+      if (maxWidth < 0)
+        try { cw = Console.WindowWidth; } catch { cw = 72; }
+      else
+        cw = maxWidth;
 
-      try {
-        cw = Console.WindowWidth;
-      }
-      catch {
-        // ok
-      }
+      var ch = 0;
+      if (maxLineCount < 0)
+        try { ch = Console.WindowHeight; } catch { ch = 25; }
+      else
+        ch = maxLineCount;
+      // @formatter:on
 
-      if (cw <= 0)
-        cw = 72;
+      cw -= 1;
+      ch -= (int) reduceLineCount;
 
-      var sq = (cw / aspect) - 1;
+      if (cw == 0 || ch == 0) return;
+
+      // come up with an aperture that fits the console window (minus drawn borders, accounting for 2v/c)
+      var borderCost = borderless ? 0 : -2;
+      var wsq = borderCost + cw / aspect;
+      var hsq = borderCost + (ch * 2) * aspect;
+      var sq = Math.Min(wsq, hsq);
 
       var aw = (int) Math.Floor(sq * aspect);
       var ah = (int) Math.Floor(sq / aspect);
 
-      var span = new ReadOnlySpan<TColor>((byte*) pixels, checked((int) (w * h)));
+      var pPixels = (byte*) pixels;
+      var span = new ReadOnlySpan<TColor>(pPixels, checked((int) (w * h)));
       using var img = Image.LoadPixelData(span, (int) w, (int) h);
       img.Mutate(x => x
         .Resize(aw, ah, LanczosResampler.Lanczos3)
@@ -52,7 +66,61 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         o!.WriteByte((byte) ('0' + ones));
       }
 
-      for (var y = 0; y < ah; y += 2) {
+      // ╭
+      void DrawTopLeftCorner() {
+        o.WriteByte(0xE2);
+        o.WriteByte(0x95);
+        o.WriteByte(0xAD);
+      }
+
+      // ╮
+      void DrawTopRightCorner() {
+        o.WriteByte(0xE2);
+        o.WriteByte(0x95);
+        o.WriteByte(0xAE);
+      }
+
+      // ╰
+      void DrawBottomLeftCorner() {
+        o.WriteByte(0xE2);
+        o.WriteByte(0x95);
+        o.WriteByte(0xB0);
+      }
+
+      // ╯
+      void DrawBottomRightCorner() {
+        o.WriteByte(0xE2);
+        o.WriteByte(0x95);
+        o.WriteByte(0xAF);
+      }
+
+      // ─ x width
+      void DrawHorizontalFrame(int width) {
+        for (var i = 0; i < width; ++i) {
+          o.WriteByte(0xE2);
+          o.WriteByte(0x94);
+          o.WriteByte(0x80);
+        }
+      }
+
+      // │
+      void DrawVerticalFrame() {
+        o.WriteByte(0xE2);
+        o.WriteByte(0x94);
+        o.WriteByte(0x82);
+      }
+
+      if (!borderless) {
+        DrawTopLeftCorner();
+        DrawHorizontalFrame(aw + 1);
+        DrawTopRightCorner();
+        o.WriteByte((byte) '\n');
+      }
+
+      var lastY = ah & ~ 1;
+      for (var y = 0; y < lastY; y += 2) {
+        if (!borderless)
+          DrawVerticalFrame();
         // write 2 lines at a time
         var u = img.GetPixelRowSpan(y);
         var haveL = y + 1 < ah;
@@ -113,6 +181,15 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         o.WriteByte((byte) '0');
         o.WriteByte((byte) 'm');
         o.WriteByte((byte) ' ');
+        if (!borderless)
+          DrawVerticalFrame();
+        o.WriteByte((byte) '\n');
+      }
+
+      if (!borderless) {
+        DrawBottomLeftCorner();
+        DrawHorizontalFrame(aw + 1);
+        DrawBottomRightCorner();
         o.WriteByte((byte) '\n');
       }
 

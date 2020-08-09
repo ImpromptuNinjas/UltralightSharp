@@ -9,6 +9,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
         <Nullable>enable</Nullable>
+        <RootNamespace>ImpromptuNinjas.UltralightSharp</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -230,6 +231,12 @@
         </Compile>
         <Compile Update="DataStructs\SafeOnly\VertexBufferExtensions.cs">
           <WouldDependOn>VertexBufferExtensions</WouldDependOn>
+        </Compile>
+        <Compile Update="Utility\Ptr.cs">
+          <WouldDependOn>Ptr</WouldDependOn>
+        </Compile>
+        <Compile Update="Utility\OneByteBoolean.cs">
+          <WouldDependOn>OneByteBoolean</WouldDependOn>
         </Compile>
     </ItemGroup>
 

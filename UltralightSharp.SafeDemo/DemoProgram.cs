@@ -1,13 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors.Transforms;
 using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
@@ -17,7 +13,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
     public static void Main(string[] args) {
       // setup logging
       LoggerLogMessageCallback cb = LoggerCallback;
-      Ultralight.PlatformSetLogger(new Logger {LogMessage = cb});
+      Ultralight.SetLogger(new Logger {LogMessage = cb});
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
         Console.OutputEncoding = Encoding.UTF8;
@@ -100,9 +96,9 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
           var surface = view.GetSurface();
           var bitmap = surface.GetBitmap();
           var pixels = bitmap.LockPixels();
-          RenderAnsi24BitColor<Bgra32>(pixels, bitmap.GetWidth(), bitmap.GetHeight(), bitmap.GetBpp());
+          RenderAnsi<Bgra32>(pixels, bitmap.GetWidth(), bitmap.GetHeight(), 2, borderless: true);
           bitmap.UnlockPixels();
-          bitmap.SwapRedBlueChannels();
+          //bitmap.SwapRedBlueChannels();
           //bitmap.WritePng("Loaded.png");
         }
       }
@@ -114,8 +110,12 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         /* ok */
       }
 
-      //Console.WriteLine("Press any key to exit.");
-      //Console.ReadKey(true);
+      if (!Environment.UserInteractive || Console.IsInputRedirected)
+        return;
+
+      Console.Write("Press any key to exit.");
+      Console.ReadKey(true);
+      Console.WriteLine();
     }
 
     private static void LoggerCallback(LogLevel logLevel, string? msg)

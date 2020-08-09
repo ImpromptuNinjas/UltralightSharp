@@ -1,50 +1,25 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using JetBrains.Annotations;
+using System.Runtime.InteropServices;
 
 namespace ImpromptuNinjas.UltralightSharp.Safe {
 
-  [PublicAPI]
-  public abstract class SafeVertexBuffer : SafeBuffer {
+  public abstract class SafeVertexBuffer : IDisposable {
 
-    private static ReaderWriterLockSlim _lock
-      = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    internal abstract bool Owned { get; }
 
-    private static Dictionary<IntPtr, SafeVertexBuffer> _index
-      = new Dictionary<IntPtr, SafeVertexBuffer>();
+    public abstract unsafe void* Pointer { get; }
+
+    internal static Dictionary<IntPtr, GCHandle> _pins
+      = new Dictionary<IntPtr, GCHandle>();
 
     protected SafeVertexBuffer() {
-      _lock.EnterWriteLock();
-      try {
-        // ReSharper disable once VirtualMemberCallInConstructor
-        _index.Add(Pointer, this);
-      }
-      finally {
-        _lock.ExitWriteLock();
-      }
     }
 
-    public override void Dispose() {
-      _lock.EnterWriteLock();
-      try {
-        _index.Remove(Pointer);
-      }
-      finally {
-        _lock.ExitWriteLock();
-      }
+    internal abstract void Free();
 
-      base.Dispose();
-    }
-
-    public static SafeVertexBuffer? Lookup(IntPtr p) {
-      _lock.EnterReadLock();
-      try {
-        return _index.TryGetValue(p, out var buf) ? buf : null;
-      }
-      finally {
-        _lock.ExitReadLock();
-      }
+    public void Dispose() {
+      Free();
     }
 
   }

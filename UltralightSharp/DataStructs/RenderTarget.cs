@@ -1,12 +1,14 @@
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential, Pack = 8)]
   public struct RenderTarget {
 
-    public bool IsEmpty;
+    public OneByteBoolean IsEmpty;
 
     [NativeTypeName("unsigned int")]
     public uint Width;
