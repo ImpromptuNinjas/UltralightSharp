@@ -62,27 +62,34 @@ partial class Program {
             var index = (int) command.GpuState.RenderBufferId - 1;
             var rb = RenderBufferEntries[index];
 
+            // bind render buffer
             _gl.BindFramebuffer(FramebufferTarget.Framebuffer, rb.FrameBuffer);
+            
+            // set viewport
             _gl.Viewport(0, 0, state.ViewportWidth, state.ViewportHeight);
             var entry = GeometryEntries[(int) command.GeometryId - 1];
 
+            // select program
             var shaderType = state.ShaderType;
 
             uint pg;
             switch (shaderType) {
               default: throw new ArgumentOutOfRangeException(nameof(ShaderType), shaderType, "Unexpected value.");
               case ShaderType.Fill: {
-                _gl.UseProgram(pg = _fillShader);
+                pg = _fillShader;
                 break;
               }
               case ShaderType.FillPath: {
-                _gl.UseProgram(pg = _fillPathShader);
+                pg = _fillPathShader;
                 break;
               }
             }
 
+            _gl.UseProgram(pg);
+
             CheckGl();
 
+            // update uniforms
             _gl.Uniform4(
               _gl.GetUniformLocation(pg, "State"),
               (float) _wnd.Time,
@@ -119,10 +126,12 @@ partial class Program {
 
             CheckGl();
 
+            // bind vertex array
             _gl.BindVertexArray(entry.VertexArray);
 
             CheckGl();
 
+            // bind textures
             var texIndex1 = (int) state.Texture1Id - 1;
             if (texIndex1 > 0) {
               var texEntry1 = TextureEntries[texIndex1];
@@ -153,6 +162,7 @@ partial class Program {
             else
               Console.WriteLine($"Texture3 Invalid: {texIndex3 + 1}");
 
+            // scissor state
             if (state.EnableScissor) {
               _gl.Enable(EnableCap.ScissorTest);
               CheckGl();
@@ -167,6 +177,7 @@ partial class Program {
 
             CheckGl();
 
+            // blend state
             if (state.EnableBlend)
               _gl.Enable(EnableCap.Blend);
             else
@@ -174,11 +185,13 @@ partial class Program {
 
             CheckGl();
 
+            // draw elements
             _gl.DrawElements(PrimitiveType.Triangles,
               command.IndicesCount, DrawElementsType.UnsignedInt,
               (void*) (command.IndicesOffset * sizeof(uint)));
             CheckGl();
             
+            // reset vertex array
             _gl.BindVertexArray(0);
 
             break;
