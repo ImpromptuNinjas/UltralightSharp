@@ -94,7 +94,7 @@ partial class Program {
               state.Transform,
               state.ViewportWidth,
               state.ViewportWidth,
-              false
+              true
             );
             _gl.UniformMatrix4(
               _gl.GetUniformLocation(pg, "Transform"), 1, false,
@@ -136,7 +136,7 @@ partial class Program {
             var texIndex2 = (int) state.Texture2Id - 1;
             if (texIndex2 > 0) {
               var texEntry2 = TextureEntries[texIndex2];
-              _gl.ActiveTexture(TextureUnit.Texture2);
+              _gl.ActiveTexture(TextureUnit.Texture1);
               _gl.BindTexture(GLEnum.Texture2D, texEntry2.Texure);
               CheckGl();
             }
@@ -146,7 +146,7 @@ partial class Program {
             var texIndex3 = (int) state.Texture3Id - 1;
             if (texIndex3 > 0) {
               var texEntry3 = TextureEntries[texIndex3];
-              _gl.ActiveTexture(TextureUnit.Texture3);
+              _gl.ActiveTexture(TextureUnit.Texture2);
               _gl.BindTexture(GLEnum.Texture2D, texEntry3.Texure);
               CheckGl();
             }

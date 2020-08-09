@@ -349,9 +349,7 @@ partial class Program {
                 _gl.TexImage2D(TextureTarget.Texture2D, 0,
                   (int) InternalFormat.Srgb8Alpha8, texWidth, texHeight, 0,
                   PixelFormat.Bgra, PixelType.UnsignedByte, pixels);
-#if DEBUG
                 Utilities.RenderAnsi<Bgra32>(pixels, texWidth, texHeight, 1, 20);
-#endif
                 break;
               }
               default: throw new ArgumentOutOfRangeException(nameof(BitmapFormat));
