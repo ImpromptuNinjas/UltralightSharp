@@ -10,6 +10,5 @@ out vec4 oColor;
 
 void main()
 {
-    oColor = vec4(fUv.x,fUv.y,1,1);
-    oColor = mix(texture(iTex, fUv), oColor, .1);
+    oColor = texture(iTex, fUv);
 }

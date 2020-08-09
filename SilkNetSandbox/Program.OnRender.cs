@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Silk.NET.OpenGLES;
@@ -15,7 +16,7 @@ partial class Program {
   private static unsafe void OnRender(double delta) //Method needs to be unsafe due to draw elements.
   {
     if (_haveRendered++ < 2) {
-      Debugger.Break();
+      //Debugger.Break();
       //Bind the primary framebuffer, quad geometry and shader.
       var wndSize = _wnd.Size;
       var wndWidth = (uint) wndSize.Width;
@@ -24,7 +25,7 @@ partial class Program {
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-      _gl.ClearColor(0.5f, 0.5f, 0.5f, 0);
+      _gl.ClearColor(0, 0, 0, 0);
       _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
       return;
     }
@@ -105,11 +106,12 @@ partial class Program {
               state.ViewportHeight,
               1
             );
-            var txf = Ultralight.ApplyProjection(
+            var txf =
+              Ultralight.ApplyProjection(
               state.Transform,
               state.ViewportWidth,
               state.ViewportWidth,
-              true
+              false
             );
             _gl.UniformMatrix4(
               _gl.GetUniformLocation(pg, "Transform"), 1, false,
@@ -129,7 +131,7 @@ partial class Program {
             );
             _gl.UniformMatrix4(
               _gl.GetUniformLocation(pg, "Clip"), 8, false,
-              (float*) Unsafe.AsPointer(ref Unsafe.AsRef(state))
+              (float*) Unsafe.AsPointer(ref Unsafe.AsRef(state.Clip))
             );
 
             CheckGl();
@@ -148,7 +150,7 @@ partial class Program {
               CheckGl();
             }
             else {
-              Console.WriteLine($"Texture1 Invalid: {texIndex1 + 1}");
+              //Console.WriteLine($"Texture1 Invalid: {texIndex1 + 1}");
               _gl.ActiveTexture(TextureUnit.Texture0);
               _gl.BindTexture(GLEnum.Texture2D, 0);
             }
@@ -161,7 +163,7 @@ partial class Program {
               CheckGl();
             }
             else {
-              Console.WriteLine($"Texture2 Invalid: {texIndex2 + 1}");
+              //Console.WriteLine($"Texture2 Invalid: {texIndex2 + 1}");
               _gl.ActiveTexture(TextureUnit.Texture1);
               _gl.BindTexture(GLEnum.Texture2D, 0);
             }
@@ -174,7 +176,7 @@ partial class Program {
               CheckGl();
             }
             else {
-              Console.WriteLine($"Texture3 Invalid: {texIndex3 + 1}");
+              //Console.WriteLine($"Texture3 Invalid: {texIndex3 + 1}");
               _gl.ActiveTexture(TextureUnit.Texture2);
               _gl.BindTexture(GLEnum.Texture2D, 0);
             }
@@ -223,7 +225,7 @@ partial class Program {
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
 
-      var rbEntry = RenderBufferEntries[0];
+      //var rbEntry = RenderBufferEntries[0];
       //var rb = rbEntry.FrameBuffer;
       var texEntry = TextureEntries[0]; //rbEntry.TextureEntry;
       var tex = texEntry.Texure;
@@ -236,7 +238,7 @@ partial class Program {
       //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, rb);
       //_gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
       _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-      _gl.ClearColor(0.5f, 0.5f, 0.5f, 0);
+      _gl.ClearColor(0, 0, 0, 0);
       _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
       /*
       _gl.BlitFramebuffer(
@@ -258,7 +260,8 @@ partial class Program {
       CheckGl();
 
       //Draw the geometry.
-      _gl.DrawElements(PrimitiveType.Triangles, (uint) _indicesSize, DrawElementsType.UnsignedInt, null);
+      _gl.DrawElements(PrimitiveType.Triangles,
+        (uint) _indicesSize, DrawElementsType.UnsignedInt, null);
       //*/
     }
   }

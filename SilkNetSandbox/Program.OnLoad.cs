@@ -32,11 +32,11 @@ partial class Program {
 
     //Vertex data, uploaded to the VBO.
     ReadOnlySpan<float> vertices = stackalloc float[] {
-      //X    Y      Z
-      0.5f, 0.5f, 0f,
-      0.5f, -0.5f, 0f,
-      -0.5f, -0.5f, 0f,
-      -0.5f, 0.5f, 0.5f
+      //X Y Z
+      1f, 1f, 0f,
+      1f, -1f, 0f,
+      -1f, -1f, 0f,
+      -1f, 1f, 1f
     };
     var pVertices = Unsafe.AsPointer(ref Unsafe.AsRef(vertices.GetPinnableReference()));
     var verticesSize = vertices.Length * sizeof(float);
