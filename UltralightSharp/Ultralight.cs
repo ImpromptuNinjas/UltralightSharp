@@ -597,7 +597,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       public static void SetClipboard(Clipboard clipboard)
         => UltralightSharp.Ultralight.SetClipboard(clipboard);
 
-      public static Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, OneByteBoolean flipY)
+      public static Matrix4x4 ApplyProjection(Matrix4x4 transform, float viewportWidth, float viewportHeight, bool flipY)
         => UltralightSharp.Ultralight.ApplyProjection(transform, viewportWidth, viewportHeight, flipY);
 
     }

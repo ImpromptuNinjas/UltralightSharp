@@ -101,4 +101,14 @@ public readonly struct SlottingList<T> : IList<T> where T : class {
     set => _slots[index] = value;
   }
 
+  public bool TryGet(int index, out T item) {
+    if (index >= Allocated) {
+      item = null;
+      return false;
+    }
+
+    item = this[index];
+    return item != null;
+  }
+
 }

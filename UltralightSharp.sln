@@ -11,8 +11,6 @@ ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
 EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UltralightSharp.GpuDemo", "UltralightSharp.GpuDemo\UltralightSharp.GpuDemo.csproj", "{D3B62796-6E17-4F26-884A-C207AD43D994}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilkNetSandbox", "SilkNetSandbox\SilkNetSandbox.csproj", "{F93DEF58-2AAD-451E-A82F-E6D1AD6790B2}"
 EndProject
 Global
@@ -33,10 +31,6 @@ Global
 		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34340938-DCF4-4F86-90B1-39BD877F7ED7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3B62796-6E17-4F26-884A-C207AD43D994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3B62796-6E17-4F26-884A-C207AD43D994}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3B62796-6E17-4F26-884A-C207AD43D994}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3B62796-6E17-4F26-884A-C207AD43D994}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F93DEF58-2AAD-451E-A82F-E6D1AD6790B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F93DEF58-2AAD-451E-A82F-E6D1AD6790B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F93DEF58-2AAD-451E-A82F-E6D1AD6790B2}.Release|Any CPU.ActiveCfg = Release|Any CPU

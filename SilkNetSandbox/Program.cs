@@ -90,6 +90,7 @@ partial class Program {
     _wnd.Render += OnRender;
     _wnd.Update += OnUpdate;
     _wnd.Closing += OnClose;
+    _wnd.Resize += OnResize;
 
     {
       // setup logging
@@ -432,6 +433,10 @@ partial class Program {
     }
 
     _wnd.Run();
+  }
+
+  private static unsafe void OnResize(Size size) {
+    _view.Resize((uint) size.Width, (uint) size.Height);
   }
 
   private static void InjectRenderDoc() {

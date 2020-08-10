@@ -108,11 +108,11 @@ partial class Program {
             );
             var txf =
               Ultralight.ApplyProjection(
-              state.Transform,
-              state.ViewportWidth,
-              state.ViewportWidth,
-              false
-            );
+                state.Transform,
+                state.ViewportWidth,
+                state.ViewportHeight,
+                false
+              );
             _gl.UniformMatrix4(
               _gl.GetUniformLocation(pg, "Transform"), 1, false,
               (float*) Unsafe.AsPointer(ref Unsafe.AsRef(txf))
@@ -225,9 +225,12 @@ partial class Program {
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
 
-      //var rbEntry = RenderBufferEntries[0];
+      var texId = (int)_view.GetRenderTarget().TextureId - 1;
+      if (!TextureEntries.TryGet(texId, out var texEntry))
+        return;
+
       //var rb = rbEntry.FrameBuffer;
-      var texEntry = TextureEntries[0]; //rbEntry.TextureEntry;
+      //var texEntry = rbEntry.TextureEntry;
       var tex = texEntry.Texure;
 
       _gl.Disable(EnableCap.FramebufferSrgb);
@@ -237,22 +240,20 @@ partial class Program {
       _gl.Viewport(0, 0, wndWidth, wndHeight);
       //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, rb);
       //_gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-      _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-      _gl.ClearColor(0, 0, 0, 0);
-      _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
+      //_gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+      //_gl.ClearColor(0, 0, 0, 0);
+      //_gl.Clear((uint) ClearBufferMask.ColorBufferBit);
       /*
-      _gl.BlitFramebuffer(
-        0, 0, (int) texEntry.Width, (int) texEntry.Height,
-        0, 0, (int) wndWidth, (int) wndHeight,
-        (uint) AttribMask.ColorBufferBit,
-        BlitFramebufferFilter.Linear);
-      //*/
-      _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
-      _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        _gl.BlitFramebuffer(
+          0, 0, (int) texEntry.Width, (int) texEntry.Height,
+          0, 0, (int) wndWidth, (int) wndHeight,
+          (uint) AttribMask.ColorBufferBit,
+          BlitFramebufferFilter.Linear);
+        // */
       // /*
+      //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
+      _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
       _gl.BindVertexArray(_qva);
-      //_gl.BindBuffer(BufferTargetARB.ArrayBuffer, _qvb);
-      //_gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _qeb);
       _gl.UseProgram(_qpg);
       _gl.ActiveTexture(TextureUnit.Texture0);
       _gl.BindTexture(TextureTarget.Texture2D, tex);
