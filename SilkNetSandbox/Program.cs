@@ -71,7 +71,7 @@ partial class Program {
       Ansi.WindowsConsole.TryEnableVirtualTerminalProcessing();
     }
 
-    InjectNsight();
+    //InjectNsight();
 
     //InjectRenderDoc();
 
@@ -116,7 +116,7 @@ partial class Program {
       cfg.SetEnableImages(true);
       cfg.SetEnableJavaScript(false);
 
-      cfg.SetForceRepaint(true);
+      //cfg.SetForceRepaint(true);
 
       Ultralight.SetGpuDriver(new GpuDriver {
         BeginSynchronize = () => {

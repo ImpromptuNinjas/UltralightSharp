@@ -48,7 +48,7 @@ partial class Program {
       foreach (var command in commands) {
         switch (command.CommandType) {
           case CommandType.ClearRenderBuffer: {
-            Console.WriteLine("Clearing Render Buffer");
+            //Console.WriteLine("Clearing Render Buffer");
             var index = (int) command.GpuState.RenderBufferId - 1;
             var rb = RenderBufferEntries[index];
 
@@ -66,7 +66,7 @@ partial class Program {
             break;
           }
           case CommandType.DrawGeometry: {
-            Console.WriteLine("Drawing Geometry");
+            //Console.WriteLine("Drawing Geometry");
             ref readonly var state = ref command.GpuState;
             var index = (int) command.GpuState.RenderBufferId - 1;
             var rb = RenderBufferEntries[index];

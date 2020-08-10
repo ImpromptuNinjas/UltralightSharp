@@ -63,8 +63,8 @@ partial class Program {
             Console.Error.Flush();
             break;
           default:
-            Console.Error.WriteLine(prefixedMsg);
-            Console.Error.Flush();
+            //Console.Error.WriteLine(prefixedMsg);
+            //Console.Error.Flush();
             break;
         }
 
