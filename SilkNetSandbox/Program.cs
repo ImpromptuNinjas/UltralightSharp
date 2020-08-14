@@ -14,6 +14,7 @@ using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
+using Silk.NET.GLFW;
 using Silk.NET.OpenGL.Extensions.KHR;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -72,11 +73,19 @@ partial class Program {
     //InjectNsight();
 
     //InjectRenderDoc();
-    Silk.NET.Windowing.Window.PreferSdl = true;
+    if (Silk.NET.Windowing.Window.IsGlfw || Silk.NET.Windowing.Window.Platform == null) {
+      var glfw = GlfwProvider.GLFW.Value;
+      //glfw.InitHint(InitHint.CocoaMenubar, true);
+      //glfw.InitHint(InitHint.CocoaChdirResources, true);
+      if (!glfw.Init())
+        throw new NotImplementedException("GLFW Init failed.");
+      else
+        Console.WriteLine("GLFW Init Succeeded.");
+    }
 
     Silk.NET.Windowing.Window.Init();
-    
-    Console.WriteLine($"Windowing Platform: {Silk.NET.Windowing.Window.Platform.GetType().Name}");
+
+    Console.WriteLine($"Windowing Platform: {Silk.NET.Windowing.Window.Platform!.GetType().Name}");
 
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
