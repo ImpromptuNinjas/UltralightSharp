@@ -297,7 +297,7 @@ namespace ImpromptuNinjas.UltralightSharp {
             => callback((IntPtr) ud, new View(caller), source, level, message->Read(), lineNumber, columnNumber, sourceId->Read()),
           (void*) userData);
 
-      public unsafe void SetAddConsoleMessageCallback(BeginLoadingCallback callback, IntPtr userData)
+      public unsafe void SetBeginLoadingCallback(BeginLoadingCallback callback, IntPtr userData)
         => _->SetBeginLoadingCallback((ud, caller, frameId, isMainFrame, url)
             => callback((IntPtr) ud, new View(caller), frameId, isMainFrame, url->Read()),
           (void*) userData);
