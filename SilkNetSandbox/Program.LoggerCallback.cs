@@ -12,7 +12,7 @@ partial class Program {
       case LogLevel.Warning: {
         Console.Error.WriteLine($"{logLevel.ToString()}: {msg}");
         Console.Error.Flush();
-        Debugger.Break();
+        //Debugger.Break();
         break;
       }
       case LogLevel.Info: {
@@ -29,7 +29,7 @@ partial class Program {
       case MessageLevel.Error: {
         Console.Error.WriteLine($"{level.ToString()} {source}:{lineNumber}:{columnNumber}: {message}");
         Console.Error.Flush();
-        Debugger.Break();
+        //Debugger.Break();
         break;
       }
 

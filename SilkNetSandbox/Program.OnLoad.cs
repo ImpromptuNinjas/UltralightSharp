@@ -10,6 +10,20 @@ partial class Program {
   private static unsafe void OnLoad() {
     //Getting the opengl api for drawing to the screen.
     _gl = GL.GetApi(_wnd);
+    
+    var glVersionInfo = _gl.GetString(StringName.Version);
+    var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
+    var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
+    Console.WriteLine($"OpenGL v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
+
+    var glVendor = _gl.GetString(StringName.Vendor);
+    var glDevice = _gl.GetString(StringName.Renderer);
+    Console.WriteLine($"{glVendor} {glDevice}");
+
+    var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
+    Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
+
+    _wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
     EnableDebugExtension();
 

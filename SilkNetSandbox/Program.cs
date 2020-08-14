@@ -78,10 +78,10 @@ partial class Program {
       ContextAPI.OpenGL,
       ContextProfile.Core,
       ContextFlags.ForwardCompatible,
-      new APIVersion(4, 6)
+      new APIVersion(3, 2)
     );
     options.Size = new Size(1024, 576);
-    options.Title = "OpenGL ES 3.1+ (Silk.NET)";
+    options.Title = "UltralightSharp - OpenGL (Silk.NET)";
     _wnd = Silk.NET.Windowing.Window.Create(options);
 
     _wnd.Load += OnLoad;
