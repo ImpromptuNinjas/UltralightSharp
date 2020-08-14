@@ -17,6 +17,7 @@ using Nvidia.Nsight.Injection;
 using Silk.NET.GLFW;
 using Silk.NET.OpenGL.Extensions.KHR;
 using SixLabors.ImageSharp.PixelFormats;
+using ErrorCode = Silk.NET.GLFW.ErrorCode;
 
 partial class Program {
 
@@ -73,12 +74,12 @@ partial class Program {
     //InjectNsight();
 
     //InjectRenderDoc();
+
     if (Silk.NET.Windowing.Window.IsGlfw || Silk.NET.Windowing.Window.Platform == null) {
       var glfw = GlfwProvider.GLFW.Value;
-      //glfw.InitHint(InitHint.CocoaMenubar, true);
-      //glfw.InitHint(InitHint.CocoaChdirResources, true);
-      if (!glfw.Init()) {
-        var code = glfw.GetError(out var pDesc);
+      Console.WriteLine($"GLFW Library load point: 0x{glfw.Library.Handle.ToInt64():X8}");
+      var code = glfw.GetError(out var pDesc);
+      if (code != ErrorCode.NoError) {
         var str = new string(pDesc);
         throw new GlfwException($"GLFW Init failed, {code}: {str}");
       }
