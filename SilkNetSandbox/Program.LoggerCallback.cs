@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using ImpromptuNinjas.UltralightSharp.Enums;
+using ImpromptuNinjas.UltralightSharp.Safe;
 using SixLabors.ImageSharp.PixelFormats;
 
 partial class Program {
@@ -19,6 +20,23 @@ partial class Program {
         break;
       }
       default: throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null);
+    }
+  }
+
+  private static void ConsoleMessageCallback(IntPtr ud, View caller, MessageSource source, MessageLevel level, string? message, uint lineNumber, uint columnNumber, string? sourceId) {
+    switch (level) {
+      case MessageLevel.Warning:
+      case MessageLevel.Error: {
+        Console.Error.WriteLine($"{level.ToString()} {source}:{lineNumber}:{columnNumber}: {message}");
+        Console.Error.Flush();
+        Debugger.Break();
+        break;
+      }
+
+      default: {
+        Console.WriteLine($"{level.ToString()} {source}:{lineNumber}:{columnNumber}: {message}");
+        break;
+      }
     }
   }
 

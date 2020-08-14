@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Silk.NET.Input;
 using Silk.NET.Input.Common;
-using Silk.NET.OpenGLES;
+using Silk.NET.OpenGL;
 
 partial class Program {
 
@@ -52,7 +52,7 @@ partial class Program {
     //Creating a vertex array.
     _qva = _gl.GenVertexArray();
     _gl.BindVertexArray(_qva);
-    LabelObject(ObjectIdentifier.VertexArray, _qva, "Quad VAO");
+    //LabelObject(ObjectIdentifier.VertexArray, _qva, "Quad VAO");
 
     //Initializing a vertex buffer that holds the vertex data.
     _qvb = _gl.GenBuffer(); //Creating the buffer.
@@ -82,7 +82,7 @@ partial class Program {
       (qvsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(qvsCompileSuccess ? "Messages" : "Errors")} compiling quad vertex shader\n{qvsLog}");
       if (!qvsCompileSuccess) {
         Console.Error.Flush();
-        Debugger.Break();
+        //Debugger.Break();
       }
     }
 
@@ -104,7 +104,7 @@ partial class Program {
       (qfsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(qfsCompileSuccess ? "Messages" : "Errors")} compiling quad fragment shader\n{qfsLog}");
       if (!qfsCompileSuccess) {
         Console.Error.Flush();
-        Debugger.Break();
+        //Debugger.Break();
       }
     }
 
@@ -164,7 +164,7 @@ partial class Program {
         (vsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(vsCompileSuccess ? "Messages" : "Errors")} compiling fill vertex shader\n{vsLog}");
         if (!vsCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 
@@ -187,7 +187,7 @@ partial class Program {
         (fsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(fsCompileSuccess ? "Messages" : "Errors")} compiling fill fragment shader\n{fsLog}");
         if (!fsCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 
@@ -223,7 +223,7 @@ partial class Program {
         (pgCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(pgCompileSuccess ? "Messages" : "Errors")} linking fill shader program\n{pgLog}");
         if (!pgCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 
@@ -265,7 +265,7 @@ partial class Program {
         (vsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(vsCompileSuccess ? "Messages" : "Errors")} compiling fill path vertex shader\n{vsLog}");
         if (!vsCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 
@@ -287,7 +287,7 @@ partial class Program {
         (fsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(fsCompileSuccess ? "Messages" : "Errors")} compiling fill path fragment shader\n{fsLog}");
         if (!fsCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 
@@ -315,7 +315,7 @@ partial class Program {
         (pgCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(pgCompileSuccess ? "Messages" : "Errors")} linking fill path shader program\n{pgLog}");
         if (!pgCompileSuccess) {
           Console.Error.Flush();
-          Debugger.Break();
+          //Debugger.Break();
         }
       }
 

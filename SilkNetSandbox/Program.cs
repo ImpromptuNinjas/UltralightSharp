@@ -1,6 +1,6 @@
 ﻿using Silk.NET.Input;
 using Silk.NET.Input.Common;
-using Silk.NET.OpenGLES;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using Silk.NET.Windowing.Common;
 using System;
@@ -14,16 +14,14 @@ using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
-using Silk.NET.OpenGLES.Extensions.KHR;
+using Silk.NET.OpenGL.Extensions.KHR;
 using SixLabors.ImageSharp.PixelFormats;
 
 partial class Program {
 
-  static Program()
-  {
+  static Program() {
     // ReSharper disable once InvertIf
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-    {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
       Windows.User32.SetProcessDPIAware();
       Windows.User32.SetProcessDpiAwarenessContext(Windows.User32.DpiAwarenessContext.PerMonitorAwareV2);
       Windows.ShCore.SetProcessDpiAwareness(Windows.ShCore.ProcessDpiAwareness.PerMonitorDpiAware);
@@ -77,10 +75,10 @@ partial class Program {
 
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
-      ContextAPI.OpenGLES,
+      ContextAPI.OpenGL,
       ContextProfile.Core,
       ContextFlags.ForwardCompatible,
-      new APIVersion(3, 1)
+      new APIVersion(4, 6)
     );
     options.Size = new Size(1024, 576);
     options.Title = "OpenGL ES 3.1+ (Silk.NET)";
@@ -141,7 +139,7 @@ partial class Program {
           var vao = _gl.GenVertexArray();
           entry.VertexArray = vao;
           _gl.BindVertexArray(vao);
-          LabelObject(ObjectIdentifier.VertexArray, vao, $"Ultralight Geometry VAO {id}");
+          //LabelObject(ObjectIdentifier.VertexArray, vao, $"Ultralight Geometry VAO {id}");
           CheckGl();
 
           var buf = _gl.GenBuffer();
@@ -235,7 +233,7 @@ partial class Program {
           var entry = GeometryEntries.RemoveAt(index);
           _gl.DeleteBuffer(entry.Indices);
           _gl.DeleteBuffer(entry.Vertices);
-          _gl.DeleteVertexArray(entry.Indices);
+          _gl.DeleteVertexArray(entry.VertexArray);
           CheckGl();
         },
         NextRenderBufferId = () => {
@@ -270,7 +268,7 @@ partial class Program {
           if (result != GLEnum.FramebufferComplete) {
             Console.Error.WriteLine($"Error creating FBO: {result}");
             Console.Error.Flush();
-            Debugger.Break();
+            //Debugger.Break();
           }
 
           CheckGl();
@@ -300,7 +298,7 @@ partial class Program {
           entry.Texure = tex;
           _gl.ActiveTexture(TextureUnit.Texture0);
           _gl.BindTexture(TextureTarget.Texture2D, tex);
-          
+
           var linear = (int) GLEnum.Linear;
           _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
           _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
@@ -310,7 +308,7 @@ partial class Program {
           _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
           _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
           CheckGl();
-          
+
           if (bitmap.IsEmpty()) {
             LabelObject(ObjectIdentifier.Texture, tex, $"Ultralight Texture {id} (RT)");
             CheckGl();
@@ -430,6 +428,7 @@ partial class Program {
       var width = (uint) wndSize.Width;
       var height = (uint) wndSize.Height;
       _view = new View(_renderer, width, height, false, _session);
+      _view.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }
 
     _wnd.Run();
@@ -531,7 +530,7 @@ partial class Program {
 
     Console.Error.WriteLine($"Line {lineNumber}, GL Error: {error}");
     Console.Error.Flush();
-    Debugger.Break();
+    //Debugger.Break();
   }
 
 }

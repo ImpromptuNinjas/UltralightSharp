@@ -1,26 +1,27 @@
 using System;
 using System.Diagnostics;
-using Silk.NET.OpenGLES;
-using Silk.NET.OpenGLES.Extensions.KHR;
+using Silk.NET.OpenGL;
+using Silk.NET.OpenGL.Extensions.KHR;
 
 partial class Program {
 
   public static unsafe void EnableDebugExtension() {
-    if (!_gl.TryGetExtension(out KhrDebug dbg)) {
-      Console.Error.WriteLine("Can't enable GL_KHR_debug extension not present.");
-      Console.Error.Flush();
-      return;
-    }
+    //if (!_gl.TryGetExtension(out KhrDebug dbg)) {
+    //  Console.Error.WriteLine("Can't enable GL_KHR_debug extension not present.");
+    //  Console.Error.Flush();
+    //  return;
+    //}
 
     _gl.Enable(EnableCap.DebugOutput);
     _gl.Enable(EnableCap.DebugOutputSynchronous);
 
     Console.WriteLine("GL_KHR_debug extension enabled.");
 
-    dbg.DebugMessageCallback(DebugMessageHandler, default);
+    _gl.DebugMessageCallback(DebugMessageHandler, default);
   }
 
-  private static unsafe void DebugMessageHandler(KHR source, KHR type, int id, KHR severity, int length, IntPtr message, IntPtr param) {
+  //private static unsafe void DebugMessageHandler(KHR source, KHR type, int id, KHR severity, int length, IntPtr message, IntPtr param) {
+  private static unsafe void DebugMessageHandler(GLEnum source, GLEnum type, int id, GLEnum severity, int length, IntPtr message, IntPtr param) {
     var msg = new string((sbyte*) message, 0, length);
     var fi = 2;
     var cause = new StackFrame(fi, true);
@@ -39,7 +40,7 @@ partial class Program {
       case DebugType.DebugTypeError: {
         Console.Error.WriteLine(prefixedMsg);
         Console.Error.Flush();
-        Debugger.Break();
+        //Debugger.Break();
         break;
       }
       default: {

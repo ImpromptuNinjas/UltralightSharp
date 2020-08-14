@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Silk.NET.OpenGLES;
+using Silk.NET.OpenGL;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using ShaderType = ImpromptuNinjas.UltralightSharp.Enums.ShaderType;
