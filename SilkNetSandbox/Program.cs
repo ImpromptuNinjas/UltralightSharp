@@ -77,10 +77,13 @@ partial class Program {
       var glfw = GlfwProvider.GLFW.Value;
       //glfw.InitHint(InitHint.CocoaMenubar, true);
       //glfw.InitHint(InitHint.CocoaChdirResources, true);
-      if (!glfw.Init())
-        throw new NotImplementedException("GLFW Init failed.");
-      else
-        Console.WriteLine("GLFW Init Succeeded.");
+      if (!glfw.Init()) {
+        var code = glfw.GetError(out var pDesc);
+        var str = new string(pDesc);
+        throw new GlfwException($"GLFW Init failed, {code}: {str}");
+      }
+
+      Console.WriteLine("GLFW Init Succeeded.");
     }
 
     Silk.NET.Windowing.Window.Init();
