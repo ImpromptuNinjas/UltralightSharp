@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 [PublicAPI]
@@ -101,13 +102,14 @@ public readonly struct SlottingList<T> : IList<T> where T : class {
     set => _slots[index] = value;
   }
 
-  public bool TryGet(int index, out T item) {
+  public bool TryGet(int index, [NotNullWhen(true)] out T? item) {
     if (index >= Allocated) {
       item = null;
       return false;
     }
 
     item = this[index];
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
     return item != null;
   }
 

@@ -16,7 +16,7 @@ partial class Program {
 
     public uint FrameBuffer { get; set; }
 
-    public TextureEntry TextureEntry { get; set; }
+    public TextureEntry TextureEntry { get; set; } = null!;
 
   }
 

@@ -28,9 +28,9 @@ partial class Program {
     }
   }
 
-  private static IWindow _wnd;
+  private static IWindow _wnd = null!;
 
-  private static GL _gl;
+  private static GL _gl = null!;
 
   private static uint _qvb;
 
@@ -55,11 +55,11 @@ partial class Program {
 
   private static int _indicesSize;
 
-  private static Renderer _renderer;
+  private static Renderer _renderer = null!;
 
-  private static Session _session;
+  private static Session _session = null!;
 
-  private static View _view;
+  private static View _view = null!;
 
   private static List<Command> _commands = new List<Command>();
 
