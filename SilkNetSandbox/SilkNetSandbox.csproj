@@ -38,10 +38,11 @@
       <PackageReference Include="Ansi" Version="1.0.3" />
       <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
       <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-      <PackageReference Include="Silk.NET.Input" Version="1.5.0" />
-      <PackageReference Include="Silk.NET.OpenGL" Version="1.5.0" />
-      <PackageReference Include="Silk.NET.OpenGL.Extensions.KHR" Version="1.5.0" />
-      <PackageReference Include="Silk.NET.Windowing" Version="1.5.0" />
+      <PackageReference Include="Silk.NET.GLFW" Version="2.0.0-preview" />
+      <PackageReference Include="Silk.NET.Input" Version="2.0.0-preview" />
+      <PackageReference Include="Silk.NET.OpenGL" Version="2.0.0-preview" />
+      <PackageReference Include="Silk.NET.OpenGL.Extensions.KHR" Version="2.0.0-preview" />
+      <PackageReference Include="Silk.NET.Windowing" Version="2.0.0-preview" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0" />
     </ItemGroup>
 

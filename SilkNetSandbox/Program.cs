@@ -72,6 +72,11 @@ partial class Program {
     //InjectNsight();
 
     //InjectRenderDoc();
+    Silk.NET.Windowing.Window.PreferSdl = true;
+
+    Silk.NET.Windowing.Window.Init();
+    
+    Console.WriteLine($"Windowing Platform: {Silk.NET.Windowing.Window.Platform.GetType().Name}");
 
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
@@ -82,6 +87,7 @@ partial class Program {
     );
     options.Size = new Size(1024, 576);
     options.Title = "UltralightSharp - OpenGL (Silk.NET)";
+    options.VSync = VSyncMode.On;
     _wnd = Silk.NET.Windowing.Window.Create(options);
 
     _wnd.Load += OnLoad;
