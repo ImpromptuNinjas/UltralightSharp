@@ -105,6 +105,8 @@ partial class Program {
 
     if (_snView.Handle == default) {
       var glfw = GlfwProvider.GLFW.Value;
+      if (glfw == null)
+        throw new PlatformNotSupportedException($"Can't create window, GLFW not loaded.");
       var code = glfw.GetError(out char* pDesc);
       if (pDesc == default)
         throw new PlatformNotSupportedException($"Can't create window, {code.ToString()}.");
