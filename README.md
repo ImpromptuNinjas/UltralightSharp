@@ -62,3 +62,9 @@ It is forward compatible up to at least 2020.1, but may require some tweaking of
 ![Silk.NET Demo](https://cdn.discordapp.com/attachments/738836157923852368/742182287134818304/unknown.png)
 
 ![Silk.NET Console](https://cdn.discordapp.com/attachments/738836157923852368/742182302599217306/unknown.png)
+
+## Blazor Usage in Ultralight
+
+![NUlliiON's UltralightBlazorExperiment](https://i.imgur.com/FXeTRYL.png)
+
+[NUlliiON's UltralightBlazorExperiment](https://github.com/NUlliiON/UltralightBlazorExperiment)
