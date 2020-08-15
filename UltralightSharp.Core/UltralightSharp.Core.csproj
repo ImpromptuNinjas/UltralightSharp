@@ -22,15 +22,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.WinX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.LinuxX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.OsxX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
+        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.WinX64" Version="[$(Version)]" IncludeAssets="native" />
+        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.LinuxX64" Version="[$(Version)]" IncludeAssets="native" />
+        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.OsxX64" Version="[$(Version)]" IncludeAssets="native" />
     </ItemGroup>
     
     <Choose>
         <When Condition="'$(TargetFramework)'=='net45'">
             <ItemGroup>
-                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
 
                 <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
                     <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

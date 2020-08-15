@@ -20,13 +20,16 @@
                 <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
             </PropertyGroup>
         </When>
-        <Otherwise>
+        <When Condition="$([MSBuild]::IsOsPlatform('OSX'))">
             <PropertyGroup>
                 <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
             </PropertyGroup>
-        </Otherwise>
+        </When>
     </Choose>
 
+    <Target Name="CheckRuntimeIdentifier" BeforeTargets="Build" Condition="'$(RuntimeIdentifier)'==''">
+        <Error Text="RuntimeIdentifier property not set." />
+    </Target>
 
     <ItemGroup>
         <ProjectReference Include="../UltralightSharp/UltralightSharp.csproj">
