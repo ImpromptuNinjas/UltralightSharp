@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
-        <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)</SolutionDir>
         <Version>1.2.0-beta-r7</Version>
+        <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
         <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
     </PropertyGroup>
     
