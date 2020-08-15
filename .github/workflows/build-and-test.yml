@@ -30,7 +30,11 @@ jobs:
         with:
           dotnet-version: 3.1.401
       - name: Build Core
-        run: dotnet build -c Release UltralightSharp.Core/UltralightSharp.Core.csproj
+        run: |
+          dotnet build -c Release UltralightSharp.Core.WinX64/UltralightSharp.Core.WinX64.csproj
+          dotnet build -c Release UltralightSharp.Core.LinuxX64/UltralightSharp.Core.LinuxX64.csproj
+          dotnet build -c Release UltralightSharp.Core.OsxX64/UltralightSharp.Core.OsxX64.csproj
+          dotnet build -c Release UltralightSharp.Core/UltralightSharp.Core.csproj
       - name: Install dependencies
         run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
       - name: Build

@@ -21,22 +21,6 @@
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
     </PropertyGroup>
 
-
-    <ItemGroup>
-        <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\UltralightSharp.Core.LinuxX64\UltralightSharp.Core.LinuxX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\UltralightSharp.Core.OsxX64\UltralightSharp.Core.OsxX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-    </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.WinX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
         <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.LinuxX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
@@ -47,8 +31,30 @@
         <When Condition="'$(TargetFramework)'=='net45'">
             <ItemGroup>
                 <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+
+                <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
+                    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+                    <ExcludeAssets>all</ExcludeAssets>
+                </ProjectReference>
             </ItemGroup>
         </When>
+        <Otherwise>
+
+            <ItemGroup>
+                <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
+                    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+                    <ExcludeAssets>all</ExcludeAssets>
+                </ProjectReference>
+                <ProjectReference Include="..\UltralightSharp.Core.LinuxX64\UltralightSharp.Core.LinuxX64.csproj">
+                    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+                    <ExcludeAssets>all</ExcludeAssets>
+                </ProjectReference>
+                <ProjectReference Include="..\UltralightSharp.Core.OsxX64\UltralightSharp.Core.OsxX64.csproj">
+                    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+                    <ExcludeAssets>all</ExcludeAssets>
+                </ProjectReference>
+            </ItemGroup>
+        </Otherwise>
     </Choose>
 
     <ItemGroup>
