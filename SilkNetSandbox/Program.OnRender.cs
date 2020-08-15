@@ -15,7 +15,7 @@ partial class Program {
     if (_haveRendered++ < 2) {
       //Debugger.Break();
       //Bind the primary framebuffer, quad geometry and shader.
-      var wndSize = _wnd.Size;
+      var wndSize = _snView.Size;
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
       _gl.Viewport(0, 0, wndWidth, wndHeight);
@@ -27,7 +27,7 @@ partial class Program {
       return;
     }
 
-    _renderer.Render();
+    _ulRenderer.Render();
     var commands = _commands;
     if (commands.Count > 0) {
       Console.WriteLine($"Running {commands.Count} Commands");
@@ -98,7 +98,7 @@ partial class Program {
             // update uniforms
             _gl.Uniform4(
               _gl.GetUniformLocation(pg, "State"),
-              (float) _wnd.Time,
+              (float) _snView.Time,
               state.ViewportWidth,
               state.ViewportHeight,
               1
@@ -218,11 +218,11 @@ partial class Program {
     }
 
     {
-      var wndSize = _wnd.Size;
+      var wndSize = _snView.Size;
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
 
-      var renderTarget = _view.GetRenderTarget();
+      var renderTarget = _ulView.GetRenderTarget();
       /*
       var rbIndex = (int) renderTarget.RenderBufferId - 1;
       if (!RenderBufferEntries.TryGet(rbIndex, out var rbEntry))

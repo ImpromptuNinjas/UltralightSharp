@@ -22,7 +22,7 @@ partial class Program {
       throw new PlatformNotSupportedException(platType.Name);
 
     //Getting the opengl api for drawing to the screen.
-    _gl = GL.GetApi(_wnd);
+    _gl = GL.GetApi(_snView);
 
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
@@ -36,7 +36,7 @@ partial class Program {
     var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
     Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
 
-    _wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
+    //_wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
     EnableDebugExtension();
 
@@ -362,12 +362,12 @@ partial class Program {
       _fillPathShader = pg;
     }
 
-    var input = _wnd.CreateInput();
+    var input = _snView.CreateInput();
     foreach (var kb in input.Keyboards)
       kb.KeyDown += KeyDown;
 
     Console.WriteLine("Loading index.html");
-    _view.LoadUrl("file:///index.html");
+    _ulView.LoadUrl("file:///index.html");
   }
 
 }

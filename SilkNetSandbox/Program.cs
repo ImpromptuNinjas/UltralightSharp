@@ -15,6 +15,7 @@ using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
 using Silk.NET.Windowing.Common;
 using SixLabors.ImageSharp.PixelFormats;
+using Monitor = Silk.NET.Windowing.Monitor;
 using PixelFormat = Silk.NET.OpenGLES.PixelFormat;
 using PixelType = Silk.NET.OpenGLES.PixelType;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
@@ -30,7 +31,7 @@ partial class Program {
     }
   }
 
-  private static IWindow _wnd = null!;
+  private static IView _snView = null!;
 
   private static GL _gl = null!;
 
@@ -57,11 +58,11 @@ partial class Program {
 
   private static int _indicesSize;
 
-  private static Renderer _renderer = null!;
+  private static Renderer _ulRenderer = null!;
 
-  private static Session _session = null!;
+  private static Session _ulSession = null!;
 
-  private static View _view = null!;
+  private static View _ulView = null!;
 
   private static List<Command> _commands = new List<Command>();
 
@@ -78,6 +79,25 @@ partial class Program {
 
     //InjectRenderDoc();
 
+    var rr = Monitor.GetMainMonitor().VideoMode.RefreshRate;
+
+    var v = Silk.NET.Windowing.Window.GetView(new ViewOptions(
+      true,
+      30,
+      30,
+      new GraphicsAPI(
+        ContextAPI.OpenGLES,
+        ContextProfile.Core,
+        ContextFlags.ForwardCompatible | ContextFlags.Debug,
+        new APIVersion(3, 1)
+      ),
+      VSyncMode.On,
+      1,
+      true,
+      new VideoMode(new Size(1024, 576), rr)
+    ));
+
+    /*
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
       ContextAPI.OpenGLES,
@@ -91,12 +111,14 @@ partial class Program {
     //options.VSync = true;
 
     _wnd = Silk.NET.Windowing.Window.Create(options);
+    */
+    _snView = v;
 
-    _wnd.Load += OnLoad;
-    _wnd.Render += OnRender;
-    _wnd.Update += OnUpdate;
-    _wnd.Closing += OnClose;
-    _wnd.Resize += OnResize;
+    _snView.Load += OnLoad;
+    _snView.Render += OnRender;
+    _snView.Update += OnUpdate;
+    _snView.Closing += OnClose;
+    _snView.Resize += OnResize;
 
     {
       // setup logging
@@ -429,17 +451,17 @@ partial class Program {
 
       AppCore.EnablePlatformFileSystem(Path.Combine(asmDir, "assets"));
 
-      _renderer = new Renderer(cfg);
-      _session = new Session(_renderer, false, "Demo");
+      _ulRenderer = new Renderer(cfg);
+      _ulSession = new Session(_ulRenderer, false, "Demo");
 
-      var wndSize = _wnd.Size;
+      var wndSize = _snView.Size;
       var width = (uint) wndSize.Width;
       var height = (uint) wndSize.Height;
-      _view = new View(_renderer, width, height, false, _session);
-      _view.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
+      _ulView = new View(_ulRenderer, width, height, false, _ulSession);
+      _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }
 
-    _wnd.Run();
+    _snView.Run();
   }
 
   private static unsafe void OnFirstChanceException(object? sender, FirstChanceExceptionEventArgs eventArgs) {
@@ -459,7 +481,7 @@ partial class Program {
   }
 
   private static unsafe void OnResize(Size size) {
-    _view.Resize((uint) size.Width, (uint) size.Height);
+    _ulView.Resize((uint) size.Width, (uint) size.Height);
   }
 
   private static void InjectRenderDoc() {
@@ -533,14 +555,14 @@ partial class Program {
   }
 
   private static void OnUpdate(double obj) {
-    _renderer.Update();
+    _ulRenderer.Update();
   }
 
   private static void OnClose() {
     //Remember to delete the buffers.
-    _view.Dispose();
-    _renderer.Dispose();
-    _session.Dispose();
+    _ulView.Dispose();
+    _ulRenderer.Dispose();
+    _ulSession.Dispose();
     _gl.DeleteBuffer(_qvb);
     _gl.DeleteBuffer(_qeb);
     _gl.DeleteVertexArray(_qva);
