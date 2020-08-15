@@ -5,11 +5,11 @@
         <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     </PropertyGroup>
-    
+
     <PropertyGroup>
-        <PackageId>ImpromptuNinjas.UltralightSharp.Core</PackageId>
-        <Title>ImpromptuNinjas.UltralightSharp.Core</Title>
-        <Description>Ultralight native rutimes for the UltralightSharp project.</Description>
+        <PackageId>ImpromptuNinjas.UltralightSharp.Core.OsxX64</PackageId>
+        <Title>ImpromptuNinjas.UltralightSharp.Core.OsxX64</Title>
+        <Description>Windows x64 Ultralight native rutimes for the UltralightSharp project.</Description>
         <Authors>Tyler Young</Authors>
         <Copyright>Copyright © 2020 Tyler Young</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -19,37 +19,8 @@
         <PackageIcon>icon.png</PackageIcon>
         <IsPackable>True</IsPackable>
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     </PropertyGroup>
-
-
-    <ItemGroup>
-        <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\UltralightSharp.Core.LinuxX64\UltralightSharp.Core.LinuxX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="..\UltralightSharp.Core.OsxX64\UltralightSharp.Core.OsxX64.csproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>all</ExcludeAssets>
-        </ProjectReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.WinX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.LinuxX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
-        <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.OsxX64" Version="[$(Version)]" IncludeAssets="native" ExcludeAssets="compile" />
-    </ItemGroup>
-    
-    <Choose>
-        <When Condition="'$(TargetFramework)'=='net45'">
-            <ItemGroup>
-                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
-            </ItemGroup>
-        </When>
-    </Choose>
 
     <ItemGroup>
         <None Include="..\icon.png">
@@ -64,7 +35,6 @@
             <PackagePath />
             <Link>LICENSE</Link>
         </None>
-        <Content Include="resources\**\*"/>
         <Content Include="Ultralight*.txt">
             <Pack>True</Pack>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -79,7 +49,7 @@
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>
-        <Content Remove="runtimes\*\**"/>
+        <Content Remove="runtimes\*\**" />
     </ItemGroup>
 
 </Project>
