@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
@@ -68,6 +70,9 @@ partial class Program {
       Console.OutputEncoding = Encoding.UTF8;
       Ansi.WindowsConsole.TryEnableVirtualTerminalProcessing();
     }
+
+    AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+    AppDomain.CurrentDomain.FirstChanceException += OnFirstChanceException;
 
     //InjectNsight();
 
@@ -435,6 +440,22 @@ partial class Program {
     }
 
     _wnd.Run();
+  }
+
+  private static unsafe void OnFirstChanceException(object? sender, FirstChanceExceptionEventArgs eventArgs) {
+    var sf = new StackFrame(1, true);
+    Console.Error.WriteLine("First-Chance Exception Stack Frame:");
+    Console.Error.WriteLine(sf.ToString());
+    Console.Error.WriteLine($"First-Chance Exception: {eventArgs.Exception.GetType().Name}: {eventArgs.Exception.Message}");
+  }
+
+  private static unsafe void OnUnhandledException(object sender, UnhandledExceptionEventArgs eventArgs) {
+    var st = new StackTrace(1, true);
+    Console.Error.WriteLine("Unhandled Exception Entry Stack:");
+    Console.Error.WriteLine(st.ToString());
+    st = new StackTrace((Exception) eventArgs.ExceptionObject, 0, true);
+    Console.Error.WriteLine("Unhandled Exception:");
+    Console.Error.WriteLine(st.ToString());
   }
 
   private static unsafe void OnResize(Size size) {
