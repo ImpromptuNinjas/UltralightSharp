@@ -65,6 +65,7 @@ It is forward compatible up to at least 2020.1, but may require some tweaking of
 
 ## Blazor Usage in Ultralight
 
+[NUlliiON's UltralightBlazorExperiment](https://github.com/NUlliiON/UltralightBlazorExperiment)
+
 ![NUlliiON's UltralightBlazorExperiment](https://i.imgur.com/FXeTRYL.png)
 
-[NUlliiON's UltralightBlazorExperiment](https://github.com/NUlliiON/UltralightBlazorExperiment)
