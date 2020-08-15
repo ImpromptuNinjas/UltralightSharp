@@ -6,14 +6,14 @@ using ImpromptuNinjas.UltralightSharp.Safe;
 using SixLabors.ImageSharp.PixelFormats;
 using ImpromptuNinjas.UltralightSharp.Enums;
 
-namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
+namespace ImpromptuNinjas.UltralightSharp.Demo {
 
   public static partial class DemoProgram {
 
     public static void Main(string[] args) {
       // setup logging
-      LoggerLogMessageCallback cb = LoggerCallback;
-      Ultralight.SetLogger(new Logger {LogMessage = cb});
+      Safe.LoggerLogMessageCallback cb = LoggerCallback;
+      Safe.Ultralight.SetLogger(new Safe.Logger {LogMessage = cb});
 
       if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
         Console.OutputEncoding = Encoding.UTF8;
@@ -30,7 +30,7 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
       } while (Directory.Exists(storagePath) || File.Exists(storagePath));
 
       {
-        using var cfg = new Config();
+        using var cfg = new Safe.Config();
 
         var cachePath = Path.Combine(storagePath, "Cache");
         cfg.SetCachePath(cachePath);
@@ -42,18 +42,18 @@ namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
         cfg.SetEnableImages(true);
         cfg.SetEnableJavaScript(false);
 
-        AppCore.EnablePlatformFontLoader();
+        Safe.AppCore.EnablePlatformFontLoader();
 
         {
           var assetsPath = Path.Combine(asmDir, "assets");
-          AppCore.EnablePlatformFileSystem(assetsPath);
+          Safe.AppCore.EnablePlatformFileSystem(assetsPath);
         }
 
-        using var renderer = new Renderer(cfg);
+        using var renderer = new Safe.Renderer(cfg);
         var sessionName = "Demo";
-        using var session = new Session(renderer, false, sessionName);
+        using var session = new Safe.Session(renderer, false, sessionName);
 
-        using var view = new View(renderer, 640, 480, false, session);
+        using var view = new Safe.View(renderer, 640, 480, false, session);
 
         {
           var htmlString = "<i>Loading...</i>";

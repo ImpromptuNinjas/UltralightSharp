@@ -11,7 +11,7 @@ using ImpromptuNinjas.UltralightSharp;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using String = ImpromptuNinjas.UltralightSharp.String;
 
-namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
+namespace ImpromptuNinjas.UltralightSharp.Demo {
 
   public static partial class DemoProgram {
 

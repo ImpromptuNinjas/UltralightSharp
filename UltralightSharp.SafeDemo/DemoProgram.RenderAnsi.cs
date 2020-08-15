@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
-namespace ImpromptuNinjas.UltralightSharpSharp.Demo {
+namespace ImpromptuNinjas.UltralightSharp.Demo {
 
   public static partial class DemoProgram {
 
