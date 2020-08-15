@@ -89,7 +89,7 @@ partial class Program {
     );
     var size = new Size(1024, 576);
     var title = "UltralightSharp - OpenGL ES via ANGLE (Silk.NET)";
-    
+
     options.Size = size;
     options.Title = title;
     options.VSync = VSyncMode.On;
@@ -104,7 +104,18 @@ partial class Program {
     _snView = Window.Create(options);
 
     if (_snView.Handle == default) {
-      throw new PlatformNotSupportedException("Can't create window.");
+      var glfw = GlfwProvider.GLFW.Value;
+      var code = glfw.GetError(out char* pDesc);
+      if (pDesc == default)
+        throw new PlatformNotSupportedException($"Can't create window, {code.ToString()}.");
+
+      var len = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
+
+      if (len <= 0)
+        throw new PlatformNotSupportedException("Can't create window, {code.ToString()}.");
+
+      var msg = Encoding.UTF8.GetString((byte*) pDesc, len);
+      throw new GlfwException(new string($"Can't create window, {code.ToString()}: {msg}"));
     }
 
     _snView.Load += OnLoad;
