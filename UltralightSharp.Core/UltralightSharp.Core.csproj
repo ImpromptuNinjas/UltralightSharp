@@ -21,6 +21,14 @@
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
     </PropertyGroup>
 
+    <Choose>
+        <When Condition="'$(TargetFramework)'=='net45'">
+            <ItemGroup>
+                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+            </ItemGroup>
+        </When>
+    </Choose>
+
     <ItemGroup>
         <None Include="..\icon.png">
             <Pack>True</Pack>

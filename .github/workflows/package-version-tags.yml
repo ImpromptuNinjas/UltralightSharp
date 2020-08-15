@@ -24,6 +24,8 @@ jobs:
           dotnet-version: 3.1.401
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Build Core
+        run: dotnet build -c Release UltralightSharp.Core/UltralightSharp.Core.csproj
       - name: Install dependencies
         run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
       - name: Write Official Strong Name Key
