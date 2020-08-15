@@ -1,7 +1,8 @@
 <Project>
     <PropertyGroup>
         <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)</SolutionDir>
-        <Version>1.2.0-beta-r6</Version>
+        <Version>1.2.0-beta-r7</Version>
+        <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
     </PropertyGroup>
     
     <Target Name="UpdatePackageCacheForDependencies" AfterTargets="Pack">

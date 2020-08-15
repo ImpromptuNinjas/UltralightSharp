@@ -31,6 +31,7 @@
     <ItemGroup>
         <ProjectReference Include="../UltralightSharp/UltralightSharp.csproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+            <ExcludeAssets>all</ExcludeAssets>
         </ProjectReference>
     </ItemGroup>
 
@@ -62,4 +63,10 @@
         </Content>
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Update="**\*.*.cs">
+            <WouldDependOn>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '^(.*?)\..*$', '$1.cs'))</WouldDependOn>
+            <DependentUpon Condition="'%(DependentUpon)' == '' And '%(WouldDependOn)' != '%(Filename)'">%(WouldDependOn)</DependentUpon>
+        </Compile>
+    </ItemGroup>
 </Project>
