@@ -1,16 +1,30 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Silk.NET.GLFW;
 using Silk.NET.Input;
-using Silk.NET.Input.Common;
 using Silk.NET.OpenGL;
+using ErrorCode = Silk.NET.OpenGL.ErrorCode;
 
 partial class Program {
 
   private static unsafe void OnLoad() {
+    var plat = Silk.NET.Windowing.Window.Platforms.First(p => p.IsSourceOfView(_wnd));
+    var platType = plat.GetType();
+    Console.WriteLine($"Windowing Platform: {platType.Name}");
+
+    if (platType.Name.Contains("Glfw")) {
+      var glfw = GlfwProvider.GLFW.Value;
+      Console.WriteLine($"GLFW v{glfw.GetVersionString()}");
+    }
+    else
+      // TODO: other windowing platforms
+      throw new PlatformNotSupportedException(platType.Name);
+
     //Getting the opengl api for drawing to the screen.
     _gl = GL.GetApi(_wnd);
-    
+
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
@@ -352,7 +366,7 @@ partial class Program {
     var input = _wnd.CreateInput();
     foreach (var kb in input.Keyboards)
       kb.KeyDown += KeyDown;
-    
+
     Console.WriteLine("Loading index.html");
     _view.LoadUrl("file:///index.html");
   }

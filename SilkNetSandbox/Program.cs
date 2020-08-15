@@ -1,13 +1,11 @@
-﻿using Silk.NET.Input;
-using Silk.NET.Input.Common;
-using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
-using Silk.NET.Windowing.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -15,9 +13,11 @@ using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
 using Silk.NET.GLFW;
-using Silk.NET.OpenGL.Extensions.KHR;
 using SixLabors.ImageSharp.PixelFormats;
 using ErrorCode = Silk.NET.GLFW.ErrorCode;
+using PixelFormat = Silk.NET.OpenGL.PixelFormat;
+using PixelType = Silk.NET.OpenGL.PixelType;
+using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
 
 partial class Program {
 
@@ -75,22 +75,6 @@ partial class Program {
 
     //InjectRenderDoc();
 
-    if (Silk.NET.Windowing.Window.IsGlfw || Silk.NET.Windowing.Window.Platform == null) {
-      var glfw = GlfwProvider.GLFW.Value;
-      Console.WriteLine($"GLFW Library load point: 0x{glfw.Library.Handle.ToInt64():X8}");
-      var code = glfw.GetError(out var pDesc);
-      if (code != ErrorCode.NoError) {
-        var str = new string(pDesc);
-        throw new GlfwException($"GLFW Init failed, {code}: {str}");
-      }
-
-      Console.WriteLine("GLFW Init Succeeded.");
-    }
-
-    Silk.NET.Windowing.Window.Init();
-
-    Console.WriteLine($"Windowing Platform: {Silk.NET.Windowing.Window.Platform!.GetType().Name}");
-
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
       ContextAPI.OpenGL,
@@ -100,7 +84,7 @@ partial class Program {
     );
     options.Size = new Size(1024, 576);
     options.Title = "UltralightSharp - OpenGL (Silk.NET)";
-    options.VSync = VSyncMode.On;
+    options.VSync = true;
     _wnd = Silk.NET.Windowing.Window.Create(options);
 
     _wnd.Load += OnLoad;
