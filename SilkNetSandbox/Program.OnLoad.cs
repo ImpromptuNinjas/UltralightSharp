@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Silk.NET.GLFW;
 using Silk.NET.Input;
 using Silk.NET.OpenGLES;
+using Silk.NET.Windowing.Common;
 
 partial class Program {
 
@@ -36,7 +37,8 @@ partial class Program {
     var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
     Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
 
-    //_wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
+    if (_snView is IWindow wnd)
+      wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
     EnableDebugExtension();
 

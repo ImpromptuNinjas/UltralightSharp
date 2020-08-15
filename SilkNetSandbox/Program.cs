@@ -13,12 +13,13 @@ using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
+using Silk.NET.GLFW;
 using Silk.NET.Windowing.Common;
 using SixLabors.ImageSharp.PixelFormats;
-using Monitor = Silk.NET.Windowing.Monitor;
 using PixelFormat = Silk.NET.OpenGLES.PixelFormat;
 using PixelType = Silk.NET.OpenGLES.PixelType;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
+using Window = Silk.NET.Windowing.Window;
 
 partial class Program {
 
@@ -79,25 +80,6 @@ partial class Program {
 
     //InjectRenderDoc();
 
-    var rr = Monitor.GetMainMonitor().VideoMode.RefreshRate;
-
-    var v = Silk.NET.Windowing.Window.GetView(new ViewOptions(
-      true,
-      30,
-      30,
-      new GraphicsAPI(
-        ContextAPI.OpenGLES,
-        ContextProfile.Core,
-        ContextFlags.ForwardCompatible | ContextFlags.Debug,
-        new APIVersion(3, 1)
-      ),
-      VSyncMode.On,
-      1,
-      true,
-      new VideoMode(new Size(1024, 576), rr)
-    ));
-
-    /*
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
       ContextAPI.OpenGLES,
@@ -105,14 +87,25 @@ partial class Program {
       ContextFlags.ForwardCompatible | ContextFlags.Debug,
       new APIVersion(3, 1)
     );
-    options.Size = new Size(1024, 576);
-    options.Title = "UltralightSharp - OpenGL (Silk.NET)";
+    var size = new Size(1024, 576);
+    var title = "UltralightSharp - OpenGL ES via ANGLE (Silk.NET)";
+    
+    options.Size = size;
+    options.Title = title;
     options.VSync = VSyncMode.On;
     //options.VSync = true;
 
-    _wnd = Silk.NET.Windowing.Window.Create(options);
-    */
-    _snView = v;
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+      var glfw = GlfwProvider.GLFW.Value;
+      glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
+      glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+    }
+
+    _snView = Window.Create(options);
+
+    if (_snView.Handle == default) {
+      throw new PlatformNotSupportedException("Can't create window.");
+    }
 
     _snView.Load += OnLoad;
     _snView.Render += OnRender;
