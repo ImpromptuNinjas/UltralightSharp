@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using Silk.NET.OpenGL;
-using Silk.NET.OpenGL.Extensions.KHR;
+using Silk.NET.OpenGLES;
+using Silk.NET.OpenGLES.Extensions.KHR;
 
 partial class Program {
 
@@ -46,9 +46,6 @@ partial class Program {
       default: {
         // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
         switch (level) {
-          case DebugSeverity.DontCare:
-            Console.WriteLine(prefixedMsg);
-            break;
           case DebugSeverity.DebugSeverityNotification:
             Console.WriteLine(prefixedMsg);
             break;
@@ -64,8 +61,7 @@ partial class Program {
             Console.Error.Flush();
             break;
           default:
-            //Console.Error.WriteLine(prefixedMsg);
-            //Console.Error.Flush();
+            Console.Error.WriteLine(prefixedMsg);
             break;
         }
 

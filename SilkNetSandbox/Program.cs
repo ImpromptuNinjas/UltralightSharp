@@ -1,22 +1,20 @@
-﻿using Silk.NET.OpenGL;
+﻿using Silk.NET.OpenGLES;
 using Silk.NET.Windowing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
-using Silk.NET.GLFW;
+using Silk.NET.Windowing.Common;
 using SixLabors.ImageSharp.PixelFormats;
-using ErrorCode = Silk.NET.GLFW.ErrorCode;
-using PixelFormat = Silk.NET.OpenGL.PixelFormat;
-using PixelType = Silk.NET.OpenGL.PixelType;
+using PixelFormat = Silk.NET.OpenGLES.PixelFormat;
+using PixelType = Silk.NET.OpenGLES.PixelType;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
 
 partial class Program {
@@ -77,14 +75,16 @@ partial class Program {
 
     var options = WindowOptions.Default;
     options.API = new GraphicsAPI(
-      ContextAPI.OpenGL,
+      ContextAPI.OpenGLES,
       ContextProfile.Core,
-      ContextFlags.ForwardCompatible,
-      new APIVersion(3, 2)
+      ContextFlags.ForwardCompatible | ContextFlags.Debug,
+      new APIVersion(3, 1)
     );
     options.Size = new Size(1024, 576);
     options.Title = "UltralightSharp - OpenGL (Silk.NET)";
-    options.VSync = true;
+    options.VSync = VSyncMode.On;
+    //options.VSync = true;
+
     _wnd = Silk.NET.Windowing.Window.Create(options);
 
     _wnd.Load += OnLoad;
@@ -142,7 +142,7 @@ partial class Program {
           var vao = _gl.GenVertexArray();
           entry.VertexArray = vao;
           _gl.BindVertexArray(vao);
-          //LabelObject(ObjectIdentifier.VertexArray, vao, $"Ultralight Geometry VAO {id}");
+          LabelObject(ObjectIdentifier.VertexArray, vao, $"Ultralight Geometry VAO {id}");
           CheckGl();
 
           var buf = _gl.GenBuffer();

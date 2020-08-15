@@ -14,16 +14,37 @@
             <PropertyGroup>
                 <RuntimeIdentifier>win-x64</RuntimeIdentifier>
             </PropertyGroup>
+            <ItemGroup>
+                <Content Include="runtimes\win-x64\native\*">
+                    <Link>%(Filename)%(Extension)</Link>
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <Visible>false</Visible>
+                </Content>
+            </ItemGroup>
         </When>
         <When Condition="$([MSBuild]::IsOsPlatform('Linux'))">
             <PropertyGroup>
                 <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
             </PropertyGroup>
+            <ItemGroup>
+                <Content Include="runtimes\linux-x64\native\*">
+                    <Link>%(Filename)%(Extension)</Link>
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <Visible>false</Visible>
+                </Content>
+            </ItemGroup>
         </When>
         <When Condition="$([MSBuild]::IsOsPlatform('OSX'))">
             <PropertyGroup>
                 <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
             </PropertyGroup>
+            <ItemGroup>
+                <Content Include="runtimes\osx-x64\native\*">
+                    <Link>%(Filename)%(Extension)</Link>
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <Visible>false</Visible>
+                </Content>
+            </ItemGroup>
         </When>
     </Choose>
 
@@ -42,22 +63,21 @@
         <PackageReference Include="Ansi" Version="1.0.3" />
         <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-        <PackageReference Include="Silk.NET.Core" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Input" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Input.Common" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Input.Glfw" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.OpenGL" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.OpenGL.Extensions.KHR" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Windowing" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Windowing.Common" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.Windowing.Glfw" Version="[2.0.0-build98.0,2.0.0-preview)" />
-        <PackageReference Include="Silk.NET.GLFW" Version="[2.0.0-build98.0,2.0.0-preview)" />
+        <PackageReference Include="Silk.NET.Core" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.Input" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES.Extensions.KHR" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.Windowing" Version="2.0.0-preview" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <None Remove="embedded\**\*" />
+        <None Remove="runtimes\**" />
         <EmbeddedResource Include="embedded\**\*" />
+        <EmbeddedResource Remove="runtimes\**" />
+        <Compile Remove="embedded\**" />
+        <Compile Remove="runtimes\**" />
     </ItemGroup>
 
     <ItemGroup>

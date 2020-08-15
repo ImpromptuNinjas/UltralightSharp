@@ -1,4 +1,5 @@
 using Silk.NET.Input;
+using Silk.NET.Input.Common;
 
 partial class Program {
 

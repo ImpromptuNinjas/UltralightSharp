@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     </PropertyGroup>
 
@@ -19,7 +19,8 @@
         <PackageIcon>icon.png</PackageIcon>
         <IsPackable>True</IsPackable>
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
-        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+        <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
     </PropertyGroup>
 
     <ItemGroup>
@@ -37,15 +38,15 @@
         </None>
         <Content Include="Ultralight*.txt">
             <Pack>True</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
             <PackageCopyToOutput>False</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>

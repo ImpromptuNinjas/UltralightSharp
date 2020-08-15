@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Silk.NET.OpenGL;
+using Silk.NET.OpenGLES;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using ShaderType = ImpromptuNinjas.UltralightSharp.Enums.ShaderType;
@@ -222,8 +222,15 @@ partial class Program {
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
 
-      var texId = (int)_view.GetRenderTarget().TextureId - 1;
-      if (!TextureEntries.TryGet(texId, out var texEntry))
+      var renderTarget = _view.GetRenderTarget();
+      /*
+      var rbIndex = (int) renderTarget.RenderBufferId - 1;
+      if (!RenderBufferEntries.TryGet(rbIndex, out var rbEntry))
+        return;
+      // */
+
+      var texIndex = (int) renderTarget.TextureId - 1;
+      if (!TextureEntries.TryGet(texIndex, out var texEntry))
         return;
 
       //var rb = rbEntry.FrameBuffer;
@@ -241,12 +248,12 @@ partial class Program {
       //_gl.ClearColor(0, 0, 0, 0);
       //_gl.Clear((uint) ClearBufferMask.ColorBufferBit);
       /*
-        _gl.BlitFramebuffer(
-          0, 0, (int) texEntry.Width, (int) texEntry.Height,
-          0, 0, (int) wndWidth, (int) wndHeight,
-          (uint) AttribMask.ColorBufferBit,
-          BlitFramebufferFilter.Linear);
-        // */
+      _gl.BlitFramebuffer(
+        0, 0, (int) texEntry.Width, (int) texEntry.Height,
+        0, 0, (int) wndWidth, (int) wndHeight,
+        (uint) AttribMask.ColorBufferBit,
+        BlitFramebufferFilter.Linear);
+      // */
       // /*
       //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
+        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     </PropertyGroup>
 
@@ -20,6 +20,7 @@
         <IsPackable>True</IsPackable>
         <GenerateAssemblyConfigurationAttribute>False</GenerateAssemblyConfigurationAttribute>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     </PropertyGroup>
 
 
@@ -46,15 +47,15 @@
         </None>
         <Content Include="Ultralight*.txt">
             <Pack>True</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
             <PackageCopyToOutput>False</PackageCopyToOutput>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>

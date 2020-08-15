@@ -1,16 +1,15 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Silk.NET.GLFW;
 using Silk.NET.Input;
-using Silk.NET.OpenGL;
-using ErrorCode = Silk.NET.OpenGL.ErrorCode;
+using Silk.NET.OpenGLES;
 
 partial class Program {
 
   private static unsafe void OnLoad() {
-    var plat = Silk.NET.Windowing.Window.Platforms.First(p => p.IsSourceOfView(_wnd));
+    var plat = Silk.NET.Windowing.Window.Platform;
+    //var plat = Silk.NET.Windowing.Window.Platforms.First(p => p.IsSourceOfView(_wnd)); // future
     var platType = plat.GetType();
     Console.WriteLine($"Windowing Platform: {platType.Name}");
 
@@ -80,7 +79,7 @@ partial class Program {
     //Creating a vertex array.
     _qva = _gl.GenVertexArray();
     _gl.BindVertexArray(_qva);
-    //LabelObject(ObjectIdentifier.VertexArray, _qva, "Quad VAO");
+    LabelObject(ObjectIdentifier.VertexArray, _qva, "Quad VAO");
 
     //Initializing a vertex buffer that holds the vertex data.
     _qvb = _gl.GenBuffer(); //Creating the buffer.

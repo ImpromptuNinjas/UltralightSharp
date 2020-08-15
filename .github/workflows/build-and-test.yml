@@ -46,13 +46,10 @@ jobs:
           name: NuGet Package(s) built by ${{ matrix.os }}
           path: '**/*.nupkg'
           if-no-files-found: error
-      - name: Build SilkNetSandbox
-        run: dotnet build -c Release SilkNetSandbox/SilkNetSandbox.csproj
+      - name: Build & Build SilkNetSandbox
+        run: dotnet publish -c Release SilkNetSandbox/SilkNetSandbox.csproj -o SilkNetSandboxArtifact
       - uses: actions/upload-artifact@v2
         with:
           name: SilkNetSandbox for ${{ matrix.os }}
-          path: |
-            SilkNetSandbox/bin/Release/netcoreapp3.1/win-x64/
-            SilkNetSandbox/bin/Release/netcoreapp3.1/linux-x64/
-            SilkNetSandbox/bin/Release/netcoreapp3.1/osx-x64/
+          path: SilkNetSandboxArtifact/
           if-no-files-found: error

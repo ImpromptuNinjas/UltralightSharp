@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp31</TargetFrameworks>
+        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     </PropertyGroup>
     
@@ -70,11 +70,16 @@
             <PackagePath />
             <Link>LICENSE</Link>
         </None>
-        <Content Include="resources\**\*"/>
+        <Content Include="resources\**\*">
+            <Pack>True</Pack>
+            <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
         <Content Include="Ultralight*.txt">
             <Pack>True</Pack>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>
         <None Include="runtimes\*\**">
