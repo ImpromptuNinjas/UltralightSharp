@@ -41,7 +41,7 @@ jobs:
           path: '**/*.nupkg'
           if-no-files-found: error
       - name: Build SilkNetSandbox
-        run: dotnet run -c Release --project SilkNetSandbox
+        run: dotnet build -c Release SilkNetSandbox/SilkNetSandbox.csproj
       - uses: actions/upload-artifact@v2
         with:
           name: SilkNetSandbox for ${{ matrix.os }}
