@@ -45,6 +45,11 @@ partial class Program {
     if (_snView is IWindow wnd)
       wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
+    var monitor = _glfw.GetWindowMonitor((WindowHandle*) _snView.Handle);
+    _glfw.GetMonitorContentScale(monitor, out var xScale, out var yScale);
+    _scaleX = xScale;
+    _scaleY = yScale;
+    
     EnableDebugExtension();
 
     _gl.Disable(EnableCap.Dither);

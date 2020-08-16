@@ -23,29 +23,6 @@ partial class Program {
       return;
 
     if (_haveRendered++ < 1) {
-      //Debugger.Break();
-      //Bind the primary framebuffer, quad geometry and shader.
-      var wndSize = _snView.Size;
-      var wndWidth = (uint) wndSize.Width;
-      var wndHeight = (uint) wndSize.Height;
-      {
-        Span<uint> vp = stackalloc uint[4];
-        _gl.GetInteger(GetPName.Viewport, (int*) Unsafe.AsPointer(ref vp.GetPinnableReference()));
-        _scaleX = vp[2] / (double) wndWidth;
-        _scaleY = vp[3] / (double) wndHeight;
-      }
-
-      {
-        Span<uint> sb = stackalloc uint[4];
-        _gl.GetInteger(GetPName.ScissorBox, (int*) Unsafe.AsPointer(ref sb.GetPinnableReference()));
-        var sScaleX = sb[2] / (double) wndWidth;
-        Console.WriteLine($"X Scale: VP {_scaleX} vs. {sScaleX}");
-
-        var sScaleY = sb[3] / (double) wndHeight;
-        Console.WriteLine($"Y Scale: VP {_scaleY} vs. {sScaleY}");
-      }
-
-      //_gl.Viewport(0, 0, wndWidth, wndHeight);
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
