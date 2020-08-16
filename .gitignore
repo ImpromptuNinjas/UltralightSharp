@@ -63,3 +63,4 @@ TestResult.xml
 /.nuget-push-key
 !.keep
 *.log
+/publish
