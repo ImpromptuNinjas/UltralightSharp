@@ -10,11 +10,14 @@ partial class Program {
 
   private static int _haveRendered;
 
+  private static bool _useBlitting = false;
+
   private static unsafe void OnRender(double delta) //Method needs to be unsafe due to draw elements.
   {
     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
     if (_gl == null)
       return;
+
     if (_haveRendered++ < 2) {
       //Debugger.Break();
       //Bind the primary framebuffer, quad geometry and shader.
@@ -225,53 +228,60 @@ partial class Program {
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
 
-      var renderTarget = _ulView.GetRenderTarget();
-      // /*
-      var rbIndex = (int) renderTarget.RenderBufferId - 1;
-      if (!RenderBufferEntries.TryGet(rbIndex, out var rbEntry))
-        return;
-      // */
-      /*
-      var texIndex = (int) renderTarget.TextureId - 1;
-      if (!TextureEntries.TryGet(texIndex, out var texEntry))
-        return;
-      // */
-
-      var rb = rbEntry.FrameBuffer;
-      var texEntry = rbEntry.TextureEntry;
-      //var tex = texEntry.Texure;
-
-      //_gl.Disable(EnableCap.FramebufferSrgb);
-      _gl.Disable(EnableCap.ScissorTest);
-      _gl.Disable(EnableCap.Blend);
-      //Bind the primary framebuffer, quad geometry and shader.
-      _gl.Viewport(0, 0, wndWidth, wndHeight);
-      _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, rb);
-      _gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
-      _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-      //_gl.ClearColor(0, 0, 0, 0);
-      //_gl.Clear((uint) ClearBufferMask.ColorBufferBit);
-      // /*
-      _gl.BlitFramebuffer(
-        0, 0, (int) texEntry.Width, (int) texEntry.Height,
-        0, 0, (int) wndWidth, (int) wndHeight,
-        (uint) AttribMask.ColorBufferBit,
-        BlitFramebufferFilter.Linear);
-      // */
-      /*
-      //_gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-      _gl.BindVertexArray(_qva);
-      _gl.UseProgram(_qpg);
-      _gl.ActiveTexture(TextureUnit.Texture0);
-      _gl.BindTexture(TextureTarget.Texture2D, tex);
-      _gl.Uniform1(_gl.GetUniformLocation(_qpg, "iTex"), 0);
-      CheckGl();
+      _gl.Viewport(0, 0, wndWidth, wndHeight);
+      _gl.ClearColor(0, 0, 0, 0);
+      _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
 
-      //Draw the geometry.
-      _gl.DrawElements(PrimitiveType.Triangles,
-        (uint) _indicesSize, DrawElementsType.UnsignedInt, null);
-      //*/
+      var renderTarget = _ulView.GetRenderTarget();
+
+      if (_useBlitting) {
+        // /*
+        var rbIndex = (int) renderTarget.RenderBufferId - 1;
+        if (!RenderBufferEntries.TryGet(rbIndex, out var rbEntry))
+          return;
+
+        var rb = rbEntry.FrameBuffer;
+        var texEntry = rbEntry.TextureEntry;
+
+        //_gl.Disable(EnableCap.FramebufferSrgb);
+        _gl.Disable(EnableCap.ScissorTest);
+        _gl.Disable(EnableCap.Blend);
+        //Bind the primary framebuffer, quad geometry and shader.
+        _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, rb);
+        _gl.ReadBuffer(ReadBufferMode.ColorAttachment0);
+        _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+        //_gl.ClearColor(0, 0, 0, 0);
+        //_gl.Clear((uint) ClearBufferMask.ColorBufferBit);
+
+        _gl.BlitFramebuffer(
+          0, 0, (int) texEntry.Width, (int) texEntry.Height,
+          0, 0, (int) wndWidth, (int) wndHeight,
+          (uint) AttribMask.ColorBufferBit,
+          BlitFramebufferFilter.Linear);
+      }
+      else {
+        var texIndex = (int) renderTarget.TextureId - 1;
+        if (!TextureEntries.TryGet(texIndex, out var texEntry))
+          return;
+
+        var tex = texEntry.Texure;
+
+        //_gl.Disable(EnableCap.FramebufferSrgb);
+        _gl.Disable(EnableCap.ScissorTest);
+        _gl.Disable(EnableCap.Blend);
+        //Bind the primary framebuffer, quad geometry and shader.
+        _gl.BindVertexArray(_qva);
+        _gl.UseProgram(_qpg);
+        _gl.ActiveTexture(TextureUnit.Texture0);
+        _gl.BindTexture(TextureTarget.Texture2D, tex);
+        _gl.Uniform1(_gl.GetUniformLocation(_qpg, "iTex"), 0);
+        CheckGl();
+
+        //Draw the quad.
+        _gl.DrawElements(PrimitiveType.Triangles,
+          (uint)_quadIndices.Length, DrawElementsType.UnsignedInt, null);
+      }
     }
   }
 

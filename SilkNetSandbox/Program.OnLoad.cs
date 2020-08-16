@@ -10,8 +10,20 @@ using Ultz.SuperInvoke;
 
 partial class Program {
 
-  private static unsafe void OnLoad() {
+  private static readonly float[] _quadVerts = {
+    //X Y Z
+    1f, 1f, 0f,
+    1f, -1f, 0f,
+    -1f, -1f, 0f,
+    -1f, 1f, 1f
+  };
 
+  private static readonly uint[] _quadIndices = {
+    0, 1, 3,
+    1, 2, 3
+  };
+
+  private static unsafe void OnLoad() {
     //Getting the opengl api for drawing to the screen.
     _gl = LibraryActivator.CreateInstance<GL>(
       new CustomGlEsLibNameContainer().GetLibraryName(),
@@ -53,23 +65,10 @@ partial class Program {
     CheckGl();
 
     //Vertex data, uploaded to the VBO.
-    ReadOnlySpan<float> vertices = stackalloc float[] {
-      //X Y Z
-      1f, 1f, 0f,
-      1f, -1f, 0f,
-      -1f, -1f, 0f,
-      -1f, 1f, 1f
-    };
-    var pVertices = Unsafe.AsPointer(ref Unsafe.AsRef(vertices.GetPinnableReference()));
-    var verticesSize = vertices.Length * sizeof(float);
+    var quadVertsLen = (uint) (_quadVerts.Length * sizeof(float));
 
     //Index data, uploaded to the EBO.
-    ReadOnlySpan<uint> indices = stackalloc uint[] {
-      0, 1, 3,
-      1, 2, 3
-    };
-    var pIndices = Unsafe.AsPointer(ref Unsafe.AsRef(indices.GetPinnableReference()));
-    _indicesSize = indices.Length * sizeof(uint);
+    var indicesSize = (uint) (_quadIndices.Length * sizeof(uint));
 
     //Creating a vertex array.
     _qva = _gl.GenVertexArray();
@@ -80,13 +79,13 @@ partial class Program {
     _qvb = _gl.GenBuffer(); //Creating the buffer.
     _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _qvb); //Binding the buffer.
     LabelObject(ObjectIdentifier.Buffer, _qvb, "Quad VBO");
-    _gl.BufferData(BufferTargetARB.ArrayBuffer, (uint) verticesSize, pVertices, BufferUsageARB.StaticDraw); //Setting buffer data.
+    _gl.BufferData(BufferTargetARB.ArrayBuffer, quadVertsLen, new Span<float>(_quadVerts), BufferUsageARB.StaticDraw); //Setting buffer data.
 
     //Initializing a element buffer that holds the index data.
     _qeb = _gl.GenBuffer(); //Creating the buffer.
     _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _qeb); //Binding the buffer.
     LabelObject(ObjectIdentifier.Buffer, _qeb, "Quad EBO");
-    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (uint) _indicesSize, pIndices, BufferUsageARB.StaticDraw); //Setting buffer data.
+    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, indicesSize, new Span<uint>(_quadIndices), BufferUsageARB.StaticDraw); //Setting buffer data.
 
     //Creating a vertex shader.
     var qvs = _gl.CreateShader(ShaderType.VertexShader);

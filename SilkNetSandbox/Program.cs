@@ -64,8 +64,6 @@ partial class Program {
   private static readonly SlottingList<RenderBufferEntry> RenderBufferEntries
     = new SlottingList<RenderBufferEntry>(8, 2);
 
-  private static int _indicesSize;
-
   private static Renderer _ulRenderer = null!;
 
   private static Session _ulSession = null!;
@@ -489,7 +487,7 @@ partial class Program {
     var glCtx = _snView.GLContext;
 
     Console.WriteLine("Loading EGL...");
-    
+
     _egl = LibraryActivator.CreateInstance<EGL>
     (
       new UnmanagedLibrary(
@@ -605,8 +603,8 @@ partial class Program {
   }
 
   private static void LabelObject(ObjectIdentifier objId, uint vao, string name) {
-    //_gl.ObjectLabel(objId, vao, (uint) name.Length, name);
-    //CheckGl();
+    _dbg.ObjectLabel(objId, vao, (uint) name.Length, name);
+    CheckGl();
   }
 
   private static void OnUpdate(double obj) {
@@ -625,6 +623,7 @@ partial class Program {
   }
 
   private static void CheckGl([CallerLineNumber] int lineNumber = default) {
+#if DEBUG
     var error = _gl.GetError();
     if (error == default)
       return;
@@ -632,6 +631,7 @@ partial class Program {
     Console.Error.WriteLine($"Line {lineNumber}, GL Error: {error}");
     Console.Error.Flush();
     //Debugger.Break();
+#endif
   }
 
 }

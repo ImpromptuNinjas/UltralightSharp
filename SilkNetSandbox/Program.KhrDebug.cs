@@ -5,6 +5,8 @@ using Silk.NET.OpenGLES.Extensions.KHR;
 
 partial class Program {
 
+  private static KhrDebug _dbg;
+
   public static unsafe void EnableDebugExtension() {
     if (!_gl.TryGetExtension(out KhrDebug dbg)) {
       Console.Error.WriteLine("Can't enable GL_KHR_debug extension not present.");
@@ -18,6 +20,7 @@ partial class Program {
     Console.WriteLine("GL_KHR_debug extension enabled.");
 
     dbg.DebugMessageCallback(DebugMessageHandler, default);
+    _dbg = dbg;
   }
 
   //private static unsafe void DebugMessageHandler(KHR source, KHR type, int id, KHR severity, int length, IntPtr message, IntPtr param) {

@@ -15,11 +15,15 @@
                 <RuntimeIdentifier>win-x64</RuntimeIdentifier>
             </PropertyGroup>
             <ItemGroup>
-                <Content Include="runtimes\win-x64\native\*">
+                <None Include="runtimes\win-x64\native\*">
+                    <Pack>True</Pack>
+                    <PackageCopyToOutput>True</PackageCopyToOutput>
+                    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+                    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+                    <PackagePath>%(Identity)</PackagePath>
                     <Link>%(Filename)%(Extension)</Link>
-                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
                     <Visible>false</Visible>
-                </Content>
+                </None>
             </ItemGroup>
         </When>
         <When Condition="$([MSBuild]::IsOsPlatform('Linux'))">
@@ -27,11 +31,15 @@
                 <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
             </PropertyGroup>
             <ItemGroup>
-                <Content Include="runtimes\linux-x64\native\*">
+                <None Include="runtimes\linux-x64\native\*">
+                    <Pack>True</Pack>
+                    <PackageCopyToOutput>True</PackageCopyToOutput>
+                    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+                    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+                    <PackagePath>%(Identity)</PackagePath>
                     <Link>%(Filename)%(Extension)</Link>
-                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
                     <Visible>false</Visible>
-                </Content>
+                </None>
             </ItemGroup>
         </When>
         <When Condition="$([MSBuild]::IsOsPlatform('OSX'))">
@@ -39,11 +47,15 @@
                 <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
             </PropertyGroup>
             <ItemGroup>
-                <Content Include="runtimes\osx-x64\native\*">
+                <None Include="runtimes\osx-x64\native\*">
+                    <Pack>True</Pack>
+                    <PackageCopyToOutput>True</PackageCopyToOutput>
+                    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+                    <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+                    <PackagePath>%(Identity)</PackagePath>
                     <Link>%(Filename)%(Extension)</Link>
-                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
                     <Visible>false</Visible>
-                </Content>
+                </None>
             </ItemGroup>
         </When>
     </Choose>
@@ -81,7 +93,6 @@
 
     <ItemGroup>
         <None Remove="embedded\**\*" />
-        <None Remove="runtimes\**" />
         <EmbeddedResource Include="embedded\**\*" />
         <EmbeddedResource Remove="runtimes\**" />
         <Compile Remove="embedded\**" />
