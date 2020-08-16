@@ -504,6 +504,10 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
+    glfw.DefaultWindowHints();
+    glfw.WindowHint(WindowHintBool.Visible, true);
+    glfw.WindowHint(WindowHintBool.Resizable, true);
+    
     glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
     glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
     glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
@@ -515,13 +519,8 @@ partial class Program {
       var desc = new string((sbyte*) pDesc);
       throw new PlatformNotSupportedException($"Couldn't create simple window, {code}: {desc}");
     }
-
     glfw.DestroyWindow(wh);
 
-    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
-    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-    glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-    glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
     _snView.Initialize();
 
     Console.WriteLine("Starting main loop...");
