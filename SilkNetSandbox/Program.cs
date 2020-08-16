@@ -485,7 +485,8 @@ partial class Program {
 
     var glCtx = _snView.GLContext;
 
-    Console.WriteLine("Creating EGL context...");
+    Console.WriteLine("Loading EGL...");
+    
     _egl = LibraryActivator.CreateInstance<EGL>
     (
       new UnmanagedLibrary(
@@ -495,7 +496,7 @@ partial class Program {
       Strategy.Strategy2
     );
 
-    Console.WriteLine("Creating OpenGL ES context...");
+    Console.WriteLine("Loading OpenGL ES...");
     _gl = LibraryActivator.CreateInstance<GL>
     (
       new CustomGlEsLibNameContainer().GetLibraryName(),
@@ -504,22 +505,10 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
-    glfw.DefaultWindowHints();
-    glfw.WindowHint(WindowHintBool.Visible, true);
-    glfw.WindowHint(WindowHintBool.Resizable, true);
-    
     glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
     glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
     glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
     glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
-    var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
-    if (wh == null) {
-      // ReSharper disable once SuggestVarOrType_Elsewhere
-      var code = glfw.GetError(out char* pDesc);
-      var desc = new string((sbyte*) pDesc);
-      throw new PlatformNotSupportedException($"Couldn't create simple window, {code}: {desc}");
-    }
-    glfw.DestroyWindow(wh);
 
     _snView.Initialize();
 
