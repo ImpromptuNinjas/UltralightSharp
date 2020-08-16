@@ -93,7 +93,7 @@ partial class Program {
       ContextAPI.OpenGLES,
       ContextProfile.Core,
       ContextFlags.ForwardCompatible,
-      new APIVersion(2, 0)
+      new APIVersion(3, 0)
     );
 
     var size = new Size(1024, 576);
@@ -504,10 +504,10 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
-    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-    glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
-    glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
     glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+    glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+    glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
     var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
     if (wh == null) {
       // ReSharper disable once SuggestVarOrType_Elsewhere
@@ -518,10 +518,10 @@ partial class Program {
 
     glfw.DestroyWindow(wh);
 
-    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-    glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
-    glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
     glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+    glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+    glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
     _snView.Initialize();
 
     Console.WriteLine("Starting main loop...");
