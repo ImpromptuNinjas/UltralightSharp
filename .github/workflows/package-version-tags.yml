@@ -26,7 +26,7 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Write Official Strong Name Key
         run: echo ${{ secrets.OFFICIAL_SNK }} | base64 -d > official.snk
-      - name: Build Core Libraries
+      - name: Build & Pack Core Libraries
         run: |
           dotnet build -c Release -p:IsOfficial=true UltralightSharp.Core.WinX64/UltralightSharp.Core.WinX64.csproj
           dotnet build -c Release -p:IsOfficial=true UltralightSharp.Core.LinuxX64/UltralightSharp.Core.LinuxX64.csproj
@@ -36,13 +36,17 @@ jobs:
         run: dotnet restore -f UltralightSharp/UltralightSharp.csproj
         env:
           OFFICIAL_SNK: ${{secrets.OFFICIAL_SNK}}
-      - name: Build Main Library
+      - name: Get Tag Value
+        uses: tyler-in/get-tag@master
+        id: tag
+        with:
+          tagRegex: 'v(.*)$'
+      - name: Build & Pack Main Library
         run: dotnet build -c Release -p:IsOfficial=true UltralightSharp/UltralightSharp.csproj
-      - name: Pack Libraries
-        run: |
-          dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp.Core.WinX64/UltralightSharp.Core.WinX64.csproj
-          dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp.Core.LinuxX64/UltralightSharp.Core.LinuxX64.csproj
-          dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp.Core.OsxX64/UltralightSharp.Core.OsxX64.csproj
-          dotnet pack -c Release -p:IsOfficial=true --include-symbols UltralightSharp.Core/UltralightSharp.Core.csproj
       - name: Push Nupkgs
-        run: dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate *.nupkg
+        run: |
+          dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate ImpromptuNinjas.UltralightSharp.Core.WinX64.${{ steps.tag.outputs.tag }}.nupkg
+          dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate ImpromptuNinjas.UltralightSharp.Core.LinuxX64.${{ steps.tag.outputs.tag }}.nupkg
+          dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate ImpromptuNinjas.UltralightSharp.Core.OsxX64.${{ steps.tag.outputs.tag }}.nupkg
+          dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate ImpromptuNinjas.UltralightSharp.Core.${{ steps.tag.outputs.tag }}.nupkg
+          dotnet nuget push -s nuget.org -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate ImpromptuNinjas.UltralightSharp.${{ steps.tag.outputs.tag }}.nupkg
