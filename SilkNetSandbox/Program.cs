@@ -478,8 +478,10 @@ partial class Program {
       _ulSession = new Session(_ulRenderer, false, "Demo");
 
       var wndSize = _snView.Size;
-      var width = (uint) wndSize.Width;
-      var height = (uint) wndSize.Height;
+      var wndWidth = (uint) wndSize.Width;
+      var wndHeight = (uint) wndSize.Height;
+      var width = (uint)(_scaleX * wndWidth);
+      var height = (uint) (_scaleY * wndHeight);
       _ulView = new View(_ulRenderer, width, height, false, _ulSession);
       _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }

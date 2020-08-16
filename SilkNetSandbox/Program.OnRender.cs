@@ -8,9 +8,13 @@ using ShaderType = ImpromptuNinjas.UltralightSharp.Enums.ShaderType;
 
 partial class Program {
 
-  private static int _haveRendered;
+  private static long _haveRendered;
 
   private static bool _useBlitting = false;
+
+  private static double _scaleX = 1;
+
+  private static double _scaleY = 1;
 
   private static unsafe void OnRender(double delta) //Method needs to be unsafe due to draw elements.
   {
@@ -18,13 +22,30 @@ partial class Program {
     if (_gl == null)
       return;
 
-    if (_haveRendered++ < 2) {
+    if (_haveRendered++ < 1) {
       //Debugger.Break();
       //Bind the primary framebuffer, quad geometry and shader.
       var wndSize = _snView.Size;
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
-      _gl.Viewport(0, 0, wndWidth, wndHeight);
+      {
+        Span<uint> vp = stackalloc uint[4];
+        _gl.GetInteger(GetPName.Viewport, (int*) Unsafe.AsPointer(ref vp.GetPinnableReference()));
+        _scaleX = vp[2] / (double) wndWidth;
+        _scaleY = vp[3] / (double) wndHeight;
+      }
+
+      {
+        Span<uint> sb = stackalloc uint[4];
+        _gl.GetInteger(GetPName.ScissorBox, (int*) Unsafe.AsPointer(ref sb.GetPinnableReference()));
+        var sScaleX = sb[2] / (double) wndWidth;
+        Console.WriteLine($"X Scale: VP {_scaleX} vs. {sScaleX}");
+
+        var sScaleY = sb[3] / (double) wndHeight;
+        Console.WriteLine($"Y Scale: VP {_scaleY} vs. {sScaleY}");
+      }
+
+      //_gl.Viewport(0, 0, wndWidth, wndHeight);
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.ReadFramebuffer, 0);
       _gl.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
@@ -227,9 +248,11 @@ partial class Program {
       var wndSize = _snView.Size;
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
+      var width = (uint)(_scaleX * wndWidth);
+      var height = (uint) (_scaleY * wndHeight);
 
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-      _gl.Viewport(0, 0, wndWidth, wndHeight);
+      _gl.Viewport(0, 0, width, height);
       _gl.ClearColor(0, 0, 0, 0);
       _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
 
@@ -256,7 +279,7 @@ partial class Program {
 
         _gl.BlitFramebuffer(
           0, 0, (int) texEntry.Width, (int) texEntry.Height,
-          0, 0, (int) wndWidth, (int) wndHeight,
+          0, 0, (int) width, (int) height,
           (uint) AttribMask.ColorBufferBit,
           BlitFramebufferFilter.Linear);
       }
@@ -280,7 +303,7 @@ partial class Program {
 
         //Draw the quad.
         _gl.DrawElements(PrimitiveType.Triangles,
-          (uint)_quadIndices.Length, DrawElementsType.UnsignedInt, null);
+          (uint) _quadIndices.Length, DrawElementsType.UnsignedInt, null);
       }
     }
   }
