@@ -15,10 +15,12 @@ using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
 using Silk.NET.Core;
 using Silk.NET.Core.Contexts;
+using Silk.NET.EGL;
 using Silk.NET.GLFW;
 using Silk.NET.Windowing.Common;
 using SixLabors.ImageSharp.PixelFormats;
 using Ultz.SuperInvoke;
+using Ultz.SuperInvoke.Loader;
 using PixelFormat = Silk.NET.OpenGLES.PixelFormat;
 using PixelType = Silk.NET.OpenGLES.PixelType;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
@@ -36,6 +38,8 @@ partial class Program {
   }
 
   private static IView _snView = null!;
+
+  private static EGL _egl = null!;
 
   private static GL _gl = null!;
 
@@ -102,8 +106,6 @@ partial class Program {
     //options.VSync = true;
 
     var glfw = GlfwProvider.GLFW.Value;
-
-    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
 
     _snView = Window.Create(options);
 
@@ -478,20 +480,40 @@ partial class Program {
       _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }
 
-
-    Console.WriteLine("Creating OpenGL ES context...");
     var glCtx = _snView.GLContext;
 
-    //_gl = _snView.CreateOpenGLES();
+    Console.WriteLine("Creating EGL context...");
+    _egl = LibraryActivator.CreateInstance<EGL>
+    (
+      new UnmanagedLibrary(
+        new CustomEglLibNameContainer().GetLibraryName(),
+        LibraryLoader.GetPlatformDefaultLoader()
+      ),
+      Strategy.Strategy2
+    );
+
+    Console.WriteLine("Creating OpenGL ES context...");
     _gl = LibraryActivator.CreateInstance<GL>
     (
       new CustomGlEsLibNameContainer().GetLibraryName(),
       TemporarySuperInvokeClass.GetLoader(glCtx)
     );
-    
+
     Console.WriteLine("Initializing window...");
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+      glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
+
+    var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
+    if (wh == null) throw new PlatformNotSupportedException("Couldn't create simple window.");
+
+    glfw.SetWindowShouldClose(wh, true);
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+      glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
+
     _snView.Initialize();
-    
+
     Console.WriteLine("Starting main loop...");
     _snView.Run();
   }

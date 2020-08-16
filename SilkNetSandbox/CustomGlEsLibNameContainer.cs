@@ -1,15 +1,7 @@
-using System;
 using System.IO;
-using Silk.NET.Core.Loader;
 
-/// <summary>Contains the library name of OpenGLES.</summary>
-internal class CustomGlEsLibNameContainer : SearchPathContainer {
-
-  private static readonly string AssemblyPath
-    = new Uri(typeof(CustomGlEsLibNameContainer).Assembly.CodeBase!).LocalPath;
-
-  private static readonly string AssemblyDirectory
-    = Path.GetDirectoryName(AssemblyPath)!;
+/// <summary>Contains the library name of OpenGL ES.</summary>
+internal class CustomGlEsLibNameContainer : LocalLibNameContainer {
   
   /// <inheritdoc />
   public override string Linux { get; } = Path.Combine(AssemblyDirectory, "libGLESv2.so");

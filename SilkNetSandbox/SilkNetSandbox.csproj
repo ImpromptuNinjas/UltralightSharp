@@ -64,9 +64,17 @@
         <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
         <PackageReference Include="Silk.NET.Core" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.EGL" Version="1.5.0" />
+        <PackageReference Include="Silk.NET.EGL.Extensions.ANGLE" Version="1.5.0" />
+        <PackageReference Include="Silk.NET.EGL.Extensions.EXT" Version="1.5.0" />
+        <PackageReference Include="Silk.NET.EGL.Extensions.KHR" Version="1.5.0" />
         <PackageReference Include="Silk.NET.Input" Version="2.0.0-preview" />
         <PackageReference Include="Silk.NET.OpenGLES" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES.Extensions.ANGLE" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES.Extensions.EXT" Version="2.0.0-preview" />
         <PackageReference Include="Silk.NET.OpenGLES.Extensions.KHR" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES.Extensions.MESA" Version="2.0.0-preview" />
+        <PackageReference Include="Silk.NET.OpenGLES.Extensions.OES" Version="2.0.0-preview" />
         <PackageReference Include="Silk.NET.Windowing" Version="2.0.0-preview" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0" />
     </ItemGroup>
