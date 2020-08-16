@@ -105,7 +105,10 @@ partial class Program {
     options.VSync = VSyncMode.On;
     //options.VSync = true;
 
-    var glfw = GlfwProvider.GLFW.Value;
+    Glfw glfw = Glfw.GetApi();
+    glfw.InitHint(InitHint.CocoaMenubar, false);
+    glfw.InitHint(InitHint.CocoaChdirResources, false);
+    glfw = GlfwProvider.GLFW.Value;
 
     _snView = Window.Create(options);
 
@@ -504,10 +507,19 @@ partial class Program {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
 
+    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+    glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
+    glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
     var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
-    if (wh == null) throw new PlatformNotSupportedException("Couldn't create simple window.");
+    if (wh == null) {
+      // ReSharper disable once SuggestVarOrType_Elsewhere
+      var code = glfw.GetError(out char* pDesc);
+      var desc = new string((sbyte*) pDesc);
+      throw new PlatformNotSupportedException($"Couldn't create simple window, {code}: {desc}");
+    }
 
-    glfw.SetWindowShouldClose(wh, true);
+    glfw.DestroyWindow(wh);
 
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
       glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
