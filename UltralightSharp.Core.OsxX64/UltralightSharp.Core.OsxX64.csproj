@@ -9,7 +9,7 @@
     <PropertyGroup>
         <PackageId>ImpromptuNinjas.UltralightSharp.Core.OsxX64</PackageId>
         <Title>ImpromptuNinjas.UltralightSharp.Core.OsxX64</Title>
-        <Description>Windows x64 Ultralight native rutimes for the UltralightSharp project.</Description>
+        <Description>OSX/XNU x64 Ultralight native rutimes for the UltralightSharp project.</Description>
         <Authors>Tyler Young</Authors>
         <Copyright>Copyright © 2020 Tyler Young</Copyright>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
