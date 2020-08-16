@@ -23,7 +23,9 @@ partial class Program {
       throw new PlatformNotSupportedException(platType.Name);
 
     //Getting the opengl api for drawing to the screen.
-    _gl = GL.GetApi(_snView);
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+    if (_gl == null)
+      _gl = GL.GetApi(_snView);
 
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
@@ -56,7 +58,7 @@ partial class Program {
     //CheckGl();
     //_gl.Hint(HintTarget.PolygonSmoothHint, HintMode.DontCare);
     //CheckGl();
-    _gl.Disable(EnableCap.Multisample);
+    //_gl.Disable(EnableCap.Multisample);
     CheckGl();
 
     //Vertex data, uploaded to the VBO.

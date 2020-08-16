@@ -86,7 +86,7 @@ partial class Program {
     options.API = new GraphicsAPI(
       ContextAPI.OpenGLES,
       ContextProfile.Core,
-      ContextFlags.ForwardCompatible | ContextFlags.Debug,
+      ContextFlags.ForwardCompatible,
       new APIVersion(2, 0)
     );
     
@@ -100,6 +100,8 @@ partial class Program {
     //options.VSync = true;
 
     var glfw = GlfwProvider.GLFW.Value;
+
+    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
 
     _snView = Window.Create(options);
 
@@ -344,13 +346,13 @@ partial class Program {
           _gl.BindTexture(TextureTarget.Texture2D, tex);
 
           var linear = (int) GLEnum.Linear;
-          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
-          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
+          _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
+          _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
           CheckGl();
 
           var clampToEdge = (int) GLEnum.ClampToEdge;
-          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
-          _gl.TexParameterI(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
+          _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
+          _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
           CheckGl();
 
           if (bitmap.IsEmpty()) {
@@ -475,6 +477,11 @@ partial class Program {
       _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }
 
+    Console.WriteLine("Creating OpenGL ES context...");
+    _gl = _snView.CreateOpenGLES();
+    Console.WriteLine("Initializing window...");
+    _snView.Initialize();
+    Console.WriteLine("Starting main loop...");
     _snView.Run();
   }
 
@@ -564,8 +571,8 @@ partial class Program {
   }
 
   private static void LabelObject(ObjectIdentifier objId, uint vao, string name) {
-    _gl.ObjectLabel(objId, vao, (uint) name.Length, name);
-    CheckGl();
+    //_gl.ObjectLabel(objId, vao, (uint) name.Length, name);
+    //CheckGl();
   }
 
   private static void OnUpdate(double obj) {
