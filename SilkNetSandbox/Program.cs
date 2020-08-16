@@ -510,7 +510,7 @@ partial class Program {
     glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
     glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
     glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
-    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
+    //glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
     var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
     if (wh == null) {
       // ReSharper disable once SuggestVarOrType_Elsewhere
