@@ -504,13 +504,10 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-      glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
-
     glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
     glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
     glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
-    //glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
+    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
     var wh = glfw.CreateWindow(1024, 576, "Test", null, null);
     if (wh == null) {
       // ReSharper disable once SuggestVarOrType_Elsewhere
@@ -521,9 +518,10 @@ partial class Program {
 
     glfw.DestroyWindow(wh);
 
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-      glfw.WindowHint(WindowHintContextApi.ContextCreationApi, (ContextApi) 0x00036003 /* OS Mesa */);
-
+    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+    glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
+    glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
     _snView.Initialize();
 
     Console.WriteLine("Starting main loop...");
