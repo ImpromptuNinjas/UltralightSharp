@@ -13,10 +13,12 @@ using System.Text;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using Nvidia.Nsight.Injection;
+using Silk.NET.Core;
 using Silk.NET.Core.Contexts;
 using Silk.NET.GLFW;
 using Silk.NET.Windowing.Common;
 using SixLabors.ImageSharp.PixelFormats;
+using Ultz.SuperInvoke;
 using PixelFormat = Silk.NET.OpenGLES.PixelFormat;
 using PixelType = Silk.NET.OpenGLES.PixelType;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
@@ -82,16 +84,16 @@ partial class Program {
     //InjectRenderDoc();
 
     var options = WindowOptions.Default;
-    
+
     options.API = new GraphicsAPI(
       ContextAPI.OpenGLES,
       ContextProfile.Core,
       ContextFlags.ForwardCompatible,
       new APIVersion(2, 0)
     );
-    
+
     var size = new Size(1024, 576);
-    
+
     var title = "UltralightSharp - OpenGL ES via ANGLE (Silk.NET)";
 
     options.Size = size;
@@ -128,7 +130,6 @@ partial class Program {
       throw new GlfwException(new string($"Can't create window, {code.ToString()}: {msg}"));
     }
     */
-
 
     _snView.Load += OnLoad;
     _snView.Render += OnRender;
@@ -477,10 +478,20 @@ partial class Program {
       _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
     }
 
+
     Console.WriteLine("Creating OpenGL ES context...");
-    _gl = _snView.CreateOpenGLES();
+    var glCtx = _snView.GLContext;
+
+    //_gl = _snView.CreateOpenGLES();
+    _gl = LibraryActivator.CreateInstance<GL>
+    (
+      new CustomGlEsLibNameContainer().GetLibraryName(),
+      TemporarySuperInvokeClass.GetLoader(glCtx)
+    );
+    
     Console.WriteLine("Initializing window...");
     _snView.Initialize();
+    
     Console.WriteLine("Starting main loop...");
     _snView.Run();
   }
