@@ -1,32 +1,22 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Silk.NET.Core;
 using Silk.NET.GLFW;
 using Silk.NET.Input;
 using Silk.NET.OpenGLES;
 using Silk.NET.Windowing.Common;
+using Ultz.SuperInvoke;
 
 partial class Program {
 
   private static unsafe void OnLoad() {
-    /*
-    var plat = Silk.NET.Windowing.Window.Platform;
-    //var plat = Silk.NET.Windowing.Window.Platforms.First(p => p.IsSourceOfView(_wnd)); // future
-    var platType = plat.GetType();
-    //Console.WriteLine($"Windowing Platform: {platType.Name}");
-
-    if (platType.Name.Contains("Glfw")) {
-      var glfw = GlfwProvider.GLFW.Value;
-      Console.WriteLine($"GLFW v{glfw.GetVersionString()}");
-    }
-    else
-      // TODO: other windowing platforms
-      throw new PlatformNotSupportedException(platType.Name);
-    // */
 
     //Getting the opengl api for drawing to the screen.
-    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-    _gl = GL.GetApi(_snView);
+    _gl = LibraryActivator.CreateInstance<GL>(
+      new CustomGlEsLibNameContainer().GetLibraryName(),
+      TemporarySuperInvokeClass.GetLoader(_snView.GLContext)
+    );
 
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);

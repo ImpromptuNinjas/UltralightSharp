@@ -74,6 +74,8 @@ partial class Program {
 
   private static List<Command> _commands = new List<Command>();
 
+  private static Glfw _glfw;
+
   private static unsafe void Main(string[] args) {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
       Console.OutputEncoding = Encoding.UTF8;
@@ -105,10 +107,11 @@ partial class Program {
     options.VSync = VSyncMode.On;
     //options.VSync = true;
 
-    Glfw glfw = Glfw.GetApi();
-    glfw.InitHint(InitHint.CocoaMenubar, false);
-    glfw.InitHint(InitHint.CocoaChdirResources, false);
-    glfw = GlfwProvider.GLFW.Value;
+    _glfw = Glfw.GetApi();
+    Console.WriteLine($"GLFW v{_glfw.GetVersionString()}");
+    _glfw.InitHint(InitHint.CocoaMenubar, false);
+    _glfw.InitHint(InitHint.CocoaChdirResources, false);
+    _glfw = GlfwProvider.GLFW.Value;
 
     _snView = Window.Create(options);
 
@@ -505,10 +508,10 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
-    glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
-    glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-    glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-    glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
+    _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+    _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+    _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+    _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
 
     _snView.Initialize();
 
