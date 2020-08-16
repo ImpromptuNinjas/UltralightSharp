@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Silk.NET.Core;
 using Silk.NET.GLFW;
 using Silk.NET.Input;
@@ -45,11 +46,15 @@ partial class Program {
     if (_snView is IWindow wnd)
       wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
-    var monitor = _glfw.GetWindowMonitor((WindowHandle*) _snView.Handle);
-    _glfw.GetMonitorContentScale(monitor, out var xScale, out var yScale);
-    _scaleX = xScale;
-    _scaleY = yScale;
-    
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+      var monitors = _glfw.GetMonitors(out var monitorCount);
+      var monitorInterface = ((IWindow) _snView).Monitor;
+      var monitor = monitors[monitorInterface.Index];
+      _glfw.GetMonitorContentScale(monitor, out var xScale, out var yScale);
+      _scaleX = xScale;
+      _scaleY = yScale;
+    }
+
     EnableDebugExtension();
 
     _gl.Disable(EnableCap.Dither);

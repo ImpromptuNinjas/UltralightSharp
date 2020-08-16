@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Silk.NET.OpenGLES;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
+using Silk.NET.GLFW;
+using Silk.NET.Windowing.Common;
 using ShaderType = ImpromptuNinjas.UltralightSharp.Enums.ShaderType;
 
 partial class Program {
@@ -225,7 +228,7 @@ partial class Program {
       var wndSize = _snView.Size;
       var wndWidth = (uint) wndSize.Width;
       var wndHeight = (uint) wndSize.Height;
-      var width = (uint)(_scaleX * wndWidth);
+      var width = (uint) (_scaleX * wndWidth);
       var height = (uint) (_scaleY * wndHeight);
 
       _gl.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
