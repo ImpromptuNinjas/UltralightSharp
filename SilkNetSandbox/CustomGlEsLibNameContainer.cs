@@ -7,13 +7,13 @@ internal class CustomGlEsLibNameContainer : SearchPathContainer {
   public override string Linux => "libGLESv2.so";
 
   /// <inheritdoc />
-  public override string MacOS => "./";
+  public override string MacOS => "libGLESv2.so";
 
   /// <inheritdoc />
   public override string Android => "libGLESv2.so";
 
   /// <inheritdoc />
-  public override string IOS => "./";
+  public override string IOS => "libGLESv2.so";
 
   /// <inheritdoc />
   public override string Windows64 => "libGLESv2.dll";
