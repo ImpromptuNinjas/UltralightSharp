@@ -87,20 +87,40 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
           renderer.Render();
         }
 
-        {
-          var urlStr = view.GetUrl();
-          Console.WriteLine($"After Loaded View GetURL: {urlStr}");
-        }
+        ConsoleKeyInfo key;
+        do {
+          {
+            var urlStr = view.GetUrl();
+            Console.WriteLine($"URL: {urlStr}");
 
-        {
-          var surface = view.GetSurface();
-          var bitmap = surface.GetBitmap();
-          var pixels = bitmap.LockPixels();
-          RenderAnsi<Bgra32>(pixels, bitmap.GetWidth(), bitmap.GetHeight(), 2, borderless: true);
-          bitmap.UnlockPixels();
-          //bitmap.SwapRedBlueChannels();
-          //bitmap.WritePng("Loaded.png");
-        }
+            GetConsoleSize(out var cw, out var ch);
+            view.Resize((uint) cw * 5, (uint) ch * 14);
+            do {
+              renderer.Update();
+              renderer.Render();
+            } while (view.IsLoading());
+
+            var surface = view.GetSurface();
+            var bitmap = surface.GetBitmap();
+            var pixels = bitmap.LockPixels();
+            RenderAnsi<Bgra32>(pixels,
+              bitmap.GetWidth(),
+              bitmap.GetHeight(),
+              2,
+              borderless: true
+            );
+            bitmap.UnlockPixels();
+            //bitmap.SwapRedBlueChannels();
+            //bitmap.WritePng("Loaded.png");
+          }
+
+          if (!Environment.UserInteractive || Console.IsInputRedirected)
+            return;
+
+          Console.Write("Press ESC to exit, any other key to redraw.");
+          key = Console.ReadKey(true);
+          Console.WriteLine();
+        } while (key.Key != ConsoleKey.Escape);
       }
 
       try {
@@ -109,13 +129,6 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       catch {
         /* ok */
       }
-
-      if (!Environment.UserInteractive || Console.IsInputRedirected)
-        return;
-
-      Console.Write("Press any key to exit.");
-      Console.ReadKey(true);
-      Console.WriteLine();
     }
 
     private static void LoggerCallback(LogLevel logLevel, string? msg)

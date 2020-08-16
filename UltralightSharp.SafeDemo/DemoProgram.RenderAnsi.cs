@@ -9,6 +9,16 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
   public static partial class DemoProgram {
 
+    public static void GetConsoleSize(out int width, out int height) {
+      width = 0;
+      try { width = Console.WindowWidth; }
+      catch { width = 72; }
+
+      height = 0;
+      try { height = Console.WindowHeight; }
+      catch { height = 25; }
+    }
+
     public static unsafe void RenderAnsi<TColor>(IntPtr pixels,
       uint w, uint h,
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
@@ -16,20 +26,13 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
     ) where TColor : unmanaged, IPixel<TColor> {
       var aspect = w / (double) h;
 
-      // get the console size
-      // @formatter:off
-      var cw = 0;
-      if (maxWidth < 0)
-        try { cw = Console.WindowWidth; } catch { cw = 72; }
-      else
+      GetConsoleSize(out var cw, out var ch);
+      
+      if (maxWidth >= 0)
         cw = maxWidth;
 
-      var ch = 0;
-      if (maxLineCount < 0)
-        try { ch = Console.WindowHeight; } catch { ch = 25; }
-      else
+      if (maxLineCount >= 0)
         ch = maxLineCount;
-      // @formatter:on
 
       cw -= 1;
       ch -= (int) reduceLineCount;
