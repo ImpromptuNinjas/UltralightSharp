@@ -9,10 +9,11 @@ using Silk.NET.Windowing.Common;
 partial class Program {
 
   private static unsafe void OnLoad() {
+    /*
     var plat = Silk.NET.Windowing.Window.Platform;
     //var plat = Silk.NET.Windowing.Window.Platforms.First(p => p.IsSourceOfView(_wnd)); // future
     var platType = plat.GetType();
-    Console.WriteLine($"Windowing Platform: {platType.Name}");
+    //Console.WriteLine($"Windowing Platform: {platType.Name}");
 
     if (platType.Name.Contains("Glfw")) {
       var glfw = GlfwProvider.GLFW.Value;
@@ -21,6 +22,7 @@ partial class Program {
     else
       // TODO: other windowing platforms
       throw new PlatformNotSupportedException(platType.Name);
+    // */
 
     //Getting the opengl api for drawing to the screen.
     // ReSharper disable once ConditionIsAlwaysTrueOrFalse
