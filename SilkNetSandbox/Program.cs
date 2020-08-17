@@ -30,6 +30,8 @@ partial class Program {
     }
   }
 
+  private static int _majOES = 3;
+
   private static readonly string AsmPath = new Uri(typeof(Program).Assembly.CodeBase!).LocalPath;
 
   private static readonly string AsmDir = Path.GetDirectoryName(AsmPath)!;
@@ -60,6 +62,8 @@ partial class Program {
 
   private static string _storagePath;
 
+  private static bool _useOpenGL;
+
   private static unsafe void Main(string[] args) {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
       Console.OutputEncoding = Encoding.UTF8;
@@ -74,13 +78,6 @@ partial class Program {
     //InjectRenderDoc();
 
     var options = WindowOptions.Default;
-
-    options.API = new GraphicsAPI(
-      ContextAPI.OpenGLES,
-      ContextProfile.Core,
-      ContextFlags.ForwardCompatible,
-      new APIVersion(3, 0)
-    );
 
     var size = new Size(1024, 576);
 
@@ -173,24 +170,31 @@ partial class Program {
       TemporarySuperInvokeClass.GetLoader(glCtx)
     );
 
-    Console.WriteLine("Testing window creation...");
+    Console.WriteLine("Checking for version...");
 
-    _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-    _glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
-    _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Any);
-    _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-    _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
-    _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+    for (;;) {
+      if (_useOpenGL) {
+        _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
+        _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
+        _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
 
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-      _glfw.WindowHint(WindowHintInt.RedBits, 8);
-      _glfw.WindowHint(WindowHintInt.GreenBits, 8);
-      _glfw.WindowHint(WindowHintInt.BlueBits, 8);
-      _glfw.WindowHint(WindowHintInt.AlphaBits, 0);
-    }
+        _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+        _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 2);
+      }
+      else {
+        _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+        _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
 
-    var wh = _glfw.CreateWindow(1024, 576, title, null, null);
-    if (wh == null) {
+        _glfw.WindowHint(WindowHintInt.ContextVersionMajor, _majOES);
+        _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
+      }
+
+      var wh = _glfw.CreateWindow(1024, 576, title, null, null);
+      if (wh != null) {
+        _glfw.DestroyWindow(wh);
+        break;
+      }
+
       var code = _glfw.GetError(out char* pDesc);
       if (code == ErrorCode.NoError || pDesc == null)
         throw new PlatformNotSupportedException("Can't create a window via GLFW. Unknown error.");
@@ -198,10 +202,36 @@ partial class Program {
       var strLen = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
       if (strLen == -1) strLen = 0;
       var str = new string((sbyte*) pDesc, 0, strLen, Encoding.UTF8);
-      throw new GlfwException($"{code}: {str}");
+      var errMsg = $"{code}: {str}";
+      Console.Error.WriteLine(errMsg);
+      if (code != ErrorCode.VersionUnavailable)
+        throw new GlfwException(errMsg);
+
+      // attempt sequence: OpenGL ES 3.0, OpenGL 3.2, OpenGL ES 2.0
+      if (!_useOpenGL && _majOES == 3)
+        _useOpenGL = true;
+      else if (_majOES == 3 && _useOpenGL) {
+        _useOpenGL = false;
+        _majOES = 2;
+      }
+      else
+        throw new GlfwException(errMsg);
     }
 
-    _glfw.DestroyWindow(wh);
+    if (_useOpenGL)
+      options.API = new GraphicsAPI(
+        ContextAPI.OpenGL,
+        ContextProfile.Core,
+        ContextFlags.ForwardCompatible,
+        new APIVersion(3, 2)
+      );
+    else
+      options.API = new GraphicsAPI(
+        ContextAPI.OpenGLES,
+        ContextProfile.Core,
+        ContextFlags.ForwardCompatible,
+        new APIVersion(_majOES, 0)
+      );
 
     Console.WriteLine("Initializing window...");
 

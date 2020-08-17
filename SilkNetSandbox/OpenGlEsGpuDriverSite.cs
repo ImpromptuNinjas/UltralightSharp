@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using ImpromptuNinjas.UltralightSharp.Enums;
+using JetBrains.Annotations;
 using Silk.NET.OpenGLES;
 using Silk.NET.OpenGLES.Extensions.KHR;
 using Silk.NET.Windowing.Common;
@@ -58,6 +59,9 @@ public class OpenGlEsGpuDriverSite {
   private uint _fillPathShader;
 
   private Queue<Command> _queuedCommands = new Queue<Command>();
+
+  [PublicAPI]
+  public bool RenderAnsiTexturePreviews;
 
   public OpenGlEsGpuDriverSite(GL gl, KhrDebug dbg = null) {
     _gl = gl;
@@ -189,12 +193,14 @@ public class OpenGlEsGpuDriverSite {
       switch (format) {
         case BitmapFormat.A8UNorm: {
           _gl.TexImage2D(TextureTarget.Texture2D, 0, (int) InternalFormat.R8, texWidth, texHeight, 0, PixelFormat.Red, PixelType.UnsignedByte, pixels);
-          //Utilities.RenderAnsi<L8>(pixels, texWidth, texHeight, 1, 20);
+          if (RenderAnsiTexturePreviews)
+            Utilities.RenderAnsi<L8>(pixels, texWidth, texHeight, 1, 20);
           break;
         }
         case BitmapFormat.Bgra8UNormSrgb: {
           _gl.TexImage2D(TextureTarget.Texture2D, 0, (int) InternalFormat.Srgb8Alpha8, texWidth, texHeight, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels);
-          //Utilities.RenderAnsi<Rgba32>(pixels, texWidth, texHeight, 1, 20);
+          if (RenderAnsiTexturePreviews)
+            Utilities.RenderAnsi<Rgba32>(pixels, texWidth, texHeight, 1, 20);
           break;
         }
         default: throw new ArgumentOutOfRangeException(nameof(BitmapFormat));

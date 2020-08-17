@@ -34,16 +34,16 @@ partial class Program {
 
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
+    if (glVersionMajor == 0) glVersionMajor = _useOpenGL ? 3 : _majOES; // bug?
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
-    Console.WriteLine($"OpenGL v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
-    
+    Console.WriteLine($"OpenGL ES v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
+
     var glVendor = _gl.GetString(StringName.Vendor);
     var glDevice = _gl.GetString(StringName.Renderer);
     Console.WriteLine($"{glVendor} {glDevice}");
 
     var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
     Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
-
 
     _gpuDriverSite = new OpenGlEsGpuDriverSite(_gl, _dbg);
 
@@ -69,14 +69,16 @@ partial class Program {
     var wndSize = _snView.Size;
     var wndWidth = (uint) wndSize.Width;
     var wndHeight = (uint) wndSize.Height;
-    var width = (uint)(_scaleX * wndWidth);
+    var width = (uint) (_scaleX * wndWidth);
     var height = (uint) (_scaleY * wndHeight);
-    
+
     _ulView = new View(_ulRenderer, width, height, false, _ulSession);
     _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
-    
+
     if (_snView is IWindow wnd)
-      wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
+      wnd.Title = _useOpenGL
+        ? $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)"
+        : $"UltralightSharp - OpenGL ES v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
       var monitors = _glfw.GetMonitors(out var monitorCount);
