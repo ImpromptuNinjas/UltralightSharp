@@ -85,6 +85,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Surface {
 
+      public unsafe UltralightSharp.Surface* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Surface* _;
 
       public unsafe Surface(UltralightSharp.Surface* p)

@@ -58,6 +58,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Renderer : IDisposable {
 
+      public unsafe UltralightSharp.Renderer* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Renderer* _;
 
       private readonly bool _refOnly;

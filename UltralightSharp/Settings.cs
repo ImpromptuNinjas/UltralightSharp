@@ -58,6 +58,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Settings : IDisposable {
 
+      public unsafe UltralightSharp.Settings* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Settings* _;
 
       public unsafe Settings(UltralightSharp.Settings* p)

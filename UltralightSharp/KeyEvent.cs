@@ -32,6 +32,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class KeyEvent : IDisposable {
 
+      public unsafe UltralightSharp.KeyEvent* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.KeyEvent* _;
 
       public unsafe KeyEvent(UltralightSharp.KeyEvent* p)

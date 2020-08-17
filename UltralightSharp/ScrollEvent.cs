@@ -29,6 +29,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class ScrollEvent : IDisposable {
 
+      public unsafe UltralightSharp.ScrollEvent* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.ScrollEvent* _;
 
       public unsafe ScrollEvent(UltralightSharp.ScrollEvent* p)

@@ -1,4 +1,3 @@
-using InlineIL;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {

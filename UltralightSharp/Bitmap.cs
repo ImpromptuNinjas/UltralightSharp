@@ -137,6 +137,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Bitmap : IDisposable, ICloneable {
 
+      public unsafe UltralightSharp.Bitmap* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Bitmap* _;
 
       private readonly bool _refOnly;

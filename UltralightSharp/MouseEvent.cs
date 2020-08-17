@@ -29,6 +29,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class MouseEvent : IDisposable {
 
+      public unsafe UltralightSharp.MouseEvent* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.MouseEvent* _;
 
       public unsafe MouseEvent(UltralightSharp.MouseEvent* p)

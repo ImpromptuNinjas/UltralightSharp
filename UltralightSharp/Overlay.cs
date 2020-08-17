@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using InlineIL;
 using JetBrains.Annotations;
 
@@ -96,6 +95,8 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     public sealed class Overlay : IDisposable {
+
+      public unsafe UltralightSharp.Overlay* Unsafe => _;
 
       internal readonly unsafe UltralightSharp.Overlay* _;
 

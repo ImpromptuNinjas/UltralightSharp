@@ -36,6 +36,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Monitor {
 
+      public unsafe UltralightSharp.Monitor* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Monitor* _;
 
       public unsafe Monitor(UltralightSharp.Monitor* p)

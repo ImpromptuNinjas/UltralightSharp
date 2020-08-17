@@ -1,8 +1,6 @@
 using System;
-using System.Diagnostics;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using ImpromptuNinjas.UltralightSharp.Safe;
-using SixLabors.ImageSharp.PixelFormats;
 
 partial class Program {
 

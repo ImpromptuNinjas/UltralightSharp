@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.IO;
 using System.Runtime.InteropServices;
+using ImpromptuNinjas.UltralightSharp.Safe;
 using Silk.NET.Core;
-using Silk.NET.GLFW;
 using Silk.NET.Input;
 using Silk.NET.OpenGLES;
 using Silk.NET.Windowing.Common;
@@ -24,6 +23,8 @@ partial class Program {
     1, 2, 3
   };
 
+  private static OpenGlEsGpuDriverSite _gpuDriverSite;
+
   private static unsafe void OnLoad() {
     //Getting the opengl api for drawing to the screen.
     _gl = LibraryActivator.CreateInstance<GL>(
@@ -35,7 +36,7 @@ partial class Program {
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
     Console.WriteLine($"OpenGL v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
-
+    
     var glVendor = _gl.GetString(StringName.Vendor);
     var glDevice = _gl.GetString(StringName.Renderer);
     Console.WriteLine($"{glVendor} {glDevice}");
@@ -43,6 +44,37 @@ partial class Program {
     var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
     Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
 
+
+    _gpuDriverSite = new OpenGlEsGpuDriverSite(_gl, _dbg);
+
+    var gpuDriver = _gpuDriverSite.CreateGpuDriver();
+    Ultralight.SetGpuDriver(gpuDriver);
+
+    using var cfg = new Config();
+
+    var cachePath = Path.Combine(_storagePath, "Cache");
+    cfg.SetCachePath(cachePath);
+
+    var resourcePath = Path.Combine(AsmDir, "resources");
+    cfg.SetResourcePath(resourcePath);
+
+    cfg.SetUseGpuRenderer(true);
+    cfg.SetEnableImages(true);
+    cfg.SetEnableJavaScript(false);
+
+    //cfg.SetForceRepaint(true);
+
+    _ulRenderer = new Renderer(cfg);
+    _ulSession = new Session(_ulRenderer, false, "Demo");
+    var wndSize = _snView.Size;
+    var wndWidth = (uint) wndSize.Width;
+    var wndHeight = (uint) wndSize.Height;
+    var width = (uint)(_scaleX * wndWidth);
+    var height = (uint) (_scaleY * wndHeight);
+    
+    _ulView = new View(_ulRenderer, width, height, false, _ulSession);
+    _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
+    
     if (_snView is IWindow wnd)
       wnd.Title = $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 
@@ -177,194 +209,7 @@ partial class Program {
     _gl.DeleteShader(qvs);
     _gl.DeleteShader(qfs);
 
-    {
-      //Creating a vertex shader.
-      var vs = _gl.CreateShader(ShaderType.VertexShader);
-      LabelObject(ObjectIdentifier.Shader, vs, "Fill VS");
-      _gl.ShaderSource(vs, Utilities.LoadEmbeddedUtf8String("embedded.shader_v2f_c4f_t2f_t2f_d28f.vert.glsl"));
-      CheckGl();
-      _gl.CompileShader(vs);
-      CheckGl();
-      _gl.GetShader(vs, ShaderParameterName.CompileStatus, out var vsCompileStatus);
-
-      //Checking the shader for compilation errors.
-      var vsLog = _gl.GetShaderInfoLog(vs);
-      var vsLogEmpty = string.IsNullOrWhiteSpace(vsLog);
-      var vsCompileSuccess = vsCompileStatus == (int) GLEnum.True;
-      if (!vsCompileSuccess || !vsLogEmpty) {
-        (vsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(vsCompileSuccess ? "Messages" : "Errors")} compiling fill vertex shader\n{vsLog}");
-        if (!vsCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      CheckGl();
-
-      //Creating a fragment shader.
-      var fs = _gl.CreateShader(ShaderType.FragmentShader);
-      LabelObject(ObjectIdentifier.Shader, fs, "Fill FS");
-      _gl.ShaderSource(fs, Utilities.LoadEmbeddedUtf8String("embedded.shader_fill.frag.glsl"));
-      CheckGl();
-      _gl.CompileShader(fs);
-      CheckGl();
-      _gl.GetShader(fs, ShaderParameterName.CompileStatus, out var fsCompileStatus);
-
-      //Checking the shader for compilation errors.
-      var fsLog = _gl.GetShaderInfoLog(fs);
-      var fsLogEmpty = string.IsNullOrWhiteSpace(fsLog);
-      var fsCompileSuccess = fsCompileStatus == (int) GLEnum.True;
-      if (!fsCompileSuccess || !fsLogEmpty) {
-        (fsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(fsCompileSuccess ? "Messages" : "Errors")} compiling fill fragment shader\n{fsLog}");
-        if (!fsCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      CheckGl();
-
-      //Combining the shaders under one shader program.
-      var pg = _gl.CreateProgram();
-      LabelObject(ObjectIdentifier.Program, pg, "Fill Program");
-      _gl.AttachShader(pg, vs);
-      _gl.AttachShader(pg, fs);
-
-      _gl.BindAttribLocation(pg, 0, "in_Position");
-      _gl.BindAttribLocation(pg, 1, "in_Color");
-      _gl.BindAttribLocation(pg, 2, "in_TexCoord");
-      _gl.BindAttribLocation(pg, 3, "in_ObjCoord");
-      _gl.BindAttribLocation(pg, 4, "in_Data0");
-      _gl.BindAttribLocation(pg, 5, "in_Data1");
-      _gl.BindAttribLocation(pg, 6, "in_Data2");
-      _gl.BindAttribLocation(pg, 7, "in_Data3");
-      _gl.BindAttribLocation(pg, 8, "in_Data4");
-      _gl.BindAttribLocation(pg, 9, "in_Data5");
-      _gl.BindAttribLocation(pg, 10, "in_Data6");
-
-      _gl.LinkProgram(pg);
-      CheckGl();
-      _gl.GetProgram(pg, ProgramPropertyARB.LinkStatus, out var pgLinkStatus);
-
-      //Checking the linking for errors.
-      var pgLog = _gl.GetProgramInfoLog(pg);
-      var pgLogEmpty = string.IsNullOrWhiteSpace(pgLog);
-      var pgCompileSuccess = pgLinkStatus == (int) GLEnum.True;
-      if (!pgCompileSuccess || !pgLogEmpty) {
-        (pgCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(pgCompileSuccess ? "Messages" : "Errors")} linking fill shader program\n{pgLog}");
-        if (!pgCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      CheckGl();
-      _gl.ValidateProgram(pg);
-      CheckGl();
-
-      //Delete the no longer useful individual shaders;
-      _gl.DetachShader(pg, vs);
-      _gl.DetachShader(pg, fs);
-      _gl.DeleteShader(vs);
-      _gl.DeleteShader(fs);
-
-      //Tell opengl how to give the data to the shaders.
-      _gl.UseProgram(pg);
-      _gl.Uniform1(_gl.GetUniformLocation(pg, "Texture1"), 0);
-      _gl.Uniform1(_gl.GetUniformLocation(pg, "Texture2"), 1);
-      _gl.Uniform1(_gl.GetUniformLocation(pg, "Texture3"), 2);
-      CheckGl();
-
-      _fillShader = pg;
-    }
-
-    {
-      //Creating a vertex shader.
-      var vs = _gl.CreateShader(ShaderType.VertexShader);
-      LabelObject(ObjectIdentifier.Shader, vs, "Fill Path VS");
-      _gl.ShaderSource(vs, Utilities.LoadEmbeddedUtf8String("embedded.shader_v2f_c4f_t2f.vert.glsl"));
-      CheckGl();
-      _gl.CompileShader(vs);
-      CheckGl();
-      _gl.GetShader(vs, ShaderParameterName.CompileStatus, out var vsCompileStatus);
-
-      //Checking the shader for compilation errors.
-      var vsLog = _gl.GetShaderInfoLog(vs);
-      var vsLogEmpty = string.IsNullOrWhiteSpace(vsLog);
-      var vsCompileSuccess = vsCompileStatus == (int) GLEnum.True;
-      if (!vsCompileSuccess || !vsLogEmpty) {
-        (vsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(vsCompileSuccess ? "Messages" : "Errors")} compiling fill path vertex shader\n{vsLog}");
-        if (!vsCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      //Creating a fragment shader.
-      var fs = _gl.CreateShader(ShaderType.FragmentShader);
-      LabelObject(ObjectIdentifier.Shader, fs, "Fill Path FS");
-      _gl.ShaderSource(fs, Utilities.LoadEmbeddedUtf8String("embedded.shader_fill_path.frag.glsl"));
-      CheckGl();
-      _gl.CompileShader(fs);
-      CheckGl();
-
-      _gl.GetShader(fs, ShaderParameterName.CompileStatus, out var fsCompileStatus);
-
-      //Checking the shader for compilation errors.
-      var fsLog = _gl.GetShaderInfoLog(fs);
-      var fsLogEmpty = string.IsNullOrWhiteSpace(fsLog);
-      var fsCompileSuccess = fsCompileStatus == (int) GLEnum.True;
-      if (!fsCompileSuccess || !fsLogEmpty) {
-        (fsCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(fsCompileSuccess ? "Messages" : "Errors")} compiling fill path fragment shader\n{fsLog}");
-        if (!fsCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      CheckGl();
-
-      //Combining the shaders under one shader program.
-      var pg = _gl.CreateProgram();
-      LabelObject(ObjectIdentifier.Program, pg, "Fill Path Program");
-      _gl.AttachShader(pg, vs);
-      _gl.AttachShader(pg, fs);
-
-      _gl.BindAttribLocation(pg, 0, "in_Position");
-      _gl.BindAttribLocation(pg, 1, "in_Color");
-      _gl.BindAttribLocation(pg, 2, "in_TexCoord");
-
-      _gl.LinkProgram(pg);
-      CheckGl();
-      _gl.GetProgram(pg, ProgramPropertyARB.LinkStatus, out var pgLinkStatus);
-
-      //Checking the linking for errors.
-      var pgLog = _gl.GetProgramInfoLog(pg);
-      var pgLogEmpty = string.IsNullOrWhiteSpace(pgLog);
-      var pgCompileSuccess = pgLinkStatus == (int) GLEnum.True;
-      if (!pgCompileSuccess || !pgLogEmpty) {
-        (pgCompileSuccess ? Console.Out : Console.Error).WriteLine($"{(pgCompileSuccess ? "Messages" : "Errors")} linking fill path shader program\n{pgLog}");
-        if (!pgCompileSuccess) {
-          Console.Error.Flush();
-          //Debugger.Break();
-        }
-      }
-
-      CheckGl();
-      _gl.ValidateProgram(pg);
-      CheckGl();
-
-      //Delete the no longer useful individual shaders;
-      _gl.DetachShader(pg, vs);
-      _gl.DetachShader(pg, fs);
-      _gl.DeleteShader(vs);
-      _gl.DeleteShader(fs);
-
-      //Tell opengl how to give the data to the shaders.
-      CheckGl();
-
-      _fillPathShader = pg;
-    }
+    _gpuDriverSite.InitializeShaders();
 
     var input = _snView.CreateInput();
     foreach (var kb in input.Keyboards)

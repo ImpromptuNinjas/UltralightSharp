@@ -70,6 +70,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class App : IDisposable {
 
+      public unsafe UltralightSharp.App* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.App* _;
 
       public unsafe App(UltralightSharp.App* p)

@@ -52,6 +52,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Session : IDisposable {
 
+      public unsafe UltralightSharp.Session* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Session* _;
 
       private readonly bool _refOnly;

@@ -262,6 +262,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class View : IDisposable {
 
+      public unsafe UltralightSharp.View* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.View* _;
 
       private readonly bool _refOnly;
@@ -359,10 +361,8 @@ namespace ImpromptuNinjas.UltralightSharp {
         s->Destroy();
       }
 
-
       public unsafe string? GetUrl()
         => _->GetUrl()->Read();
-
 
       public unsafe string? GetTitle()
         => _->GetTitle()->Read();
@@ -377,8 +377,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         => new Surface(_->GetSurface());
 
       public unsafe RenderTarget GetRenderTarget()
-        => _->GetRenderTarget();
-
+        => _->GetRenderTarget().AsSafe();
 
       public unsafe JsContext LockJsContext()
         => new JsContext(_->LockJsContext());
@@ -401,6 +400,12 @@ namespace ImpromptuNinjas.UltralightSharp {
       public unsafe bool IsLoading()
         => _->IsLoading();
 
+      public unsafe string? EvaluateScript(string jsString) {
+        var s = String.Create(jsString);
+        var r = _->EvaluateScript(s, null);
+        return r->Read();
+      }
+
       public unsafe string? EvaluateScript(string jsString, out string? exception) {
         var s = String.Create(jsString);
         String* pExc;
@@ -411,7 +416,6 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public unsafe View CreateInspector()
         => new View(_->CreateInspector());
-
 
       public unsafe void FireKeyEvent(KeyEvent keyEvent)
         => _->FireKeyEvent(keyEvent._);

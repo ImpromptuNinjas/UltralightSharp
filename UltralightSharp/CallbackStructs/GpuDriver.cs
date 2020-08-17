@@ -129,7 +129,7 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.GpuDriverCreateRenderBufferCallback cb
-            = (id, buffer) => value(id, buffer);
+            = (id, buffer) => value(id, buffer.AsSafe());
           _.CreateRenderBuffer = cb;
         }
       }

@@ -87,6 +87,8 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class Window : IDisposable {
 
+      public unsafe UltralightSharp.Window* Unsafe => _;
+
       internal readonly unsafe UltralightSharp.Window* _;
 
       private readonly bool _refOnly;
