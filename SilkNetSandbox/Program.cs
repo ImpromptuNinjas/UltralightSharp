@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using CommandLine;
 using ImpromptuNinjas.UltralightSharp.Safe;
 using Nvidia.Nsight.Injection;
 using Silk.NET.Core;
@@ -64,7 +65,38 @@ partial class Program {
 
   private static bool _useOpenGL;
 
+  private static bool _automaticFallback = true;
+
+  private static bool _useEgl = true;
+
+  private static int _glMaj = 3;
+
+  private static int _glMin = 2;
+
   private static unsafe void Main(string[] args) {
+    var parsedOpts = Parser.Default.ParseArguments<Options>(args);
+
+    parsedOpts.WithParsed(opts => {
+      if (opts.Context != null) {
+        _useEgl = opts.Context.Contains("egl");
+      }
+
+      if (opts.GlApi != null) {
+        _automaticFallback = false;
+        _useOpenGL = !opts.GlApi.Contains("es");
+      }
+
+      if (opts.GlMajorVersion != null) {
+        _automaticFallback = false;
+        _glMaj = opts.GlMajorVersion.Value;
+      }
+
+      if (opts.GlMinorVersion != null) {
+        _automaticFallback = false;
+        _glMin = opts.GlMinorVersion.Value;
+      }
+    });
+
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
       Console.OutputEncoding = Encoding.UTF8;
       Ansi.WindowsConsole.TryEnableVirtualTerminalProcessing();
@@ -81,7 +113,7 @@ partial class Program {
 
     var size = new Size(1024, 576);
 
-    var title = "UltralightSharp - OpenGL ES via ANGLE (Silk.NET)";
+    var title = "UltralightSharp - Silk.NET";
 
     options.Size = size;
     options.Title = title;
@@ -128,14 +160,6 @@ partial class Program {
 
     _glfw = GlfwProvider.GLFW.Value;
 
-    _snView = Window.Create(options);
-
-    _snView.Load += OnLoad;
-    _snView.Render += OnRender;
-    _snView.Update += OnUpdate;
-    _snView.Closing += OnClose;
-    _snView.Resize += OnResize;
-
     {
       // setup logging
       Ultralight.SetLogger(new Logger {LogMessage = LoggerCallback});
@@ -150,93 +174,106 @@ partial class Program {
       AppCore.EnablePlatformFileSystem(AssetsDir);
     }
 
-    var glCtx = _snView.GLContext;
+    if (_useEgl || _automaticFallback) {
+      Console.WriteLine("Loading LibEGL...");
+      _egl = LibraryActivator.CreateInstance<EGL>
+      (
+        new UnmanagedLibrary(
+          new CustomEglLibNameContainer().GetLibraryName(),
+          LibraryLoader.GetPlatformDefaultLoader()
+        ),
+        Strategy.Strategy2
+      );
+    }
 
-    Console.WriteLine("Loading LibEGL...");
-    _egl = LibraryActivator.CreateInstance<EGL>
-    (
-      new UnmanagedLibrary(
-        new CustomEglLibNameContainer().GetLibraryName(),
-        LibraryLoader.GetPlatformDefaultLoader()
-      ),
-      Strategy.Strategy2
-    );
 
-    Console.WriteLine("Loading LibGLES...");
-    _gl = LibraryActivator.CreateInstance<GL>
-    (
-      new CustomGlEsLibNameContainer().GetLibraryName(),
-      TemporarySuperInvokeClass.GetLoader(glCtx)
-    );
+    if (_automaticFallback) {
+      Console.WriteLine("Checking for supported context...");
 
-    Console.WriteLine("Checking for supported context...");
+      for (;;) {
+        SetGlfwWindowHints();
 
-    for (;;) {
-      SetGlfwWindowHints();
-
-      Console.WriteLine(
-        _useOpenGL
-          ? "Attempting OpenGL v3.2 (Core)"
-          : $"Attempting OpenGL ES v{_majOES}.0");
-      var wh = _glfw.CreateWindow(1024, 576, title, null, null);
-      if (wh != null) {
         Console.WriteLine(
           _useOpenGL
-            ? "Created Window with OpenGL v3.2 (Core)"
-            : $"Created Window with OpenGL ES v{_majOES}.0");
-        _glfw.DestroyWindow(wh);
-        break;
+            ? "Attempting OpenGL v3.2 (Core)"
+            : $"Attempting OpenGL ES v{_majOES}.0");
+        var wh = _glfw.CreateWindow(1024, 576, title, null, null);
+        if (wh != null) {
+          Console.WriteLine(
+            _useOpenGL
+              ? "Created Window with OpenGL v3.2 (Core)"
+              : $"Created Window with OpenGL ES v{_majOES}.0");
+          _glfw.DestroyWindow(wh);
+          break;
+        }
+
+        var code = _glfw.GetError(out char* pDesc);
+        if (code == ErrorCode.NoError || pDesc == null)
+          throw new PlatformNotSupportedException("Can't create a window via GLFW. Unknown error.");
+
+        var strLen = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
+        if (strLen == -1) strLen = 0;
+        var str = new string((sbyte*) pDesc, 0, strLen, Encoding.UTF8);
+        var errMsg = $"{code}: {str}";
+        Console.Error.WriteLine(errMsg);
+        if (code != ErrorCode.VersionUnavailable)
+          throw new GlfwException(errMsg);
+
+        // attempt sequence: OpenGL ES 3.0, OpenGL 3.2, OpenGL ES 2.0
+        if (!_useOpenGL && _majOES == 3)
+          _useOpenGL = true;
+        else if (_majOES == 3 && _useOpenGL) {
+          _useOpenGL = false;
+          _majOES = 2;
+        }
+        else
+          throw new GlfwException(errMsg);
       }
-
-      var code = _glfw.GetError(out char* pDesc);
-      if (code == ErrorCode.NoError || pDesc == null)
-        throw new PlatformNotSupportedException("Can't create a window via GLFW. Unknown error.");
-
-      var strLen = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
-      if (strLen == -1) strLen = 0;
-      var str = new string((sbyte*) pDesc, 0, strLen, Encoding.UTF8);
-      var errMsg = $"{code}: {str}";
-      Console.Error.WriteLine(errMsg);
-      if (code != ErrorCode.VersionUnavailable)
-        throw new GlfwException(errMsg);
-
-      // attempt sequence: OpenGL ES 3.0, OpenGL 3.2, OpenGL ES 2.0
-      if (!_useOpenGL && _majOES == 3)
-        _useOpenGL = true;
-      else if (_majOES == 3 && _useOpenGL) {
-        _useOpenGL = false;
-        _majOES = 2;
-      }
-      else
-        throw new GlfwException(errMsg);
     }
 
-    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-      SetGlfwWindowHints();
-    }
-    else {
-      _glfw.DefaultWindowHints();
-    }
+    SetGlfwWindowHints();
 
     if (_useOpenGL)
       options.API = new GraphicsAPI(
         ContextAPI.OpenGL,
         ContextProfile.Core,
         ContextFlags.ForwardCompatible,
-        new APIVersion(3, 2)
+        new APIVersion(_automaticFallback ? 3 : _glMaj, _automaticFallback ? 2 : _glMin)
       );
     else
       options.API = new GraphicsAPI(
         ContextAPI.OpenGLES,
         ContextProfile.Core,
         ContextFlags.ForwardCompatible,
-        new APIVersion(_majOES, 0)
+        new APIVersion(_automaticFallback ? _majOES : _glMaj, _automaticFallback ? 0 : _glMin)
       );
     options.IsVisible = true;
     options.WindowBorder = WindowBorder.Resizable;
     options.WindowState = WindowState.Normal;
 
+    Console.WriteLine("Creating window...");
+
+    _snView = Window.Create(options);
+
+    _snView.Load += OnLoad;
+    _snView.Render += OnRender;
+    _snView.Update += OnUpdate;
+    _snView.Closing += OnClose;
+    _snView.Resize += OnResize;
+    
+    var glCtx = _snView.GLContext;
+
+    if (!_useOpenGL || _automaticFallback) {
+      Console.WriteLine("Loading LibGLES...");
+      _gl = LibraryActivator.CreateInstance<GL>
+      (
+        new CustomGlEsLibNameContainer().GetLibraryName(),
+        TemporarySuperInvokeClass.GetLoader(glCtx)
+      );
+    }
+    
     Console.WriteLine("Initializing window...");
+    
     _snView.Initialize();
 
     if (_snView.Handle == null) {
@@ -257,7 +294,8 @@ partial class Program {
   private static void SetGlfwWindowHints() {
     _glfw.DefaultWindowHints();
     if (_useOpenGL) {
-      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
+      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi,
+        _automaticFallback || !_useEgl ? ContextApi.NativeContextApi : ContextApi.EglContextApi);
       _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
       _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
 
@@ -265,11 +303,23 @@ partial class Program {
       _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 2);
     }
     else {
-      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi,
+        _automaticFallback || _useEgl ? ContextApi.EglContextApi : ContextApi.NativeContextApi);
       _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
 
       _glfw.WindowHint(WindowHintInt.ContextVersionMajor, _majOES);
       _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
+    }
+
+    _glfw.WindowHint(WindowHintInt.RedBits, 8);
+    _glfw.WindowHint(WindowHintInt.GreenBits, 8);
+    _glfw.WindowHint(WindowHintInt.BlueBits, 8);
+    _glfw.WindowHint(WindowHintInt.DepthBits, 24);
+    _glfw.WindowHint(WindowHintInt.StencilBits, 8);
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+      // osx graphics switching
+      _glfw.WindowHint((WindowHintBool) 0x00023003, true);
     }
   }
 
@@ -397,5 +447,21 @@ partial class Program {
     //Debugger.Break();
 #endif
   }
+
+}
+
+internal class Options {
+
+  [Option('a', "api", Required = false, HelpText = "Set GL API to OpenGL (gl) or OpenGL ES (gles).")]
+  public string? GlApi { get; set; }
+
+  [Option('c', "ctx", Required = false, HelpText = "Set context to Native (n) or EGL (egl).")]
+  public string? Context { get; set; }
+
+  [Option('m', "maj", Required = false, HelpText = "Set major version OpenGL to request.")]
+  public int? GlMajorVersion { get; set; }
+
+  [Option('n', "min", Required = false, HelpText = "Set minor version OpenGL to request.")]
+  public int? GlMinorVersion { get; set; }
 
 }

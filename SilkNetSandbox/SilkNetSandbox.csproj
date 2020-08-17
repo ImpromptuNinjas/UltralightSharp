@@ -73,6 +73,7 @@
 
     <ItemGroup>
         <PackageReference Include="Ansi" Version="1.0.3" />
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
         <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
         <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
         <PackageReference Include="Silk.NET.Core" Version="2.0.0-preview" />
