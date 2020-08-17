@@ -35,7 +35,10 @@ partial class Program {
 
     var glVersionInfo = _gl.GetString(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
-    if (glVersionMajor == 0) glVersionMajor = _automaticFallback ? _glMaj : _useOpenGL ? 3 : _majOES; // bug?
+    if (glVersionMajor == 0) {
+      Console.WriteLine("Unable to retrieve API major version.");
+      glVersionMajor = !_automaticFallback ? _glMaj : _useOpenGL ? 3 : _majOES; // bug?
+    }
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
     Console.WriteLine($"{(_useOpenGL?"OpenGL":"OpenGL ES")} v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
 
