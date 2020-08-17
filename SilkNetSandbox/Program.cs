@@ -126,8 +126,6 @@ partial class Program {
 
     _glfw = GlfwProvider.GLFW.Value;
 
-    _glfw.DefaultWindowHints();
-
     _snView = Window.Create(options);
 
     _snView.Load += OnLoad;
@@ -170,9 +168,11 @@ partial class Program {
       TemporarySuperInvokeClass.GetLoader(glCtx)
     );
 
-    Console.WriteLine("Checking for version...");
+    Console.WriteLine("Checking for supported context...");
 
     for (;;) {
+
+      _glfw.DefaultWindowHints();
       if (_useOpenGL) {
         _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
         _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
@@ -189,8 +189,16 @@ partial class Program {
         _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
       }
 
+      Console.WriteLine(
+        _useOpenGL
+          ? "Attempting OpenGL v3.2 (Core)"
+          : $"Attempting OpenGL ES v{_majOES}.0");
       var wh = _glfw.CreateWindow(1024, 576, title, null, null);
       if (wh != null) {
+        Console.WriteLine(
+          _useOpenGL
+            ? "Using OpenGL v3.2 (Core)"
+            : $"Using OpenGL ES v{_majOES}.0");
         _glfw.DestroyWindow(wh);
         break;
       }
