@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using CommandLine;
 using ImpromptuNinjas.UltralightSharp.Safe;
+using InlineIL;
 using Nvidia.Nsight.Injection;
 using Silk.NET.Core;
 using Silk.NET.EGL;
@@ -40,8 +41,6 @@ partial class Program {
   private static readonly string AssetsDir = Path.Combine(AsmDir, "assets");
 
   private static IView _snView = null!;
-
-  private static EGL _egl = null!;
 
   private static GL _gl = null!;
 
@@ -174,18 +173,41 @@ partial class Program {
       AppCore.EnablePlatformFileSystem(AssetsDir);
     }
 
+    /* afaik GLFW already does this, this was just to check
     if (_useEgl || _automaticFallback) {
-      Console.WriteLine("Loading LibEGL...");
-      _egl = LibraryActivator.CreateInstance<EGL>
-      (
-        new UnmanagedLibrary(
-          new CustomEglLibNameContainer().GetLibraryName(),
-          LibraryLoader.GetPlatformDefaultLoader()
-        ),
-        Strategy.Strategy2
+      Console.WriteLine("Binding to LibEGL...");
+      var eglLib = new UnmanagedLibrary(
+        new CustomEglLibNameContainer().GetLibraryName(),
+        LibraryLoader.GetPlatformDefaultLoader()
       );
+      var q = eglLib.LoadFunction("eglQueryAPI");
+      IL.Push(q);
+      IL.Emit.Calli(StandAloneMethodSig.UnmanagedMethod(CallingConvention.Cdecl, typeof(EGLEnum)));
+      IL.Pop(out EGLEnum api);
+      Console.WriteLine($"EGL API Target: {api}");
+      var b = eglLib.LoadFunction("eglBindAPI");
+      if (_useOpenGL && api != EGLEnum.OpenglApi) {
+        IL.Push(EGLEnum.OpenglApi);
+        IL.Push(b);
+        IL.Emit.Calli(StandAloneMethodSig.UnmanagedMethod(CallingConvention.Cdecl, typeof(bool),
+          typeof(EGLEnum)));
+        IL.Pop(out bool success);
+        Console.Error.WriteLine(!success
+          ? "Couldn't bind EGL to OpenGL"
+          : "EGL now bound to OpenGL");
+      }
+      else if (!_useOpenGL && api != EGLEnum.OpenglESApi){
+        IL.Push(EGLEnum.OpenglESApi);
+        IL.Push(b);
+        IL.Emit.Calli(StandAloneMethodSig.UnmanagedMethod(CallingConvention.Cdecl, typeof(bool),
+          typeof(EGLEnum)));
+        IL.Pop(out bool success);
+        Console.Error.WriteLine(!success
+          ? "Couldn't bind EGL to OpenGL ES"
+          : "EGL now bound to OpenGL ES");
+      }
     }
-
+    */
 
     if (_automaticFallback) {
       Console.WriteLine("Checking for supported context...");
@@ -260,20 +282,20 @@ partial class Program {
     _snView.Update += OnUpdate;
     _snView.Closing += OnClose;
     _snView.Resize += OnResize;
-    
+
     var glCtx = _snView.GLContext;
 
-    if (!_useOpenGL || _automaticFallback) {
-      Console.WriteLine("Loading LibGLES...");
+    if (!_useOpenGL) {
+      Console.WriteLine("Binding to LibGLES...");
       _gl = LibraryActivator.CreateInstance<GL>
       (
         new CustomGlEsLibNameContainer().GetLibraryName(),
         TemporarySuperInvokeClass.GetLoader(glCtx)
       );
     }
-    
+
     Console.WriteLine("Initializing window...");
-    
+
     _snView.Initialize();
 
     if (_snView.Handle == null) {
