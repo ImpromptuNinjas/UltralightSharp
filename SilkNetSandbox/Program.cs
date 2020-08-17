@@ -168,9 +168,8 @@ partial class Program {
     );
 
     Console.WriteLine("Checking for supported context...");
-    
-    for (;;) {
 
+    for (;;) {
       SetGlfwWindowHints();
 
       Console.WriteLine(
@@ -210,6 +209,13 @@ partial class Program {
         throw new GlfwException(errMsg);
     }
 
+    if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+      SetGlfwWindowHints();
+    }
+    else {
+      _glfw.DefaultWindowHints();
+    }
+
     if (_useOpenGL)
       options.API = new GraphicsAPI(
         ContextAPI.OpenGL,
@@ -226,10 +232,6 @@ partial class Program {
       );
 
     Console.WriteLine("Initializing window...");
-
-    //SetGlfwWindowHints();
-    
-    _glfw.DefaultWindowHints();
     _snView.Initialize();
 
     if (_snView.Handle == null) {
