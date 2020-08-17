@@ -86,6 +86,8 @@ partial class Program {
     options.Size = size;
     options.Title = title;
     options.VSync = VSyncMode.On;
+    options.TransparentFramebuffer = false;
+    options.PreferredDepthBufferBits = null;
     //options.VSync = true;
 
     /*
@@ -230,6 +232,9 @@ partial class Program {
         ContextFlags.ForwardCompatible,
         new APIVersion(_majOES, 0)
       );
+    options.IsVisible = true;
+    options.WindowBorder = WindowBorder.Resizable;
+    options.WindowState = WindowState.Normal;
 
     Console.WriteLine("Initializing window...");
     _snView.Initialize();
