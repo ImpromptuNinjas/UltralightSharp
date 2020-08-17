@@ -150,8 +150,7 @@ partial class Program {
 
     var glCtx = _snView.GLContext;
 
-    Console.WriteLine("Loading EGL...");
-
+    Console.WriteLine("Loading LibEGL...");
     _egl = LibraryActivator.CreateInstance<EGL>
     (
       new UnmanagedLibrary(
@@ -161,7 +160,7 @@ partial class Program {
       Strategy.Strategy2
     );
 
-    Console.WriteLine("Loading OpenGL ES...");
+    Console.WriteLine("Loading LibGLES...");
     _gl = LibraryActivator.CreateInstance<GL>
     (
       new CustomGlEsLibNameContainer().GetLibraryName(),
@@ -169,25 +168,10 @@ partial class Program {
     );
 
     Console.WriteLine("Checking for supported context...");
-
+    
     for (;;) {
 
-      _glfw.DefaultWindowHints();
-      if (_useOpenGL) {
-        _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
-        _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
-        _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
-
-        _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-        _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 2);
-      }
-      else {
-        _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
-        _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
-
-        _glfw.WindowHint(WindowHintInt.ContextVersionMajor, _majOES);
-        _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
-      }
+      SetGlfwWindowHints();
 
       Console.WriteLine(
         _useOpenGL
@@ -197,8 +181,8 @@ partial class Program {
       if (wh != null) {
         Console.WriteLine(
           _useOpenGL
-            ? "Using OpenGL v3.2 (Core)"
-            : $"Using OpenGL ES v{_majOES}.0");
+            ? "Created Window with OpenGL v3.2 (Core)"
+            : $"Created Window with OpenGL ES v{_majOES}.0");
         _glfw.DestroyWindow(wh);
         break;
       }
@@ -243,7 +227,11 @@ partial class Program {
 
     Console.WriteLine("Initializing window...");
 
+    //SetGlfwWindowHints();
+    
+    _glfw.DefaultWindowHints();
     _snView.Initialize();
+
     if (_snView.Handle == null) {
       var code = _glfw.GetError(out char* pDesc);
       if (code == ErrorCode.NoError || pDesc == null)
@@ -257,6 +245,25 @@ partial class Program {
 
     Console.WriteLine("Starting main loop...");
     _snView.Run();
+  }
+
+  private static void SetGlfwWindowHints() {
+    _glfw.DefaultWindowHints();
+    if (_useOpenGL) {
+      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.NativeContextApi);
+      _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
+      _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+
+      _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+      _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 2);
+    }
+    else {
+      _glfw.WindowHint(WindowHintContextApi.ContextCreationApi, ContextApi.EglContextApi);
+      _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGLES);
+
+      _glfw.WindowHint(WindowHintInt.ContextVersionMajor, _majOES);
+      _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 0);
+    }
   }
 
   public static event Action Cleanup;
