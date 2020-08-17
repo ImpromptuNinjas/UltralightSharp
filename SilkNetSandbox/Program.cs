@@ -357,6 +357,9 @@ partial class Program {
   }
 
   private static void LabelObject(ObjectIdentifier objId, uint vao, string name) {
+    if (_dbg == null)
+      return;
+
     _dbg.ObjectLabel(objId, vao, (uint) name.Length, name);
     CheckGl();
   }

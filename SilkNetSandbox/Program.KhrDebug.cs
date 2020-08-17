@@ -5,7 +5,7 @@ using Silk.NET.OpenGLES.Extensions.KHR;
 
 partial class Program {
 
-  private static KhrDebug _dbg;
+  private static KhrDebug? _dbg;
 
   public static unsafe void EnableDebugExtension() {
     if (!_gl.TryGetExtension(out KhrDebug dbg)) {
