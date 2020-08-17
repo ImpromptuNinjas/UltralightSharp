@@ -26,6 +26,7 @@ partial class Program {
   private static OpenGlEsGpuDriverSite _gpuDriverSite;
 
   private static unsafe void OnLoad() {
+    Console.WriteLine($"Loading...");
     //Getting the opengl api for drawing to the screen.
     _gl = LibraryActivator.CreateInstance<GL>(
       new CustomGlEsLibNameContainer().GetLibraryName(),
@@ -36,7 +37,7 @@ partial class Program {
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
     if (glVersionMajor == 0) glVersionMajor = _useOpenGL ? 3 : _majOES; // bug?
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
-    Console.WriteLine($"OpenGL ES v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
+    Console.WriteLine($"{(_useOpenGL?"OpenGL":"OpenGL ES")} v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
 
     var glVendor = _gl.GetString(StringName.Vendor);
     var glDevice = _gl.GetString(StringName.Renderer);
