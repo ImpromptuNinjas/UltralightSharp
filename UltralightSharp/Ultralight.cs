@@ -1,8 +1,8 @@
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 using ImpromptuNinjas.UltralightSharp.Enums;
+using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -566,11 +566,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public static class Ultralight {
+    public static unsafe class Ultralight {
 
       public static readonly UIntPtr InvalidFileHandle = (UIntPtr) (-1);
 
-      public static unsafe string GetVersionString()
+      public static string GetVersionString()
         => new string(UltralightSharp.Ultralight.GetVersionString());
 
       public static uint GetVersionMajor()

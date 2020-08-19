@@ -13,4 +13,5 @@ namespace ImpromptuNinjas.UltralightSharp {
     public delegate void GpuDriverCreateTextureCallback(uint textureId, Bitmap bitmap);
 
   }
+
 }

@@ -16,7 +16,6 @@ namespace ImpromptuNinjas.UltralightSharp {
     [NativeTypeName("unsigned char *")]
     public byte* Data;
 
-
     [Obsolete("This performs a copy operation. Use AsUnsafe instead.")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator IndexBuffer(in Safe.IndexBuffer b)
@@ -26,6 +25,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator Safe.IndexBuffer(in IndexBuffer b)
       => Safe.IndexBufferExtensions.AsSafe(b);
+
   }
 
   namespace Safe {
@@ -52,6 +52,7 @@ namespace ImpromptuNinjas.UltralightSharp {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public static explicit operator IndexBuffer(in UltralightSharp.IndexBuffer b)
         => b.AsSafe();
+
     }
 
   }

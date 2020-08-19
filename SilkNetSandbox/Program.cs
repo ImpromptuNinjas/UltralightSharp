@@ -58,11 +58,11 @@ partial class Program {
 
   private static View _ulView = null!;
 
-  private static Glfw _glfw;
+  private static Glfw _glfw = null!;
 
-  private static string _storagePath;
+  private static string _storagePath = null!;
 
-  private static bool _useOpenGL;
+  private static bool _useOpenGl;
 
   private static bool _automaticFallback = true;
 
@@ -82,7 +82,7 @@ partial class Program {
 
       if (opts.GlApi != null) {
         _automaticFallback = false;
-        _useOpenGL = !opts.GlApi.Contains("es");
+        _useOpenGl = !opts.GlApi.Contains("es");
       }
 
       if (opts.GlMajorVersion != null) {
@@ -216,13 +216,13 @@ partial class Program {
         SetGlfwWindowHints();
 
         Console.WriteLine(
-          _useOpenGL
+          _useOpenGl
             ? "Attempting OpenGL v3.2 (Core)"
             : $"Attempting OpenGL ES v{_majOES}.0");
         var wh = _glfw.CreateWindow(1024, 576, title, null, null);
         if (wh != null) {
           Console.WriteLine(
-            _useOpenGL
+            _useOpenGl
               ? "Created Window with OpenGL v3.2 (Core)"
               : $"Created Window with OpenGL ES v{_majOES}.0");
           _glfw.DestroyWindow(wh);
@@ -242,10 +242,10 @@ partial class Program {
           throw new GlfwException(errMsg);
 
         // attempt sequence: OpenGL ES 3.0, OpenGL 3.2, OpenGL ES 2.0
-        if (!_useOpenGL && _majOES == 3)
-          _useOpenGL = true;
-        else if (_majOES == 3 && _useOpenGL) {
-          _useOpenGL = false;
+        if (!_useOpenGl && _majOES == 3)
+          _useOpenGl = true;
+        else if (_majOES == 3 && _useOpenGl) {
+          _useOpenGl = false;
           _majOES = 2;
         }
         else
@@ -255,7 +255,7 @@ partial class Program {
 
     SetGlfwWindowHints();
 
-    if (_useOpenGL)
+    if (_useOpenGl)
       options.API = new GraphicsAPI(
         ContextAPI.OpenGL,
         ContextProfile.Core,
@@ -285,7 +285,7 @@ partial class Program {
 
     var glCtx = _snView.GLContext;
 
-    if (!_useOpenGL) {
+    if (!_useOpenGl) {
       Console.WriteLine("Binding to LibGLES...");
       _gl = LibraryActivator.CreateInstance<GL>
       (
@@ -315,7 +315,7 @@ partial class Program {
 
   private static void SetGlfwWindowHints() {
     _glfw.DefaultWindowHints();
-    if (_useOpenGL) {
+    if (_useOpenGl) {
       _glfw.WindowHint(WindowHintContextApi.ContextCreationApi,
         _automaticFallback || !_useEgl ? ContextApi.NativeContextApi : ContextApi.EglContextApi);
       _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
@@ -345,7 +345,7 @@ partial class Program {
     }
   }
 
-  public static event Action Cleanup;
+  public static event Action? Cleanup;
 
   private static unsafe void OnFirstChanceException(object? sender, FirstChanceExceptionEventArgs eventArgs) {
     var sf = new StackFrame(1, true);
@@ -469,21 +469,5 @@ partial class Program {
     //Debugger.Break();
 #endif
   }
-
-}
-
-internal class Options {
-
-  [Option('a', "api", Required = false, HelpText = "Set GL API to OpenGL (gl) or OpenGL ES (gles).")]
-  public string? GlApi { get; set; }
-
-  [Option('c', "ctx", Required = false, HelpText = "Set context to Native (n) or EGL (egl).")]
-  public string? Context { get; set; }
-
-  [Option('m', "maj", Required = false, HelpText = "Set major version OpenGL to request.")]
-  public int? GlMajorVersion { get; set; }
-
-  [Option('n', "min", Required = false, HelpText = "Set minor version OpenGL to request.")]
-  public int? GlMinorVersion { get; set; }
 
 }

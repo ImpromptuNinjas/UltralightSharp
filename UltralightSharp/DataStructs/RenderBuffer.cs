@@ -24,6 +24,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     public OneByteBoolean HasDepthBuffer;
 
   }
+
   namespace Safe {
 
     [PublicAPI]

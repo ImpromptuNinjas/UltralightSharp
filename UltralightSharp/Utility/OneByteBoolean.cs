@@ -15,7 +15,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int GetHashCode()
-      => ((OneByteBoolean)(_value != 0))._value;
+      => ((OneByteBoolean) (_value != 0))._value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(OneByteBoolean left, OneByteBoolean right)

@@ -1,22 +1,23 @@
 using System;
+using System.ComponentModel;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
-using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
-  public readonly ref struct ScrollEvent {
+  public readonly unsafe ref struct ScrollEvent {
 
-    public static unsafe ScrollEvent* Create(ScrollEventType type, int deltaX, int deltaY)
+    public static ScrollEvent* Create(ScrollEventType type, int deltaX, int deltaY)
       => Ultralight.CreateScrollEvent(type, deltaX, deltaY);
 
   }
 
   [PublicAPI]
-  public static class ScrollEventExtensions {
+  public static unsafe class ScrollEventExtensions {
 
-    public static unsafe void Destroy(in this ScrollEvent _) {
+    public static void Destroy(in this ScrollEvent _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.DestroyScrollEvent((ScrollEvent*) p);
@@ -27,19 +28,22 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class ScrollEvent : IDisposable {
+    public sealed unsafe class ScrollEvent : IDisposable {
 
-      public unsafe UltralightSharp.ScrollEvent* Unsafe => _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.ScrollEvent* Unsafe => _;
 
-      internal readonly unsafe UltralightSharp.ScrollEvent* _;
+      internal readonly UltralightSharp.ScrollEvent* _;
 
-      public unsafe ScrollEvent(UltralightSharp.ScrollEvent* p)
+      public ScrollEvent(UltralightSharp.ScrollEvent* p)
         => _ = p;
-      public unsafe ScrollEvent(ScrollEventType type, int deltaX, int deltaY)
+
+      public ScrollEvent(ScrollEventType type, int deltaX, int deltaY)
         => _ = UltralightSharp.ScrollEvent.Create(type, deltaX, deltaY);
 
-      public unsafe void Dispose()
+      public void Dispose()
         => _->Destroy();
+
     }
 
   }

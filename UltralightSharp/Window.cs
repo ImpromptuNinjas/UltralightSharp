@@ -1,78 +1,79 @@
 using System;
+using System.ComponentModel;
 using System.Text;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
-using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
-  public readonly ref struct Window {
+  public readonly unsafe ref struct Window {
 
-    public static unsafe Window* Create(Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
+    public static Window* Create(Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
       => AppCore.CreateWindow(monitor, width, height, fullscreen, windowFlags);
 
   }
 
   [PublicAPI]
-  public static class WindowExtensions {
+  public static unsafe class WindowExtensions {
 
-    public static unsafe void Destroy(in this Window _) {
+    public static void Destroy(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.DestroyWindow((Window*) p);
     }
 
-    public static unsafe void Close(in this Window _) {
+    public static void Close(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.WindowClose((Window*) p);
     }
 
-    public static unsafe int DeviceToPixel(this in Window _, int val) {
+    public static int DeviceToPixel(this in Window _, int val) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowDeviceToPixel((Window*) p, val);
     }
 
-    public static unsafe void* GetNativeHandle(this in Window _) {
+    public static void* GetNativeHandle(this in Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowGetNativeHandle((Window*) p);
     }
 
-    public static unsafe uint GetHeight(in this Window _) {
+    public static uint GetHeight(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowGetHeight((Window*) p);
     }
 
-    public static unsafe uint GetWidth(in this Window _) {
+    public static uint GetWidth(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowGetWidth((Window*) p);
     }
 
-    public static unsafe double GetScale(in this Window _) {
+    public static double GetScale(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowGetScale((Window*) p);
     }
 
-    public static unsafe bool IsFullscreen(in this Window _) {
+    public static bool IsFullscreen(in this Window _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.WindowIsFullscreen((Window*) p);
     }
 
-    public static unsafe void SetTitle(this in Window _, ReadOnlySpan<byte> title) {
+    public static void SetTitle(this in Window _, ReadOnlySpan<byte> title) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       fixed (byte* pTitle = title)
         AppCore.WindowSetTitle((Window*) p, (sbyte*) pTitle);
     }
 
-    public static unsafe void SetTitle(this in Window _, string title) {
+    public static void SetTitle(this in Window _, string title) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       var bytes = Encoding.UTF8.GetBytes(title);
@@ -85,54 +86,55 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class Window : IDisposable {
+    public sealed unsafe class Window : IDisposable {
 
-      public unsafe UltralightSharp.Window* Unsafe => _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.Window* Unsafe => _;
 
-      internal readonly unsafe UltralightSharp.Window* _;
+      internal readonly UltralightSharp.Window* _;
 
       private readonly bool _refOnly;
 
-      public unsafe Window(UltralightSharp.Window* p, bool refOnly = true) {
+      public Window(UltralightSharp.Window* p, bool refOnly = true) {
         _ = p;
         _refOnly = refOnly;
       }
 
-      public unsafe Window(UltralightSharp.Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
+      public Window(UltralightSharp.Monitor* monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
         => _ = UltralightSharp.Window.Create(monitor, width, height, fullscreen, windowFlags);
 
-      public unsafe Window(Monitor monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
+      public Window(Monitor monitor, uint width, uint height, bool fullscreen, WindowFlags windowFlags)
         => _ = UltralightSharp.Window.Create(monitor._, width, height, fullscreen, windowFlags);
 
-      public unsafe void Dispose() {
+      public void Dispose() {
         if (!_refOnly) _->Destroy();
       }
 
-      public unsafe void Close()
+      public void Close()
         => _->Close();
 
-      public unsafe int DeviceToPixel(int val)
+      public int DeviceToPixel(int val)
         => _->DeviceToPixel(val);
 
-      public unsafe void* GetNativeHandleUnsafe()
+      public void* GetNativeHandleUnsafe()
         => _->GetNativeHandle();
 
-      public unsafe IntPtr GetNativeHandle()
+      public IntPtr GetNativeHandle()
         => (IntPtr) _->GetNativeHandle();
 
-      public unsafe uint GetHeight()
+      public uint GetHeight()
         => _->GetHeight();
 
-      public unsafe uint GetWidth()
+      public uint GetWidth()
         => _->GetWidth();
 
-      public unsafe double GetScale()
+      public double GetScale()
         => _->GetScale();
 
-      public unsafe bool IsFullscreen()
+      public bool IsFullscreen()
         => _->IsFullscreen();
 
-      public unsafe void SetTitle(string title)
+      public void SetTitle(string title)
         => _->SetTitle(title);
 
     }

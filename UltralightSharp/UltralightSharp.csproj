@@ -40,6 +40,7 @@
         <When Condition="'$(TargetFramework)'=='net45'">
             <ItemGroup>
                 <PackageReference Include="System.Memory" Version="4.5.4" />
+                <PackageReference Include="System.ValueTuple" Version="4.5.0" />
                 <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
                 <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
             </ItemGroup>
@@ -103,6 +104,84 @@
         <Compile Update="**\*.*.cs">
             <WouldDependOn>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '^(.*?)\..*$', '$1.cs'))</WouldDependOn>
             <DependentUpon Condition="'%(DependentUpon)' == '' And '%(WouldDependOn)' != '%(Filename)'">%(WouldDependOn)</DependentUpon>
+        </Compile>
+        <Compile Update="Enums\JsTypedArrayType.cs">
+          <WouldDependOn>JsTypedArrayType</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\JsPropertyAttribute.cs">
+          <WouldDependOn>JsPropertyAttribute</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\JsType.cs">
+          <WouldDependOn>JsType</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectCallAsConstructorCallback.cs">
+          <WouldDependOn>ObjectCallAsConstructorCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectCallAsFunctionCallback.cs">
+          <WouldDependOn>ObjectCallAsFunctionCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectConvertToTypeCallback.cs">
+          <WouldDependOn>ObjectConvertToTypeCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectDeletePropertyCallback.cs">
+          <WouldDependOn>ObjectDeletePropertyCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectFinalizeCallback.cs">
+          <WouldDependOn>ObjectFinalizeCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectGetPropertyCallback.cs">
+          <WouldDependOn>ObjectGetPropertyCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectGetPropertyNamesCallback.cs">
+          <WouldDependOn>ObjectGetPropertyNamesCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectHasInstanceCallback.cs">
+          <WouldDependOn>ObjectHasInstanceCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectHasPropertyCallback.cs">
+          <WouldDependOn>ObjectHasPropertyCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectInitializeCallback.cs">
+          <WouldDependOn>ObjectInitializeCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\ObjectSetPropertyCallback.cs">
+          <WouldDependOn>ObjectSetPropertyCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="Callbacks\TypedArrayBytesDeallocatorCallback.cs">
+          <WouldDependOn>TypedArrayBytesDeallocatorCallback</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsString.cs">
+          <WouldDependOn>JsString</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsValue.cs">
+          <WouldDependOn>JsValue</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsPropertyNameAccumulator.cs">
+          <WouldDependOn>JsPropertyNameAccumulator</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsPropertyNameArray.cs">
+          <WouldDependOn>JsPropertyNameArray</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsContextGroup.cs">
+          <WouldDependOn>JsContextGroup</WouldDependOn>
+        </Compile>
+        <Compile Update="Enums\JsClassAttribute.cs">
+          <WouldDependOn>JsClassAttribute</WouldDependOn>
+        </Compile>
+        <Compile Update="OpaqueStructs\JsClass.cs">
+          <WouldDependOn>JsClass</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\JsClassDefinition.cs">
+          <WouldDependOn>JsClassDefinition</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\JsStaticFunction.cs">
+          <WouldDependOn>JsStaticFunction</WouldDependOn>
+        </Compile>
+        <Compile Update="CallbackStructs\JsStaticValue.cs">
+          <WouldDependOn>JsStaticValue</WouldDependOn>
+        </Compile>
+        <Compile Update="DataStructs\JsObjectPrivate.cs">
+          <WouldDependOn>JsObjectPrivate</WouldDependOn>
         </Compile>
     </ItemGroup>
 

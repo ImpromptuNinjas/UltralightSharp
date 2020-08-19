@@ -8,12 +8,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [return: NativeTypeName("unsigned int")]
   public delegate uint GpuDriverNextTextureIdCallback();
 
-
-
   namespace Safe {
 
     [PublicAPI]
     public delegate uint GpuDriverNextTextureIdCallback();
 
   }
+
 }

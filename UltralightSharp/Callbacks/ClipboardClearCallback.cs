@@ -7,11 +7,11 @@ namespace ImpromptuNinjas.UltralightSharp {
   [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
   public delegate void ClipboardClearCallback();
 
-
   namespace Safe {
 
     [PublicAPI]
     public delegate void ClipboardClearCallback();
 
   }
+
 }

@@ -1,89 +1,90 @@
 using System;
+using System.ComponentModel;
 using InlineIL;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
-  public readonly ref struct Overlay {
+  public readonly unsafe ref struct Overlay {
 
-    public static unsafe Overlay* Create(Window* window, uint width, uint height, int x, int y)
+    public static Overlay* Create(Window* window, uint width, uint height, int x, int y)
       => AppCore.CreateOverlay(window, width, height, x, y);
 
-    public static unsafe Overlay* Create(Window* window, View* view, int x, int y)
+    public static Overlay* Create(Window* window, View* view, int x, int y)
       => AppCore.CreateOverlayWithView(window, view, x, y);
 
   }
 
-  public static class OverlayExtensions {
+  public static unsafe class OverlayExtensions {
 
-    public static unsafe void Destroy(in this Overlay _) {
+    public static void Destroy(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.DestroyOverlay((Overlay*) p);
     }
 
-    public static unsafe void Focus(in this Overlay _) {
+    public static void Focus(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.OverlayFocus((Overlay*) p);
     }
 
-    public static unsafe void Unfocus(in this Overlay _) {
+    public static void Unfocus(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.OverlayUnfocus((Overlay*) p);
     }
 
-    public static unsafe void Show(in this Overlay _) {
+    public static void Show(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.OverlayShow((Overlay*) p);
     }
 
-    public static unsafe void Hide(in this Overlay _) {
+    public static void Hide(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       AppCore.OverlayHide((Overlay*) p);
     }
 
-    public static unsafe View* GetView(in this Overlay _) {
+    public static View* GetView(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayGetView((Overlay*) p);
     }
 
-    public static unsafe uint GetHeight(in this Overlay _) {
+    public static uint GetHeight(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayGetHeight((Overlay*) p);
     }
 
-    public static unsafe uint GetWidth(in this Overlay _) {
+    public static uint GetWidth(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayGetWidth((Overlay*) p);
     }
 
-    public static unsafe int GetX(in this Overlay _) {
+    public static int GetX(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayGetX((Overlay*) p);
     }
 
-    public static unsafe int GetY(in this Overlay _) {
+    public static int GetY(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayGetY((Overlay*) p);
     }
 
-    public static unsafe bool HasFocus(in this Overlay _) {
+    public static bool HasFocus(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayHasFocus((Overlay*) p);
     }
 
-    public static unsafe bool IsHidden(in this Overlay _) {
+    public static bool IsHidden(in this Overlay _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return AppCore.OverlayIsHidden((Overlay*) p);
@@ -94,64 +95,65 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class Overlay : IDisposable {
+    public sealed unsafe class Overlay : IDisposable {
 
-      public unsafe UltralightSharp.Overlay* Unsafe => _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.Overlay* Unsafe => _;
 
-      internal readonly unsafe UltralightSharp.Overlay* _;
+      internal readonly UltralightSharp.Overlay* _;
 
-      public unsafe Overlay(UltralightSharp.Overlay* p)
+      public Overlay(UltralightSharp.Overlay* p)
         => _ = p;
 
-      public unsafe Overlay(UltralightSharp.Window* window, uint width, uint height, int x, int y)
+      public Overlay(UltralightSharp.Window* window, uint width, uint height, int x, int y)
         => _ = UltralightSharp.Overlay.Create(window, width, height, x, y);
 
-      public unsafe Overlay(UltralightSharp.Window* window, UltralightSharp.View* view, int x, int y)
+      public Overlay(UltralightSharp.Window* window, UltralightSharp.View* view, int x, int y)
         => _ = UltralightSharp.Overlay.Create(window, view, x, y);
 
-      public unsafe Overlay(UltralightSharp.Window* window, View view, int x, int y)
+      public Overlay(UltralightSharp.Window* window, View view, int x, int y)
         => _ = UltralightSharp.Overlay.Create(window, view._, x, y);
 
-      public unsafe Overlay(Window window, UltralightSharp.View* view, int x, int y)
+      public Overlay(Window window, UltralightSharp.View* view, int x, int y)
         => _ = UltralightSharp.Overlay.Create(window._, view, x, y);
 
-      public unsafe Overlay(Window window, View view, int x, int y)
+      public Overlay(Window window, View view, int x, int y)
         => _ = UltralightSharp.Overlay.Create(window._, view._, x, y);
 
-      public unsafe void Dispose()
+      public void Dispose()
         => _->Destroy();
 
-      public unsafe void Focus()
+      public void Focus()
         => _->Focus();
 
-      public unsafe void Unfocus()
+      public void Unfocus()
         => _->Unfocus();
 
-      public unsafe void Show()
+      public void Show()
         => _->Show();
 
-      public unsafe void Hide()
+      public void Hide()
         => _->Hide();
 
-      public unsafe View GetView()
+      public View GetView()
         => new View(_->GetView());
 
-      public unsafe uint GetHeight()
+      public uint GetHeight()
         => _->GetHeight();
 
-      public unsafe uint GetWidth()
+      public uint GetWidth()
         => _->GetWidth();
 
-      public unsafe int GetX()
+      public int GetX()
         => _->GetX();
 
-      public unsafe int GetY()
+      public int GetY()
         => _->GetY();
 
-      public unsafe bool HasFocus()
+      public bool HasFocus()
         => _->HasFocus();
 
-      public unsafe bool IsHidden()
+      public bool IsHidden()
         => _->IsHidden();
 
     }

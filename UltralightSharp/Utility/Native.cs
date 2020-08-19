@@ -163,14 +163,14 @@ namespace ImpromptuNinjas.UltralightSharp {
         // deal with osx dylib load path ordeal
         if (LibUltralightCore == default)
           throw new PlatformNotSupportedException("Can't preload LibUltralightCore");
-        
+
         if (LibIcudata == default)
           throw new PlatformNotSupportedException("Can't preload LibIcudata");
         if (LibIcuuc == default)
           throw new PlatformNotSupportedException("Can't preload LibIcuuc");
         if (LibIcui18n == default)
           throw new PlatformNotSupportedException("Can't preload LibIcui18n");
-        
+
         if (LibWebCore == default)
           throw new PlatformNotSupportedException("Can't preload LibWebCore");
         if (LibUltralight == default)

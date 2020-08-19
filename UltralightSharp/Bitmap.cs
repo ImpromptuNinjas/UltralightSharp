@@ -1,44 +1,45 @@
 using System;
+using System.ComponentModel;
 using System.Text;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
-using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
-  public readonly ref struct Bitmap {
+  public readonly unsafe ref struct Bitmap {
 
-    public static unsafe Bitmap* CreateEmpty()
+    public static Bitmap* CreateEmpty()
       => Ultralight.CreateEmptyBitmap();
 
-    public static unsafe Bitmap* Create(uint width, uint height, BitmapFormat format)
+    public static Bitmap* Create(uint width, uint height, BitmapFormat format)
       => Ultralight.CreateBitmap(width, height, format);
 
-    public static unsafe Bitmap* Copy(Bitmap* existingBitmap)
+    public static Bitmap* Copy(Bitmap* existingBitmap)
       => Ultralight.CreateBitmapFromCopy(existingBitmap);
 
-    public static unsafe Bitmap* CreateFromPixels(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
+    public static Bitmap* CreateFromPixels(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
       => Ultralight.CreateBitmapFromPixels(width, height, format, rowBytes, pixels, size, shouldCopy);
 
   }
 
   [PublicAPI]
-  public static class BitmapExtensions {
+  public static unsafe class BitmapExtensions {
 
-    public static unsafe void Destroy(in this Bitmap _) {
+    public static void Destroy(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.DestroyBitmap((Bitmap*) p);
     }
 
-    public static unsafe bool WritePng(in this Bitmap _, sbyte* path) {
+    public static bool WritePng(in this Bitmap _, sbyte* path) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapWritePng((Bitmap*) p, path);
     }
 
-    public static unsafe bool WritePng(in this Bitmap _, string path) {
+    public static bool WritePng(in this Bitmap _, string path) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       var bytes = Encoding.UTF8.GetBytes(path);
@@ -46,43 +47,43 @@ namespace ImpromptuNinjas.UltralightSharp {
         return Ultralight.BitmapWritePng((Bitmap*) p, (sbyte*) pBytes);
     }
 
-    public static unsafe bool IsEmpty(in this Bitmap _) {
+    public static bool IsEmpty(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapIsEmpty((Bitmap*) p);
     }
 
-    public static unsafe void Erase(in this Bitmap _) {
+    public static void Erase(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.BitmapErase((Bitmap*) p);
     }
 
-    public static unsafe uint GetBpp(in this Bitmap _) {
+    public static uint GetBpp(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetBpp((Bitmap*) p);
     }
 
-    public static unsafe void* RawPixels(in this Bitmap _) {
+    public static void* RawPixels(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapRawPixels((Bitmap*) p);
     }
 
-    public static unsafe void* LockPixels(in this Bitmap _) {
+    public static void* LockPixels(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapLockPixels((Bitmap*) p);
     }
 
-    public static unsafe void UnlockPixels(in this Bitmap _) {
+    public static void UnlockPixels(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.BitmapUnlockPixels((Bitmap*) p);
     }
 
-    public static unsafe void WithPixelsLocked(PixelBufferWorkerCallback callback) {
+    public static void WithPixelsLocked(PixelBufferWorkerCallback callback) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       var pixels = Ultralight.BitmapLockPixels((Bitmap*) p);
@@ -94,37 +95,37 @@ namespace ImpromptuNinjas.UltralightSharp {
       }
     }
 
-    public static unsafe BitmapFormat GetFormat(in this Bitmap _) {
+    public static BitmapFormat GetFormat(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetFormat((Bitmap*) p);
     }
 
-    public static unsafe uint GetHeight(in this Bitmap _) {
+    public static uint GetHeight(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetHeight((Bitmap*) p);
     }
 
-    public static unsafe uint GetWidth(in this Bitmap _) {
+    public static uint GetWidth(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetWidth((Bitmap*) p);
     }
 
-    public static unsafe UIntPtr GetSize(in this Bitmap _) {
+    public static UIntPtr GetSize(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetSize((Bitmap*) p);
     }
 
-    public static unsafe uint GetRowBytes(in this Bitmap _) {
+    public static uint GetRowBytes(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       return Ultralight.BitmapGetRowBytes((Bitmap*) p);
     }
 
-    public static unsafe void SwapRedBlueChannels(in this Bitmap _) {
+    public static void SwapRedBlueChannels(in this Bitmap _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.BitmapSwapRedBlueChannels((Bitmap*) p);
@@ -135,56 +136,57 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class Bitmap : IDisposable, ICloneable {
+    public sealed unsafe class Bitmap : IDisposable, ICloneable {
 
-      public unsafe UltralightSharp.Bitmap* Unsafe => _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.Bitmap* Unsafe => _;
 
-      internal readonly unsafe UltralightSharp.Bitmap* _;
+      internal readonly UltralightSharp.Bitmap* _;
 
       private readonly bool _refOnly;
 
-      internal unsafe Bitmap(UltralightSharp.Bitmap* existingBitmap, bool refOnly = true) {
+      internal Bitmap(UltralightSharp.Bitmap* existingBitmap, bool refOnly = true) {
         _ = existingBitmap;
         _refOnly = refOnly;
       }
 
-      public unsafe Bitmap()
+      public Bitmap()
         => _ = UltralightSharp.Bitmap.CreateEmpty();
 
-      public unsafe Bitmap(uint width, uint height, BitmapFormat format)
+      public Bitmap(uint width, uint height, BitmapFormat format)
         => _ = UltralightSharp.Bitmap.Create(width, height, format);
 
-      public unsafe Bitmap(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
+      public Bitmap(uint width, uint height, BitmapFormat format, uint rowBytes, void* pixels, UIntPtr size, bool shouldCopy)
         => _ = UltralightSharp.Bitmap.CreateFromPixels(width, height, format, rowBytes, pixels, size, shouldCopy);
 
-      public unsafe void Dispose() {
+      public void Dispose() {
         if (!_refOnly) _->Destroy();
       }
 
-      public unsafe bool WritePng(string path) {
+      public bool WritePng(string path) {
         fixed (byte* pBytes = Encoding.UTF8.GetBytes(path))
           return _->WritePng((sbyte*) pBytes);
       }
 
-      public unsafe bool IsEmpty()
+      public bool IsEmpty()
         => _->IsEmpty();
 
-      public unsafe void Erase()
+      public void Erase()
         => _->Erase();
 
-      public unsafe uint GetBpp()
+      public uint GetBpp()
         => _->GetBpp();
 
-      public unsafe IntPtr RawPixels()
+      public IntPtr RawPixels()
         => (IntPtr) _->RawPixels();
 
-      public unsafe IntPtr LockPixels()
+      public IntPtr LockPixels()
         => (IntPtr) _->LockPixels();
 
-      public unsafe void UnlockPixels()
+      public void UnlockPixels()
         => _->UnlockPixels();
 
-      public unsafe void WithPixelsLocked(PixelBufferWorkerCallback callback) {
+      public void WithPixelsLocked(PixelBufferWorkerCallback callback) {
         var pixels = _->LockPixels();
         try {
           callback((IntPtr) pixels);
@@ -194,25 +196,25 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
-      public unsafe BitmapFormat GetFormat()
+      public BitmapFormat GetFormat()
         => _->GetFormat();
 
-      public unsafe uint GetHeight()
+      public uint GetHeight()
         => _->GetHeight();
 
-      public unsafe uint GetWidth()
+      public uint GetWidth()
         => _->GetWidth();
 
-      public unsafe UIntPtr GetSize()
+      public UIntPtr GetSize()
         => _->GetSize();
 
-      public unsafe uint GetRowBytes()
+      public uint GetRowBytes()
         => _->GetRowBytes();
 
-      public unsafe void SwapRedBlueChannels()
+      public void SwapRedBlueChannels()
         => _->SwapRedBlueChannels();
 
-      unsafe Bitmap Clone()
+      Bitmap Clone()
         => new Bitmap(UltralightSharp.Bitmap.Copy(_));
 
       object ICloneable.Clone()

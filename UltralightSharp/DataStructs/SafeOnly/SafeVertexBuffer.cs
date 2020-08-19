@@ -13,7 +13,7 @@ namespace ImpromptuNinjas.UltralightSharp.Safe {
     internal static Dictionary<IntPtr, GCHandle> _pins
       = new Dictionary<IntPtr, GCHandle>();
 
-    protected SafeVertexBuffer() {
+    internal SafeVertexBuffer() {
     }
 
     internal abstract void Free();

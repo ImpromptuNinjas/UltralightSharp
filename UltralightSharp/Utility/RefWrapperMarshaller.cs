@@ -7,6 +7,9 @@ namespace ImpromptuNinjas.UltralightSharp.Safe {
 
   public abstract class RefWrapperMarshaller<TClass> : ICustomMarshaler {
 
+    internal RefWrapperMarshaller() {
+    }
+
     protected static readonly ConstructorInfo CtorInfo = typeof(TClass).GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
       .First(ctor => {
         var ps = ctor.GetParameters();

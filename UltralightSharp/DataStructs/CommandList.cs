@@ -10,13 +10,13 @@ namespace ImpromptuNinjas.UltralightSharp {
   [PublicAPI]
   [NativeTypeName("ULCommandList")]
   [StructLayout(LayoutKind.Sequential)]
-  public struct CommandList : IReadOnlyList<Ptr<Command>> {
+  public unsafe struct CommandList : IReadOnlyList<Ptr<Command>> {
 
     [NativeTypeName("unsigned int")]
     public uint Size;
 
     [NativeTypeName("ULCommand *")]
-    public unsafe Command* Commands;
+    public Command* Commands;
 
     public IEnumerator<Ptr<Command>> GetEnumerator() {
       for (var i = 0; i < Count; ++i)
@@ -32,22 +32,22 @@ namespace ImpromptuNinjas.UltralightSharp {
       get => (int) Size;
     }
 
-    unsafe Ptr<Command> IReadOnlyList<Ptr<Command>>.this[int i] {
+    Ptr<Command> IReadOnlyList<Ptr<Command>>.this[int i] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => this[i];
     }
 
-    public unsafe Command* this[int i] {
+    public Command* this[int i] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get => (Command*) Unsafe.Add<Command>(Commands, i);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe implicit operator Span<Ptr<Command>>(CommandList l)
+    public static implicit operator Span<Ptr<Command>>(CommandList l)
       => new Span<Ptr<Command>>(l.Commands, l.Count);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe implicit operator ReadOnlySpan<Ptr<Command>>(CommandList l)
+    public static implicit operator ReadOnlySpan<Ptr<Command>>(CommandList l)
       => new ReadOnlySpan<Ptr<Command>>(l.Commands, l.Count);
 
   }

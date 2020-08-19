@@ -13,5 +13,5 @@ namespace ImpromptuNinjas.UltralightSharp {
     public delegate bool ClipboardReadPlainTextCallback(string? path);
 
   }
-  
+
 }

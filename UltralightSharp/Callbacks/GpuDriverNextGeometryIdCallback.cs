@@ -14,4 +14,5 @@ namespace ImpromptuNinjas.UltralightSharp {
     public delegate uint GpuDriverNextGeometryIdCallback();
 
   }
+
 }

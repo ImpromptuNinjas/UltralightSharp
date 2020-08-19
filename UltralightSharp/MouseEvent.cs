@@ -1,22 +1,23 @@
 using System;
+using System.ComponentModel;
+using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
-using ImpromptuNinjas.UltralightSharp.Enums;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
-  public readonly ref struct MouseEvent {
+  public readonly unsafe ref struct MouseEvent {
 
-    public static unsafe MouseEvent* Create(MouseEventType type, int x, int y, MouseButton button)
+    public static MouseEvent* Create(MouseEventType type, int x, int y, MouseButton button)
       => Ultralight.CreateMouseEvent(type, x, y, button);
 
   }
 
   [PublicAPI]
-  public static class MouseEventExtensions {
+  public static unsafe class MouseEventExtensions {
 
-    public static unsafe void Destroy(in this MouseEvent _) {
+    public static void Destroy(in this MouseEvent _) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var p);
       Ultralight.DestroyMouseEvent((MouseEvent*) p);
@@ -27,19 +28,20 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class MouseEvent : IDisposable {
+    public sealed unsafe class MouseEvent : IDisposable {
 
-      public unsafe UltralightSharp.MouseEvent* Unsafe => _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.MouseEvent* Unsafe => _;
 
-      internal readonly unsafe UltralightSharp.MouseEvent* _;
+      internal readonly UltralightSharp.MouseEvent* _;
 
-      public unsafe MouseEvent(UltralightSharp.MouseEvent* p)
+      public MouseEvent(UltralightSharp.MouseEvent* p)
         => _ = p;
 
-      public unsafe MouseEvent(MouseEventType type, int x, int y, MouseButton button)
+      public MouseEvent(MouseEventType type, int x, int y, MouseButton button)
         => _ = UltralightSharp.MouseEvent.Create(type, x, y, button);
 
-      public unsafe void Dispose()
+      public void Dispose()
         => _->Destroy();
 
     }

@@ -63,7 +63,7 @@ public class OpenGlEsGpuDriverSite {
   [PublicAPI]
   public bool RenderAnsiTexturePreviews;
 
-  public OpenGlEsGpuDriverSite(GL gl, KhrDebug dbg = null) {
+  public OpenGlEsGpuDriverSite(GL gl, KhrDebug? dbg = null) {
     _gl = gl;
     _dbg = dbg;
   }

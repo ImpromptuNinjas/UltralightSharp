@@ -23,7 +23,7 @@ partial class Program {
     1, 2, 3
   };
 
-  private static OpenGlEsGpuDriverSite _gpuDriverSite;
+  private static OpenGlEsGpuDriverSite _gpuDriverSite = null!;
 
   private static unsafe void OnLoad() {
     Console.WriteLine($"Loading...");
@@ -37,10 +37,10 @@ partial class Program {
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
     if (glVersionMajor == 0) {
       Console.WriteLine("Unable to retrieve API major version.");
-      glVersionMajor = !_automaticFallback ? _glMaj : _useOpenGL ? 3 : _majOES; // bug?
+      glVersionMajor = !_automaticFallback ? _glMaj : _useOpenGl ? 3 : _majOES; // bug?
     }
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
-    Console.WriteLine($"{(_useOpenGL?"OpenGL":"OpenGL ES")} v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
+    Console.WriteLine($"{(_useOpenGl?"OpenGL":"OpenGL ES")} v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
 
     var glVendor = _gl.GetString(StringName.Vendor);
     var glDevice = _gl.GetString(StringName.Renderer);
@@ -80,7 +80,7 @@ partial class Program {
     _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
 
     if (_snView is IWindow wnd)
-      wnd.Title = _useOpenGL
+      wnd.Title = _useOpenGl
         ? $"UltralightSharp - OpenGL v{glVersionMajor}.{glVersionMinor} (Silk.NET)"
         : $"UltralightSharp - OpenGL ES v{glVersionMajor}.{glVersionMinor} (Silk.NET)";
 

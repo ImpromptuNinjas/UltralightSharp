@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -10,11 +11,14 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public sealed class Buffer {
+    public sealed unsafe class Buffer {
 
-      internal readonly unsafe UltralightSharp.Buffer* _;
+      [EditorBrowsable(EditorBrowsableState.Advanced)]
+      public UltralightSharp.Buffer* Unsafe => _;
 
-      public unsafe Buffer(UltralightSharp.Buffer* p)
+      internal readonly UltralightSharp.Buffer* _;
+
+      public Buffer(UltralightSharp.Buffer* p)
         => _ = p;
 
     }
