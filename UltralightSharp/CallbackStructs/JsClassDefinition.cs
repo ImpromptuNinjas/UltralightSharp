@@ -132,7 +132,14 @@ namespace ImpromptuNinjas.UltralightSharp {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
           UltralightSharp.ObjectInitializeCallback cb
-            = (ctx, o) => value(JsValueLike.Create(o, new JsLocalContext(ctx)));
+            = (ctx, o) => {
+              var obj = new JsObject(o, new JsLocalContext(ctx));
+              
+              
+              JavaScriptCore.JsObjectSetPrivate(o, );
+
+              value(o);
+            };
           _.Initialize = cb;
         }
       }
@@ -146,10 +153,14 @@ namespace ImpromptuNinjas.UltralightSharp {
                 // nothing we can do here
                 return;
 
-              if (!o->TryGetJsObjectPrivate(out var gcOp))
+              if (!JsValueLike.TryGetJsObjectPrivate(o, out var objPvt))
                 return;
 
-              var ctx = gcOp.Context;
+              var ctx = objPvt.CreateContext();
+
+              if (ctx == null)
+                // nothing we can do here
+                return;
 
               value(new JsObject(o, ctx));
             };

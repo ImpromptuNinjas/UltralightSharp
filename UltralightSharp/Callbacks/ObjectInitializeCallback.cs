@@ -10,7 +10,7 @@ namespace ImpromptuNinjas.UltralightSharp {
   namespace Safe {
 
     [PublicAPI]
-    public delegate void ObjectInitializeCallback(JsValueLike? @object);
+    public delegate void ObjectInitializeCallback(JsObject? @object);
 
   }
 

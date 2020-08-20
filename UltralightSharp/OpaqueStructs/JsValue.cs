@@ -1,8 +1,10 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
+#if !NETFRAMEWORK && !NETSTANDARD2_0
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace ImpromptuNinjas.UltralightSharp {
 
@@ -17,15 +19,15 @@ namespace ImpromptuNinjas.UltralightSharp {
     public static bool TryGetJsObjectPrivate(
       in this JsValue _,
 #if NETFRAMEWORK || NETSTANDARD2_0
-      out Safe.JsObjectPrivate objPrivate
+      out JsObjectPrivate* pObjPvt
 #else
-      [NotNullWhen(true)] out Safe.JsObjectPrivate? objPrivate
+      [NotNullWhen(true)] out JsObjectPrivate* pObjPvt
 #endif
     ) {
       IL.Emit.Ldarg_0();
       IL.Pop(out var pValue);
       var value = (JsValue*) pValue;
-      objPrivate = null!;
+      pObjPvt = null!;
 
       var p = JavaScriptCore.JsObjectGetPrivate(value);
 
@@ -33,24 +35,12 @@ namespace ImpromptuNinjas.UltralightSharp {
         // nothing we can do here either
         return false;
 
-      var pStruct = (JsObjectPrivate*) p;
-      // back the pointer up to the potential gc obj ref
-      var pMethodTable = (void**) (IntPtr) pStruct - sizeof(void*);
-      var methodTableValue = ((UIntPtr) pMethodTable).ToUInt64();
-      if ((methodTableValue & 0xFFFF000000000007u) != 0)
+      var ptrVal = ((UIntPtr) p).ToUInt64();
+      if ((ptrVal & 0xFFFF000000000007u) != 0)
         // probably not a valid pointer
         return false;
 
-      // check if the method table pointer matches the type
-      var methodTable = (IntPtr) (*pMethodTable);
-
-      if (methodTable != typeof(Safe.JsObjectPrivate).TypeHandle.Value)
-        // doesn't match, can't interpret it
-        return false;
-
-      IL.Push((IntPtr) pMethodTable);
-      IL.Pop(out Safe.JsObjectPrivate aGcOp);
-      objPrivate = aGcOp;
+      pObjPvt = (JsObjectPrivate*) p;
       return true;
     }
 
@@ -157,6 +147,40 @@ namespace ImpromptuNinjas.UltralightSharp {
         var r = Context._->ToObject(Unsafe, &exc);
         exception = Create(exc, Context);
         return new JsObject(r, Context);
+      }
+
+      public static bool TryGetJsObjectPrivate(
+        UltralightSharp.JsValue * value,
+#if NETFRAMEWORK || NETSTANDARD2_0
+        out JsObjectPrivate objPvt
+#else
+        [NotNullWhen(true)] out JsObjectPrivate? objPvt
+#endif
+      ) {
+        objPvt = null!;
+
+        if (!value->TryGetJsObjectPrivate(out var pStruct))
+          return false;
+
+        // back the pointer up to the potential gc obj ref
+        var pMethodTable = (void**) ((IntPtr) pStruct) - sizeof(void*);
+        var methodTableValue = ((UIntPtr) pMethodTable).ToUInt64();
+        if ((methodTableValue & 0xFFFF000000000007u) != 0)
+          // probably not a valid pointer
+          return false;
+
+        // check if the method table pointer matches the type
+        var methodTable = (IntPtr) (*pMethodTable);
+
+        if (methodTable != typeof(JsObjectPrivate).TypeHandle.Value)
+          // doesn't match, can't interpret it
+          return false;
+
+        IL.Push((IntPtr) pMethodTable);
+        IL.Pop(out JsObjectPrivate aGcOp);
+
+        objPvt = aGcOp;
+        return true;
       }
 
     }
