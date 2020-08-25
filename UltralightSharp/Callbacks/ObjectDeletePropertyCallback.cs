@@ -23,4 +23,26 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   }
 
+  [PublicAPI]
+  [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+  public unsafe delegate bool ObjectDeletePropertyCallbackEx(
+    [NativeTypeName("JSContextRef")] JsContext* ctx,
+    [NativeTypeName("JSClassRef")] JsClass* jsClass,
+    [NativeTypeName("JSObjectRef")] JsValue* @object,
+    [NativeTypeName("JSStringRef")] JsString* propertyName,
+    [NativeTypeName("JSValueRef *")] JsValue** exception
+  );
+
+  namespace Safe {
+
+    [PublicAPI]
+    public delegate bool ObjectDeletePropertyCallbackEx(
+      JsClass jsClass,
+      JsObject @object,
+      JsString propertyName,
+      out JsValueLike? exception
+    );
+
+  }
+
 }

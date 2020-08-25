@@ -19,7 +19,7 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       catch { height = 25; }
     }
 
-    public static unsafe void RenderAnsi<TColor>(IntPtr pixels,
+    public static unsafe int RenderAnsi<TColor>(Stream o, IntPtr pixels,
       uint w, uint h,
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
       bool borderless = false
@@ -37,16 +37,20 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       cw -= 1;
       ch -= (int) reduceLineCount;
 
-      if (cw == 0 || ch == 0) return;
+      if (cw == 0 || ch == 0) return 0;
 
+      /*
       // come up with an aperture that fits the console window (minus drawn borders, accounting for 2v/c)
       var borderCost = borderless ? 0 : -2;
       var wsq = borderCost + cw / aspect;
-      var hsq = borderCost + (ch * 2) * aspect;
+      var hsq = borderCost + 2 * ch * aspect;
       var sq = Math.Min(wsq, hsq);
 
       var aw = (int) Math.Floor(sq * aspect);
       var ah = (int) Math.Floor(sq / aspect);
+      */
+      var aw = cw;
+      var ah = ch * 2; 
 
       var pPixels = (byte*) pixels;
       var span = new ReadOnlySpan<TColor>(pPixels, checked((int) (w * h)));
@@ -54,8 +58,6 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       img.Mutate(x => x
         .Resize(aw, ah, LanczosResampler.Lanczos3)
         .Crop(aw, ah));
-      using var stdOut = Console.OpenStandardOutput(256);
-      using var o = new BufferedStream(stdOut, (42 * aw * (ah / 2)) + 1);
 
       void WriteTriplet(byte b) {
         var ones = b % 10;
@@ -196,8 +198,9 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         o.WriteByte((byte) '\n');
       }
 
-      o.Flush();
-      stdOut.Flush();
+      //o.Flush();
+
+      return lastY;
     }
 
   }

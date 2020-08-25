@@ -7,10 +7,13 @@ using ImpromptuNinjas.UltralightSharp.Enums;
 using JetBrains.Annotations;
 #if NETFRAMEWORK || NETSTANDARD2_0
 using System.Buffers;
+
 #endif
 
 namespace ImpromptuNinjas.UltralightSharp {
 
+  [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public unsafe partial struct JsStaticValue {
 
     [NativeTypeName("const char *")]
@@ -31,6 +34,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    [StructLayout(LayoutKind.Sequential)]
     public unsafe struct JsStaticValue {
 
       private UltralightSharp.JsStaticValue _;

@@ -1,10 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public struct GpuDriver {
 
     [NativeTypeName("ULGPUDriverBeginSynchronize")]
@@ -55,6 +57,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    [StructLayout(LayoutKind.Sequential)]
     public struct GpuDriver {
 
       private UltralightSharp.GpuDriver _;

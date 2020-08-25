@@ -12,10 +12,44 @@ namespace ImpromptuNinjas.UltralightSharp {
   [PublicAPI]
   public readonly ref struct JsContext {
 
+    public static unsafe JsContext* Create(JsClass* globalObjectClass)
+      => JavaScriptCore.GlobalContextCreate(globalObjectClass);
+
   }
 
+  [PublicAPI]
   [SuppressMessage("ReSharper", "UnusedParameter.Global")]
   public static unsafe class JsContextExtensions {
+
+    public static JsContext* GetGlobalContext(in this JsContext _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var ctx);
+      return JavaScriptCore.ContextGetGlobalContext((JsContext*) ctx);
+    }
+
+    public static JsString* GlobalContextCopyName(in this JsContext _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var ctx);
+      return JavaScriptCore.GlobalContextCopyName((JsContext*) ctx);
+    }
+
+    public static void GlobalContextSetName(in this JsContext _, JsString* name) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var ctx);
+      JavaScriptCore.GlobalContextSetName((JsContext*) ctx, name);
+    }
+
+    public static JsValue* GetGlobalObject(in this JsContext _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var ctx);
+      return JavaScriptCore.ContextGetGlobalObject((JsContext*) ctx);
+    }
+
+    public static JsContextGroup* GetGroup(in this JsContext _) {
+      IL.Emit.Ldarg_0();
+      IL.Pop(out var ctx);
+      return JavaScriptCore.ContextGetGroup((JsContext*) ctx);
+    }
 
     public static JsType GetJsType(in this JsContext _, JsValue* value) {
       IL.Emit.Ldarg_0();
@@ -259,6 +293,15 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public abstract void Dispose();
 
+      public unsafe JsGlobalContext GetGlobalContext()
+        => new JsGlobalContext(_->GetGlobalContext());
+
+      public unsafe JsValueLike? GetGlobalObject()
+        => JsValueLike.Create(_->GetGlobalObject(), this);
+
+      public unsafe JsContextGroup GetGroup()
+        => new JsContextGroup(_->GetGroup());
+
       public unsafe JsType GetJsType(JsValueLike value)
         => _->GetJsType(value.Unsafe);
 
@@ -377,13 +420,17 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public sealed class JsGlobalContext : JsContext {
 
-      public unsafe JsGlobalContext(UltralightSharp.JsContext* p) : base(p) {
-        JavaScriptCore.GlobalContextRetain(_);
-      }
+      public unsafe JsGlobalContext(UltralightSharp.JsContext* p) : base(p)
+        => JavaScriptCore.GlobalContextRetain(_);
 
-      public override unsafe void Dispose() {
-        JavaScriptCore.GlobalContextRelease(_);
-      }
+      public override unsafe void Dispose()
+        => JavaScriptCore.GlobalContextRelease(_);
+
+      public unsafe JsString GlobalContextCopyName()
+        => new JsString(_->GlobalContextCopyName());
+
+      public unsafe void GlobalContextSetName(JsString name)
+        => _->GlobalContextSetName(name._);
 
     }
 

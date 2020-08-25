@@ -1,9 +1,11 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public struct Rect {
 
     public float Left;

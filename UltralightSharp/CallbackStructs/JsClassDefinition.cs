@@ -6,9 +6,9 @@ using System.Text;
 using ImpromptuNinjas.UltralightSharp.Enums;
 using InlineIL;
 using JetBrains.Annotations;
-
 #if NETFRAMEWORK || NETSTANDARD2_0
 using System.Buffers;
+
 #endif
 
 #if DEBUG
@@ -18,6 +18,7 @@ using System.Diagnostics;
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public unsafe struct JsClassDefinition {
 
     public int Version;
@@ -38,37 +39,37 @@ namespace ImpromptuNinjas.UltralightSharp {
     public JsStaticFunction* StaticFunctions;
 
     [NativeTypeName("JSObjectInitializeCallback")]
-    public FnPtr<ObjectInitializeCallback> Initialize;
+    public FnPtr<ObjectInitializeCallback, ObjectInitializeCallbackEx> Initialize;
 
     [NativeTypeName("JSObjectFinalizeCallback")]
-    public FnPtr<ObjectFinalizeCallback> Finalizer;
+    public FnPtr<ObjectFinalizeCallback, ObjectFinalizeCallbackEx> Finalizer;
 
     [NativeTypeName("JSObjectHasPropertyCallback")]
-    public FnPtr<ObjectHasPropertyCallback> HasProperty;
+    public FnPtr<ObjectHasPropertyCallback, ObjectHasPropertyCallbackEx> HasProperty;
 
     [NativeTypeName("JSObjectGetPropertyCallback")]
-    public FnPtr<ObjectGetPropertyCallback> GetProperty;
+    public FnPtr<ObjectGetPropertyCallback, ObjectGetPropertyCallbackEx> GetProperty;
 
     [NativeTypeName("JSObjectSetPropertyCallback")]
-    public FnPtr<ObjectSetPropertyCallback> SetProperty;
+    public FnPtr<ObjectSetPropertyCallback, ObjectSetPropertyCallbackEx> SetProperty;
 
     [NativeTypeName("JSObjectDeletePropertyCallback")]
-    public FnPtr<ObjectDeletePropertyCallback> DeleteProperty;
+    public FnPtr<ObjectDeletePropertyCallback, ObjectDeletePropertyCallbackEx> DeleteProperty;
 
     [NativeTypeName("JSObjectGetPropertyNamesCallback")]
-    public FnPtr<ObjectGetPropertyNamesCallback> GetPropertyNames;
+    public FnPtr<ObjectGetPropertyNamesCallback, ObjectGetPropertyNamesCallbackEx> GetPropertyNames;
 
     [NativeTypeName("JSObjectCallAsFunctionCallback")]
-    public FnPtr<ObjectCallAsFunctionCallback> CallAsFunction;
+    public FnPtr<ObjectCallAsFunctionCallback, ObjectCallAsFunctionCallbackEx> CallAsFunction;
 
     [NativeTypeName("JSObjectCallAsConstructorCallback")]
-    public FnPtr<ObjectCallAsConstructorCallback> CallAsConstructor;
+    public FnPtr<ObjectCallAsConstructorCallback, ObjectCallAsConstructorCallbackEx> CallAsConstructor;
 
     [NativeTypeName("JSObjectHasInstanceCallback")]
-    public FnPtr<ObjectHasInstanceCallback> HasInstance;
+    public FnPtr<ObjectHasInstanceCallback, ObjectHasInstanceCallbackEx> HasInstance;
 
     [NativeTypeName("JSObjectConvertToTypeCallback")]
-    public FnPtr<ObjectConvertToTypeCallback> ConvertToType;
+    public FnPtr<ObjectConvertToTypeCallback, ObjectConvertToTypeCallbackEx> ConvertToType;
 
   }
 
@@ -93,6 +94,13 @@ namespace ImpromptuNinjas.UltralightSharp {
 
       public static implicit operator UltralightSharp.JsClassDefinition(in JsClassDefinition x)
         => x._;
+
+      public JsClassDefinition(bool extended)
+        => _.Version = extended ? 1000 : 0;
+
+      public int Version => _.Version;
+
+      public ref JsClassAttribute Attributes => ref _.Attributes;
 
       [MustUseReturnValue]
       public GCHandle SetName(string name) {
@@ -123,22 +131,47 @@ namespace ImpromptuNinjas.UltralightSharp {
         set => throw new NotSupportedException("Use the SetName method instead.");
       }
 
-      public JsClassAttribute Attributes {
-        get => _.Attributes;
-        set => _.Attributes = value;
+      public JsClass ParentClass {
+        get => new JsClass(_.ParentClass);
+        set => _.ParentClass = value._;
       }
 
       public ObjectInitializeCallback Initialize {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use InitializeEx instead");
+
           UltralightSharp.ObjectInitializeCallback cb
             = (ctx, o) => {
               var obj = new JsObject(o, new JsLocalContext(ctx));
-              
-              
-              JavaScriptCore.JsObjectSetPrivate(o, );
 
-              value(o);
+              var pvt = new JsObjectPrivate();
+
+              JavaScriptCore.JsObjectSetPrivate(o, pvt.UnsafePointer);
+
+              value(obj);
+            };
+          _.Initialize = cb;
+        }
+      }
+
+      public ObjectInitializeCallbackEx InitializeEx {
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use Initialize instead");
+
+          UltralightSharp.ObjectInitializeCallbackEx cb
+            = (ctx, c, o) => {
+              var obj = new JsObject(o, new JsLocalContext(ctx));
+
+              var jsClass = new JsClass(c);
+
+              var pvt = new JsObjectPrivate();
+
+              JavaScriptCore.JsObjectSetPrivate(o, pvt.UnsafePointer);
+
+              value(jsClass, obj);
             };
           _.Initialize = cb;
         }
@@ -147,6 +180,9 @@ namespace ImpromptuNinjas.UltralightSharp {
       public ObjectFinalizeCallback Finalizer {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use FinalizerEx instead");
+
           UltralightSharp.ObjectFinalizeCallback cb
             = o => {
               if (o == null)
@@ -168,11 +204,54 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectFinalizeCallbackEx FinalizerEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use Finalizer instead");
+
+          UltralightSharp.ObjectFinalizeCallbackEx cb
+            = (c, o) => {
+              var jsClass = new JsClass(c);
+
+              JsContext? ctx = null;
+
+              if (o != null && JsValueLike.TryGetJsObjectPrivate(o, out var objPvt))
+                ctx = objPvt.CreateContext();
+
+              // TODO: is this a valid fallback?
+              ctx ??= jsClass.CreateGlobalContext();
+
+              value(jsClass, new JsObject(o, ctx));
+            };
+          _.Finalizer = cb;
+        }
+      }
+
       public ObjectHasPropertyCallback HasProperty {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use HasPropertyEx instead");
+
           UltralightSharp.ObjectHasPropertyCallback cb
             = (ctx, o, pn) => value(
+              new JsObject(o, new JsLocalContext(ctx)),
+              new JsString(pn)
+            );
+          _.HasProperty = cb;
+        }
+      }
+
+      public ObjectHasPropertyCallbackEx HasPropertyEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use HasProperty instead");
+
+          UltralightSharp.ObjectHasPropertyCallbackEx cb
+            = (ctx, c, o, pn) => value(
+              new JsClass(c),
               new JsObject(o, new JsLocalContext(ctx)),
               new JsString(pn)
             );
@@ -183,6 +262,9 @@ namespace ImpromptuNinjas.UltralightSharp {
       public ObjectGetPropertyCallback GetProperty {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use GetPropertyEx instead");
+
           UltralightSharp.ObjectGetPropertyCallback cb
             = (ctx, o, pn, exception) => {
               var r = value(
@@ -198,9 +280,34 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectGetPropertyCallbackEx GetPropertyEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use GetProperty instead");
+
+          UltralightSharp.ObjectGetPropertyCallbackEx cb
+            = (ctx, c, o, pn, exception) => {
+              var r = value(
+                new JsClass(c),
+                new JsObject(o, new JsLocalContext(ctx)),
+                new JsString(pn),
+                out var exc
+              );
+
+              *exception = exc == null ? null : exc.Unsafe;
+              return r == null ? null : r.Unsafe;
+            };
+          _.GetProperty = cb;
+        }
+      }
+
       public ObjectSetPropertyCallback SetProperty {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use SetPropertyEx instead");
+
           UltralightSharp.ObjectSetPropertyCallback cb
             = (ctx, o, pn, v, exception) => {
               var localCtx = new JsLocalContext(ctx);
@@ -218,9 +325,36 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectSetPropertyCallbackEx SetPropertyEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use SetProperty instead");
+
+          UltralightSharp.ObjectSetPropertyCallbackEx cb
+            = (ctx, c, o, pn, v, exception) => {
+              var localCtx = new JsLocalContext(ctx);
+              var r = value(
+                new JsClass(c),
+                new JsObject(o, localCtx),
+                new JsString(pn),
+                JsValueLike.Create(v, localCtx),
+                out var exc
+              );
+
+              *exception = exc == null ? null : exc.Unsafe;
+              return r;
+            };
+          _.SetProperty = cb;
+        }
+      }
+
       public ObjectDeletePropertyCallback DeleteProperty {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use DeletePropertyEx instead");
+
           UltralightSharp.ObjectDeletePropertyCallback cb
             = (ctx, o, pn, exception) => {
               var r = value(
@@ -236,9 +370,34 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectDeletePropertyCallbackEx DeletePropertyEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use DeleteProperty instead");
+
+          UltralightSharp.ObjectDeletePropertyCallbackEx cb
+            = (ctx, c, o, pn, exception) => {
+              var r = value(
+                new JsClass(c),
+                new JsObject(o, new JsLocalContext(ctx)),
+                new JsString(pn),
+                out var exc
+              );
+
+              *exception = exc == null ? null : exc.Unsafe;
+              return r;
+            };
+          _.DeleteProperty = cb;
+        }
+      }
+
       public ObjectGetPropertyNamesCallback GetPropertyNames {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use GetPropertyNamesEx instead");
+
           UltralightSharp.ObjectGetPropertyNamesCallback cb
             = (ctx, o, pna) => {
               value(
@@ -250,9 +409,30 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectGetPropertyNamesCallbackEx GetPropertyNamesEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use GetPropertyNames instead");
+
+          UltralightSharp.ObjectGetPropertyNamesCallbackEx cb
+            = (ctx, c, o, pna) => {
+              value(
+                new JsClass(c),
+                new JsObject(o, new JsLocalContext(ctx)),
+                new JsPropertyNameAccumulator(pna)
+              );
+            };
+          _.GetPropertyNames = cb;
+        }
+      }
+
       public ObjectCallAsFunctionCallback CallAsFunction {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use CallAsFunctionEx instead");
+
           UltralightSharp.ObjectCallAsFunctionCallback cb
             = (ctx, function, thisObject, count, arguments, exception)
               => JsUtilities.SafeWrapperForObjectCallAsFunctionCallback
@@ -261,20 +441,67 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectCallAsFunctionCallbackEx CallAsFunctionEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use CallAsFunction instead");
+
+          UltralightSharp.ObjectCallAsFunctionCallbackEx cb
+            = (ctx, c, cn, function, thisObject, count, arguments, exception)
+              => JsUtilities.SafeWrapperForObjectCallAsFunctionCallback
+                (value, ctx, c, cn, function, thisObject, count, arguments, exception);
+          _.CallAsFunction = cb;
+        }
+      }
+
       public ObjectCallAsConstructorCallback CallAsConstructor {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use CallAsConstructorEx instead");
+
           UltralightSharp.ObjectCallAsConstructorCallback cb
             = (ctx, ctor, count, arguments, exception)
               => {
               var localCtx = new JsLocalContext(ctx);
-              var ctorObj = new JsObject(ctor, localCtx);
               var argCount = (int) count;
               var args = new JsValueLike?[argCount];
               for (var i = 0; i < argCount; ++i)
                 args[i] = JsValueLike.Create(arguments[i], localCtx);
               var rv = value(
-                ctorObj,
+                new JsObject(ctor, localCtx),
+                args,
+                out var exc
+              );
+              var r = rv == null ? null : rv.Unsafe;
+              if (exc != null && exception != null)
+                *exception = exc.Unsafe;
+              if (r == null)
+                r = localCtx._->MakeUndefined();
+              return r;
+            };
+          _.CallAsConstructor = cb;
+        }
+      }
+
+      public ObjectCallAsConstructorCallbackEx CallAsConstructorEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use CallAsConstructor instead");
+
+          UltralightSharp.ObjectCallAsConstructorCallbackEx cb
+            = (ctx, c, ctor, count, arguments, exception)
+              => {
+              var localCtx = new JsLocalContext(ctx);
+              var argCount = (int) count;
+              var args = new JsValueLike?[argCount];
+              for (var i = 0; i < argCount; ++i)
+                args[i] = JsValueLike.Create(arguments[i], localCtx);
+              var rv = value(
+                new JsClass(c),
+                new JsObject(ctor, localCtx),
                 args,
                 out var exc
               );
@@ -292,6 +519,9 @@ namespace ImpromptuNinjas.UltralightSharp {
       public ObjectHasInstanceCallback HasInstance {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use HasInstanceEx instead");
+
           UltralightSharp.ObjectHasInstanceCallback cb
             = (ctx, o, pi, exception) => {
               var localCtx = new JsLocalContext(ctx);
@@ -308,13 +538,65 @@ namespace ImpromptuNinjas.UltralightSharp {
         }
       }
 
+      public ObjectHasInstanceCallbackEx HasInstanceEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use HasInstance instead");
+
+          UltralightSharp.ObjectHasInstanceCallbackEx cb
+            = (ctx, c, o, pi, exception) => {
+              var localCtx = new JsLocalContext(ctx);
+              var r = value(
+                new JsClass(c),
+                new JsObject(o, localCtx),
+                JsValueLike.Create(pi, localCtx),
+                out var exc
+              );
+              if (exc != null && exception != null)
+                *exception = exc.Unsafe;
+              return r;
+            };
+          _.HasInstance = cb;
+        }
+      }
+
       public ObjectConvertToTypeCallback ConvertToType {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set {
+          if (_.Version != 0)
+            throw new InvalidOperationException("Wrong version, use ConverToTypeEx instead");
+
           UltralightSharp.ObjectConvertToTypeCallback cb
             = (ctx, o, t, exception) => {
               var localCtx = new JsLocalContext(ctx);
               var rv = value(
+                new JsObject(o, localCtx),
+                t,
+                out var exc
+              );
+              var r = rv == null ? null : rv.Unsafe;
+              if (exc != null && exception != null)
+                *exception = exc.Unsafe;
+              if (r == null)
+                r = localCtx._->MakeUndefined();
+              return r;
+            };
+          _.ConvertToType = cb;
+        }
+      }
+
+      public ObjectConvertToTypeCallbackEx ConvertToTypeEx {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set {
+          if (_.Version != 1000)
+            throw new InvalidOperationException("Wrong version, use ConverToType instead");
+
+          UltralightSharp.ObjectConvertToTypeCallbackEx cb
+            = (ctx, c, o, t, exception) => {
+              var localCtx = new JsLocalContext(ctx);
+              var rv = value(
+                new JsClass(c),
                 new JsObject(o, localCtx),
                 t,
                 out var exc

@@ -11,7 +11,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [StructLayout(LayoutKind.Sequential)]
-  public ref struct JsObjectPrivate {
+  public struct JsObjectPrivate {
 
     public GCHandle<LinkedList<IntPtr>> Classes;
 
@@ -86,34 +86,42 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     [StructLayout(LayoutKind.Sequential)]
-    public sealed unsafe class JsObjectPrivate {
+    public sealed unsafe class JsObjectPrivate : IDisposable {
 
-      public readonly UltralightSharp.JsObjectPrivate* _;
+      public UltralightSharp.JsObjectPrivate _;
 
-      public static implicit operator UltralightSharp.JsObjectPrivate*(in JsObjectPrivate x)
-        => x._;
+      public GCHandle<JsObjectPrivate> Pin;
+
+      public JsObjectPrivate() => Pin = new GCHandle<JsObjectPrivate>(this);
+
+      public void Dispose() => Pin.Free();
+
+      public ref UltralightSharp.JsObjectPrivate UnsafeRef => ref _;
+
+      public UltralightSharp.JsObjectPrivate* UnsafePointer
+        => (UltralightSharp.JsObjectPrivate*) Unsafe.AsPointer(ref UnsafeRef);
 
       public JsContext? CreateContext() {
-        var ctx = _->CreateContext();
+        var ctx = _.CreateContext();
         return ctx == null ? null : new JsGlobalContext(ctx);
       }
 
       public void PushClass(JsClass @class)
-        => _->PushClass(@class._);
+        => _.PushClass(@class._);
 
       public bool RemoveClass(JsClass @class)
-        => _->RemoveClass(@class._);
+        => _.RemoveClass(@class._);
 
       public IReadOnlyList<JsClass?> Classes {
         get {
-          if (!_->Classes.IsAllocated)
+          if (!_.Classes.IsAllocated)
 #if NETFRAMEWORK
             return new JsClass?[0];
 #else
             return Array.Empty<JsClass?>();
 #endif
 
-          var classes = _->Classes.Target!;
+          var classes = _.Classes.Target!;
           lock (classes) {
             var count = classes.Count;
             if (count == 0)

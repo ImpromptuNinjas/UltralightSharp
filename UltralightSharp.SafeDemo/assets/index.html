@@ -7,12 +7,12 @@
         overflow: hidden;
         color: black;
         font-family: Roboto, sans-serif;
-        background: linear-gradient(-45deg, #acb4ff, #f5d4e2);
+        background: linear-gradient(-45deg, hsl(234, 100%, 84%), hsl(335, 62%, 90%));
         display: flex;
         justify-content: center;
         align-items: center;
         align-content: center;
-        font-size: 42pt;
+        font-size: 30pt;
       }
 
       main {
@@ -28,6 +28,7 @@
         padding: 0;
         margin: .5rem;
         font-size: 1.2em;
+        line-height: 1;
       }
 
       p {
@@ -36,8 +37,20 @@
         padding: .4em;
         margin: 10px;
         border-radius: 25px;
+        line-height: 1;
       }
     </style>
+    <script>
+        function rotateBgColor() {
+            let i = 0;
+            const loop = () => {
+                ++i;
+                document.body.style.background =`linear-gradient(-45deg, hsl(${(234+i)%360}, 100%, 84%), hsl(${(335+i)%360}, 62%, 90%))`;
+                window.requestAnimationFrame(loop);
+            };
+            window.requestAnimationFrame(loop);
+        }
+    </script>
     <title>UltralightSharp Demo</title>
 </head>
 <body>
@@ -45,7 +58,7 @@
     <h1>UltralightSharp Demo</h1>
     <p>
         Multiplatform<br>
-        <b>C&sharp;</b> Bindings!
+        C# Bindings!
     </p>
 </main>
 </body>

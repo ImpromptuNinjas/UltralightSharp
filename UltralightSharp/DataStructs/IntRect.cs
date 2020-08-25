@@ -1,8 +1,10 @@
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public struct IntRect {
 
     public int Left;

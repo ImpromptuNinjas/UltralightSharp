@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
+  [StructLayout(LayoutKind.Sequential)]
   public struct FileSystem {
 
     [NativeTypeName("ULFileSystemFileExistsCallback")]
@@ -32,6 +34,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    [StructLayout(LayoutKind.Sequential)]
     public struct FileSystem {
 
       private UltralightSharp.FileSystem _;

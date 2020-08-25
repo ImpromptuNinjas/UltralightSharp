@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
 namespace ImpromptuNinjas.UltralightSharp {
@@ -16,6 +17,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [PublicAPI]
     [SuppressMessage("ReSharper", "ConvertToLocalFunction")]
+    [StructLayout(LayoutKind.Sequential)]
     public struct Logger {
 
       internal UltralightSharp.Logger _;

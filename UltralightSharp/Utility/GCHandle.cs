@@ -8,7 +8,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
   [PublicAPI]
   [SuppressMessage("ReSharper", "InconsistentNaming")]
-  public struct GCHandle<T> : IEquatable<GCHandle>, IEquatable<T>, IEquatable<GCHandle<T>>
+  public struct GCHandle<T> : IEquatable<GCHandle>, IEquatable<GCHandle<T>>
     where T : class {
 
     public GCHandle Handle;
@@ -56,18 +56,11 @@ namespace ImpromptuNinjas.UltralightSharp {
     public bool Equals(GCHandle<T> other)
       => Handle.Equals(other.Handle);
 
-    public bool Equals(T? other) {
-      if (!IsAllocated) return false;
-
-      ref var tgt = ref Target;
-      return tgt == null
-        ? other == null
-        : tgt!.Equals(other);
-    }
-
     public override int GetHashCode()
       // ReSharper disable once NonReadonlyMemberInGetHashCode
       => Handle.GetHashCode();
+    
+    public static implicit operator T?(GCHandle<T> h) => h.Target;
 
   }
 
