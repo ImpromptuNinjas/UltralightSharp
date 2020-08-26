@@ -86,20 +86,23 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         var step = 0;
         var escInstrBytes = Encoding.UTF8.GetBytes("Press ESC to exit.");
         var key = new ConsoleKeyInfo();
-        Console.TreatControlCAsInput = true;
+        //Console.TreatControlCAsInput = true;
         Console.Clear();
         using var stdOut = Console.OpenStandardOutput(256);
         using var o = new BufferedStream(stdOut, 8 * 1024 * 1024);
         byte[]? urlStrBytes = null;
         // alt buffer
-        o.WriteByte(0x1B);
-        o.WriteByte((byte) '[');
-        o.WriteByte((byte) '1');
-        o.WriteByte((byte) '0');
-        o.WriteByte((byte) '4');
-        o.WriteByte((byte) '9');
-        o.WriteByte((byte) 'h');
-        o.Flush();
+        if (!isNotInteractive) {
+          o.WriteByte(0x1B);
+          o.WriteByte((byte) '[');
+          o.WriteByte((byte) '1');
+          o.WriteByte((byte) '0');
+          o.WriteByte((byte) '4');
+          o.WriteByte((byte) '9');
+          o.WriteByte((byte) 'h');
+          o.Flush();
+        }
+
         Console.CursorVisible = false;
         do {
           GetConsoleSize(out var newCw, out var newCh);
@@ -127,7 +130,9 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
           var pixels = bitmap.LockPixels();
           RenderAnsi<Bgra32>(o, pixels,
             bitmap.GetWidth(), bitmap.GetHeight(),
-            2, borderless: true, palette256: true
+            2,
+            borderless: true,
+            palette256: isNotInteractive
           );
           bitmap.UnlockPixels();
 
