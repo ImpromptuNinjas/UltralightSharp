@@ -3,6 +3,8 @@ using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Processors.Dithering;
+using SixLabors.ImageSharp.Processing.Processors.Quantization;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace ImpromptuNinjas.UltralightSharp.Demo {
@@ -22,12 +24,12 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
     public static unsafe int RenderAnsi<TColor>(Stream o, IntPtr pixels,
       uint w, uint h,
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
-      bool borderless = false
+      bool borderless = false, bool palette256 = false
     ) where TColor : unmanaged, IPixel<TColor> {
       var aspect = w / (double) h;
 
       GetConsoleSize(out var cw, out var ch);
-      
+
       if (maxWidth >= 0)
         cw = maxWidth;
 
@@ -39,27 +41,25 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
       if (cw == 0 || ch == 0) return 0;
 
-      /*
-      // come up with an aperture that fits the console window (minus drawn borders, accounting for 2v/c)
-      var borderCost = borderless ? 0 : -2;
-      var wsq = borderCost + cw / aspect;
-      var hsq = borderCost + 2 * ch * aspect;
-      var sq = Math.Min(wsq, hsq);
-
-      var aw = (int) Math.Floor(sq * aspect);
-      var ah = (int) Math.Floor(sq / aspect);
-      */
       var aw = cw;
-      var ah = ch * 2; 
+      var ah = ch * 2;
 
       var pPixels = (byte*) pixels;
       var span = new ReadOnlySpan<TColor>(pPixels, checked((int) (w * h)));
       using var img = Image.LoadPixelData(span, (int) w, (int) h);
       img.Mutate(x => x
         .Resize(aw, ah, LanczosResampler.Lanczos3)
-        .Crop(aw, ah));
+        .Crop(aw, ah)
+      );
 
-      void WriteTriplet(byte b) {
+      IndexedImageFrame<TColor>? img256 = null;
+      if (palette256) {
+        img256 = AnsiPalette256
+          .CreatePixelSpecificQuantizer<TColor>(Configuration.Default)
+          .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
+      }
+
+      void WriteNumberTriplet(byte b) {
         var ones = b % 10;
         var tens = b / 10 % 10;
         var hundreds = b / 100;
@@ -127,52 +127,94 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         if (!borderless)
           DrawVerticalFrame();
         // write 2 lines at a time
-        var u = img.GetPixelRowSpan(y);
         var haveL = y + 1 < ah;
-        var l = haveL
+        
+        var u = !palette256
+          ? img.GetPixelRowSpan(y)
+          : default;
+        var l = haveL && !palette256
           ? img.GetPixelRowSpan(y + 1)
-          : new Span<TColor>(default, 0);
+          : default;
+        
+        var up = palette256
+          ? img256!.GetPixelRowSpan(y)
+          : default;
+        var lp = haveL && palette256
+          ? img256!.GetPixelRowSpan(y + 1)
+          : default;
 
         for (var x = 0; x < aw; ++x) {
           // upper color
-          Rgba32 upx = default;
-          u[x].ToRgba32(ref upx);
-          var ua = 255.0f / upx.A;
-          o.WriteByte(0x1B);
-          o.WriteByte((byte) '[');
-          o.WriteByte((byte) '3');
-          o.WriteByte((byte) '8');
-          o.WriteByte((byte) ';');
-          o.WriteByte((byte) '2');
-          o.WriteByte((byte) ';');
-          WriteTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
-          o.WriteByte((byte) ';');
-          WriteTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
-          o.WriteByte((byte) ';');
-          WriteTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
-          o.WriteByte((byte) 'm');
-
-          if (!haveL) // full block
-            o.WriteByte(0xDB);
-
-          else {
-            // lower color
-            Rgba32 lpx = default;
-            l[x].ToRgba32(ref lpx);
-            var la = 255.0f / lpx.A;
+          if (palette256) {
+            var upx = up[x];
             o.WriteByte(0x1B);
             o.WriteByte((byte) '[');
-            o.WriteByte((byte) '4');
+            o.WriteByte((byte) '3');
+            o.WriteByte((byte) '8');
+            o.WriteByte((byte) ';');
+            o.WriteByte((byte) '5');
+            o.WriteByte((byte) ';');
+            WriteNumberTriplet(upx);
+            o.WriteByte((byte) 'm');
+          }
+          else {
+            Rgba32 upx = default;
+            u[x].ToRgba32(ref upx);
+            var ua = 255.0f / upx.A;
+            o.WriteByte(0x1B);
+            o.WriteByte((byte) '[');
+            o.WriteByte((byte) '3');
             o.WriteByte((byte) '8');
             o.WriteByte((byte) ';');
             o.WriteByte((byte) '2');
             o.WriteByte((byte) ';');
-            WriteTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
+            WriteNumberTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
             o.WriteByte((byte) ';');
-            WriteTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
+            WriteNumberTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
             o.WriteByte((byte) ';');
-            WriteTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
+            WriteNumberTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
             o.WriteByte((byte) 'm');
+          }
+
+          if (!haveL) // full block
+          {
+            o.WriteByte(0xE2);
+            o.WriteByte(0x96);
+            o.WriteByte(0x88);
+          }
+
+          else {
+            // lower color
+            if (palette256) {
+              var lpx = lp[x];
+              o.WriteByte(0x1B);
+              o.WriteByte((byte) '[');
+              o.WriteByte((byte) '4');
+              o.WriteByte((byte) '8');
+              o.WriteByte((byte) ';');
+              o.WriteByte((byte) '5');
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet(lpx);
+              o.WriteByte((byte) 'm');
+            }
+            else {
+              Rgba32 lpx = default;
+              l[x].ToRgba32(ref lpx);
+              var la = 255.0f / lpx.A;
+              o.WriteByte(0x1B);
+              o.WriteByte((byte) '[');
+              o.WriteByte((byte) '4');
+              o.WriteByte((byte) '8');
+              o.WriteByte((byte) ';');
+              o.WriteByte((byte) '2');
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) 'm');
+            }
 
             // half block
             o.WriteByte(0xE2);

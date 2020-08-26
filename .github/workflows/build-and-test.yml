@@ -40,7 +40,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore UltralightSharp/UltralightSharp.csproj
       - name: Run Demo
-        run: dotnet run -c Release --project UltralightSharp.Demo
+        run: dotnet run -c Release --project UltralightSharp.SafeDemo
       - uses: actions/upload-artifact@v2
         with:
           name: NuGet Package(s) built by ${{ matrix.os }}

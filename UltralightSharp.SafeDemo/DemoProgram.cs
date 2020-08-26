@@ -12,6 +12,8 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
   public static partial class DemoProgram {
 
     public static void Main(string[] args) {
+      var isNotInteractive = !Environment.UserInteractive || Console.IsInputRedirected;
+
       // setup logging
       Safe.LoggerLogMessageCallback cb = LoggerCallback;
       Safe.Ultralight.SetLogger(new Safe.Logger {LogMessage = cb});
@@ -26,9 +28,9 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       var tempDir = Path.GetTempPath();
       // find a place to stash instance storage
       string storagePath;
-      do {
+      do
         storagePath = Path.Combine(tempDir, Guid.NewGuid().ToString());
-      } while (Directory.Exists(storagePath) || File.Exists(storagePath));
+      while (Directory.Exists(storagePath) || File.Exists(storagePath));
 
       {
         using var cfg = new Safe.Config();
@@ -56,14 +58,10 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
         using var view = new Safe.View(renderer, 640, 480, false, session);
 
-        {
-          //var htmlString = "<i>Loading...</i>";
-          //Console.WriteLine($"Loading HTML: {htmlString}");
-          //view.LoadHtml(htmlString);
-          var urlString = "file:///index.html";
-          Console.WriteLine($"Loading URL: {urlString}");
-          view.LoadUrl(urlString);
-        }
+        //var htmlString = "<i>Loading...</i>";
+        //Console.WriteLine($"Loading HTML: {htmlString}");
+        //view.LoadHtml(htmlString);
+        view.LoadUrl("file:///index.html");
 
         var nextStep = false;
 
@@ -72,6 +70,12 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
           nextStep = true;
         }, default);
+
+        if (isNotInteractive)
+          do {
+            renderer.Update();
+            renderer.Render();
+          } while (nextStep == false);
 
         const double wm = 4;
         const double hm = wm * 2;
@@ -98,44 +102,42 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         o.Flush();
         Console.CursorVisible = false;
         do {
-          {
-            GetConsoleSize(out var newCw, out var newCh);
-            if (cw != newCw || ch != newCh) {
-              cw = newCw;
-              ch = newCh;
-              Console.Clear();
-              view.Resize((uint) (cw * wm), (uint) (ch * hm));
-            }
-
-            Console.SetCursorPosition(0, 0);
-            var urlStr = view.GetUrl();
-            var urlStrSize = Encoding.UTF8.GetByteCount(urlStr ?? "");
-            if (urlStrBytes == null || urlStrBytes.Length < urlStrSize)
-              urlStrBytes = new byte[urlStrSize];
-            var urlStrBytesLen = Encoding.UTF8.GetBytes(urlStr, urlStrBytes);
-            o.Write(urlStrBytes, 0, urlStrBytesLen);
-            o.WriteByte((byte) '\n');
-
-            renderer.Update();
-            renderer.Render();
-
-            var surface = view.GetSurface();
-            var bitmap = surface.GetBitmap();
-            var pixels = bitmap.LockPixels();
-            RenderAnsi<Bgra32>(o, pixels,
-              bitmap.GetWidth(), bitmap.GetHeight(),
-              2, borderless: true
-            );
-            bitmap.UnlockPixels();
+          GetConsoleSize(out var newCw, out var newCh);
+          if (cw != newCw || ch != newCh) {
+            cw = newCw;
+            ch = newCh;
+            Console.Clear();
+            view.Resize((uint) (cw * wm), (uint) (ch * hm));
           }
 
-          if (!Environment.UserInteractive || Console.IsInputRedirected)
+          Console.SetCursorPosition(0, 0);
+          var urlStr = view.GetUrl();
+          var urlStrSize = Encoding.UTF8.GetByteCount(urlStr ?? "");
+          if (urlStrBytes == null || urlStrBytes.Length < urlStrSize)
+            urlStrBytes = new byte[urlStrSize];
+          var urlStrBytesLen = Encoding.UTF8.GetBytes(urlStr, urlStrBytes);
+          o.Write(urlStrBytes, 0, urlStrBytesLen);
+          o.WriteByte((byte) '\n');
+
+          renderer.Update();
+          renderer.Render();
+
+          var surface = view.GetSurface();
+          var bitmap = surface.GetBitmap();
+          var pixels = bitmap.LockPixels();
+          RenderAnsi<Bgra32>(o, pixels,
+            bitmap.GetWidth(), bitmap.GetHeight(),
+            2, borderless: true, palette256: true
+          );
+          bitmap.UnlockPixels();
+
+          if (isNotInteractive)
             return;
 
           o.Write(escInstrBytes);
           o.Flush();
 
-          if (nextStep) {
+          if (nextStep)
             switch (step) {
               case 0: {
                 view.EvaluateScript("rotateBgColor()");
@@ -180,11 +182,9 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
                 ++step;
                 break;
             }
-          }
 
-          if (!Console.KeyAvailable) {
+          if (!Console.KeyAvailable)
             continue;
-          }
 
           key = Console.ReadKey(true);
           Console.WriteLine();
