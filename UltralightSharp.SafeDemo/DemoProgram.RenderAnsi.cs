@@ -3,8 +3,6 @@ using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors.Dithering;
-using SixLabors.ImageSharp.Processing.Processors.Quantization;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace ImpromptuNinjas.UltralightSharp.Demo {
@@ -14,11 +12,19 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
     public static void GetConsoleSize(out int width, out int height) {
       width = 0;
       try { width = Console.WindowWidth; }
-      catch { width = 72; }
+      catch {
+        /* ok */
+      }
+
+      if (width <= 0) width = 72;
 
       height = 0;
       try { height = Console.WindowHeight; }
-      catch { height = 25; }
+      catch {
+        /* ok */
+      }
+
+      if (height <= 0) height = 25;
     }
 
     public static unsafe int RenderAnsi<TColor>(Stream o, IntPtr pixels,
@@ -26,8 +32,6 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
       bool borderless = false, bool palette256 = false
     ) where TColor : unmanaged, IPixel<TColor> {
-      var aspect = w / (double) h;
-
       GetConsoleSize(out var cw, out var ch);
 
       if (maxWidth >= 0)
@@ -128,14 +132,14 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
           DrawVerticalFrame();
         // write 2 lines at a time
         var haveL = y + 1 < ah;
-        
+
         var u = !palette256
           ? img.GetPixelRowSpan(y)
           : default;
         var l = haveL && !palette256
           ? img.GetPixelRowSpan(y + 1)
           : default;
-        
+
         var up = palette256
           ? img256!.GetPixelRowSpan(y)
           : default;
