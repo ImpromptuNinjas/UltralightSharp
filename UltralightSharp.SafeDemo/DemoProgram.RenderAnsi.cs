@@ -3,6 +3,7 @@ using System.IO;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Processors.Dithering;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace ImpromptuNinjas.UltralightSharp.Demo {
@@ -16,7 +17,7 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         /* ok */
       }
 
-      if (width <= 0) width = 72;
+      if (width <= 0) width = 78;
 
       height = 0;
       try { height = Console.WindowHeight; }
@@ -24,13 +25,14 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         /* ok */
       }
 
-      if (height <= 0) height = 25;
+      if (height <= 0) height = 24;
     }
 
     public static unsafe int RenderAnsi<TColor>(Stream o, IntPtr pixels,
       uint w, uint h,
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
-      bool borderless = false, bool palette256 = false
+      bool borderless = false, AnsiColors colors = AnsiColors.TrueColor,
+      IDither? customDither = null, float customDitherScale = 1f
     ) where TColor : unmanaged, IPixel<TColor> {
       GetConsoleSize(out var cw, out var ch);
 
@@ -52,15 +54,39 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       var span = new ReadOnlySpan<TColor>(pPixels, checked((int) (w * h)));
       using var img = Image.LoadPixelData(span, (int) w, (int) h);
       img.Mutate(x => x
-        .Resize(aw, ah, LanczosResampler.Lanczos3)
-        .Crop(aw, ah)
+          .Resize(aw, ah, LanczosResampler.Lanczos3)
+        //.Crop(aw, ah)
       );
 
-      IndexedImageFrame<TColor>? img256 = null;
-      if (palette256) {
-        img256 = AnsiPalette256
-          .CreatePixelSpecificQuantizer<TColor>(Configuration.Default)
-          .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
+      IndexedImageFrame<TColor>? indexedImg = null;
+      var isTrueColor = colors == AnsiColors.TrueColor;
+      if (!isTrueColor) {
+        switch (colors) {
+          case AnsiColors.Palette16: {
+            var opts = AnsiPalette16.Options;
+            if (customDither != null) {
+              opts.Dither = customDither;
+              opts.DitherScale = customDitherScale;
+            }
+
+            indexedImg = AnsiPalette16
+              .CreatePixelSpecificQuantizer<TColor>(Configuration.Default, opts)
+              .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
+            break;
+          }
+          case AnsiColors.Palette256: {
+            var opts = AnsiPalette256.Options;
+            if (customDither != null) {
+              opts.Dither = customDither;
+              opts.DitherScale = customDitherScale;
+            }
+
+            indexedImg = AnsiPalette256
+              .CreatePixelSpecificQuantizer<TColor>(Configuration.Default, opts)
+              .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
+            break;
+          }
+        }
       }
 
       void WriteNumberTriplet(byte b) {
@@ -133,51 +159,64 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         // write 2 lines at a time
         var haveL = y + 1 < ah;
 
-        var u = !palette256
+        var u = isTrueColor
           ? img.GetPixelRowSpan(y)
           : default;
-        var l = haveL && !palette256
+        var l = haveL && isTrueColor
           ? img.GetPixelRowSpan(y + 1)
           : default;
 
-        var up = palette256
-          ? img256!.GetPixelRowSpan(y)
+        var up = !isTrueColor
+          ? indexedImg!.GetPixelRowSpan(y)
           : default;
-        var lp = haveL && palette256
-          ? img256!.GetPixelRowSpan(y + 1)
+        var lp = haveL && !isTrueColor
+          ? indexedImg!.GetPixelRowSpan(y + 1)
           : default;
 
         for (var x = 0; x < aw; ++x) {
           // upper color
-          if (palette256) {
-            var upx = up[x];
-            o.WriteByte(0x1B);
-            o.WriteByte((byte) '[');
-            o.WriteByte((byte) '3');
-            o.WriteByte((byte) '8');
-            o.WriteByte((byte) ';');
-            o.WriteByte((byte) '5');
-            o.WriteByte((byte) ';');
-            WriteNumberTriplet(upx);
-            o.WriteByte((byte) 'm');
-          }
-          else {
-            Rgba32 upx = default;
-            u[x].ToRgba32(ref upx);
-            var ua = 255.0f / upx.A;
-            o.WriteByte(0x1B);
-            o.WriteByte((byte) '[');
-            o.WriteByte((byte) '3');
-            o.WriteByte((byte) '8');
-            o.WriteByte((byte) ';');
-            o.WriteByte((byte) '2');
-            o.WriteByte((byte) ';');
-            WriteNumberTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
-            o.WriteByte((byte) ';');
-            WriteNumberTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
-            o.WriteByte((byte) ';');
-            WriteNumberTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
-            o.WriteByte((byte) 'm');
+          switch (colors) {
+            case AnsiColors.Palette16: {
+              var upx = (byte) (30 + up[x]);
+              if (upx > 37) upx += 52;
+              o.WriteByte(0x1B);
+              o.WriteByte((byte) '[');
+              WriteNumberTriplet(upx);
+              o.WriteByte((byte) 'm');
+              break;
+            }
+            case AnsiColors.Palette256: {
+              var upx = up[x];
+              o.WriteByte(0x1B);
+              o.WriteByte((byte) '[');
+              o.WriteByte((byte) '3');
+              o.WriteByte((byte) '8');
+              o.WriteByte((byte) ';');
+              o.WriteByte((byte) '5');
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet(upx);
+              o.WriteByte((byte) 'm');
+              break;
+            }
+            case AnsiColors.TrueColor: {
+              Rgba32 upx = default;
+              u[x].ToRgba32(ref upx);
+              var ua = 255.0f / upx.A;
+              o.WriteByte(0x1B);
+              o.WriteByte((byte) '[');
+              o.WriteByte((byte) '3');
+              o.WriteByte((byte) '8');
+              o.WriteByte((byte) ';');
+              o.WriteByte((byte) '2');
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) ';');
+              WriteNumberTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
+              o.WriteByte((byte) 'm');
+              break;
+            }
           }
 
           if (!haveL) // full block
@@ -189,35 +228,48 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
           else {
             // lower color
-            if (palette256) {
-              var lpx = lp[x];
-              o.WriteByte(0x1B);
-              o.WriteByte((byte) '[');
-              o.WriteByte((byte) '4');
-              o.WriteByte((byte) '8');
-              o.WriteByte((byte) ';');
-              o.WriteByte((byte) '5');
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet(lpx);
-              o.WriteByte((byte) 'm');
-            }
-            else {
-              Rgba32 lpx = default;
-              l[x].ToRgba32(ref lpx);
-              var la = 255.0f / lpx.A;
-              o.WriteByte(0x1B);
-              o.WriteByte((byte) '[');
-              o.WriteByte((byte) '4');
-              o.WriteByte((byte) '8');
-              o.WriteByte((byte) ';');
-              o.WriteByte((byte) '2');
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) 'm');
+            switch (colors) {
+              case AnsiColors.Palette16: {
+                var lpx = (byte) (40 + lp[x]);
+                if (lpx > 47) lpx += 52;
+                o.WriteByte(0x1B);
+                o.WriteByte((byte) '[');
+                WriteNumberTriplet(lpx);
+                o.WriteByte((byte) 'm');
+                break;
+              }
+              case AnsiColors.Palette256: {
+                var lpx = lp[x];
+                o.WriteByte(0x1B);
+                o.WriteByte((byte) '[');
+                o.WriteByte((byte) '4');
+                o.WriteByte((byte) '8');
+                o.WriteByte((byte) ';');
+                o.WriteByte((byte) '5');
+                o.WriteByte((byte) ';');
+                WriteNumberTriplet(lpx);
+                o.WriteByte((byte) 'm');
+                break;
+              }
+              case AnsiColors.TrueColor: {
+                Rgba32 lpx = default;
+                l[x].ToRgba32(ref lpx);
+                var la = 255.0f / lpx.A;
+                o.WriteByte(0x1B);
+                o.WriteByte((byte) '[');
+                o.WriteByte((byte) '4');
+                o.WriteByte((byte) '8');
+                o.WriteByte((byte) ';');
+                o.WriteByte((byte) '2');
+                o.WriteByte((byte) ';');
+                WriteNumberTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
+                o.WriteByte((byte) ';');
+                WriteNumberTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
+                o.WriteByte((byte) ';');
+                WriteNumberTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
+                o.WriteByte((byte) 'm');
+                break;
+              }
             }
 
             // half block

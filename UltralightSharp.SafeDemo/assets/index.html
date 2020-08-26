@@ -7,7 +7,7 @@
         overflow: hidden;
         color: black;
         font-family: Roboto, sans-serif;
-        background: linear-gradient(-45deg, hsl(234, 100%, 84%), hsl(335, 62%, 90%));
+        background: linear-gradient(-45deg, hsl(234, 100%, 25%), hsl(335, 50%, 50%));
         display: flex;
         justify-content: center;
         align-items: center;
@@ -18,8 +18,8 @@
       main {
         text-align: center;
         border-radius: 25px;
-        background: linear-gradient(-45deg, #e5eaf9, #f9eaf6);
-        box-shadow: 0 7px 18px -6px #8f8ae1;
+        background: linear-gradient(-45deg, hsl(225, 75%, 50%), hsl(312, 50%, 50%));
+        box-shadow: 0 7px 18px -6px hsl(243, 50%, 75%);
         max-width: 80vw;
       }
 
@@ -45,7 +45,7 @@
             let i = 0;
             const loop = () => {
                 ++i;
-                document.body.style.background =`linear-gradient(-45deg, hsl(${(234+i)%360}, 100%, 84%), hsl(${(335+i)%360}, 62%, 90%))`;
+                document.body.style.background =`linear-gradient(-45deg, hsl(${(234+i)%360}, 100%, 25%), hsl(${(335+i)%360}, 50%, 50%))`;
                 window.requestAnimationFrame(loop);
             };
             window.requestAnimationFrame(loop);

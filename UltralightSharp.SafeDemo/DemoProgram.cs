@@ -83,13 +83,19 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         GetConsoleSize(out var cw, out var ch);
         view.Resize((uint) (cw * wm), (uint) (ch * hm));
 
+        var ditherIndex = 0;
+        var customDither = Dithers[ditherIndex];
+
+        var ansiColors = (AnsiColors) 0;
+
         var step = 0;
-        var escInstrBytes = Encoding.UTF8.GetBytes("Press ESC to exit.");
+        var escInstrBytes = Encoding.UTF8.GetBytes("Press C to change color mode, D to change dither mode, ESC to exit.");
         var key = new ConsoleKeyInfo();
         //Console.TreatControlCAsInput = true;
-        Console.Clear();
+
         using var stdOut = Console.OpenStandardOutput(256);
         using var o = new BufferedStream(stdOut, 8 * 1024 * 1024);
+
         byte[]? urlStrBytes = null;
         // alt buffer
         if (!isNotInteractive) {
@@ -103,17 +109,46 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
           o.Flush();
         }
 
-        Console.CursorVisible = false;
+        try { Console.CursorVisible = false; }
+        catch {
+          /* ok */
+        }
+
+        try { Console.Clear(); }
+        catch {
+          /* ok */
+        }
+
+        try {
+          Console.SetCursorPosition(0, 0);
+        }
+        catch {
+          o.WriteByte(0x1B);
+          o.WriteByte((byte) '7');
+        }
+
         do {
           GetConsoleSize(out var newCw, out var newCh);
           if (cw != newCw || ch != newCh) {
             cw = newCw;
             ch = newCh;
-            Console.Clear();
+
+            try { Console.Clear(); }
+            catch {
+              /* ok */
+            }
+
             view.Resize((uint) (cw * wm), (uint) (ch * hm));
           }
 
-          Console.SetCursorPosition(0, 0);
+          try {
+            Console.SetCursorPosition(0, 0);
+          }
+          catch {
+            o.WriteByte(0x1B);
+            o.WriteByte((byte) '8');
+          }
+
           var urlStr = view.GetUrl();
           var urlStrSize = Encoding.UTF8.GetByteCount(urlStr ?? "");
           if (urlStrBytes == null || urlStrBytes.Length < urlStrSize)
@@ -132,7 +167,8 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
             bitmap.GetWidth(), bitmap.GetHeight(),
             2,
             borderless: true,
-            palette256: isNotInteractive
+            colors: ansiColors, // isNotInteractive
+            customDither: customDither
           );
           bitmap.UnlockPixels();
 
@@ -193,6 +229,16 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
 
           key = Console.ReadKey(true);
           Console.WriteLine();
+          if (key.Key == ConsoleKey.D) {
+            ditherIndex = (ditherIndex + 1) % Dithers.Length;
+            customDither = Dithers[ditherIndex];
+            continue;
+          }
+
+          if (key.Key == ConsoleKey.C) {
+            ansiColors = (AnsiColors) (((int) ansiColors + 1) % 3);
+            continue;
+          }
         } while (key.Key != ConsoleKey.Escape);
       }
 
