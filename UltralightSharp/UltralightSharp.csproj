@@ -4,7 +4,7 @@
         <AssemblyName>ImpromptuNinjas.UltralightSharp</AssemblyName>
         <IncludeSource>False</IncludeSource>
         <LangVersion>8</LangVersion>
-        <TargetFrameworks>net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>net5.0;net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
         <Nullable>enable</Nullable>
