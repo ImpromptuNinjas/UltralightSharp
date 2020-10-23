@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        netcore: [5.0.100-rc.2.20479.15, 3.1.401]
     env:
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -29,7 +28,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ matrix.netcore }}
+          dotnet-version: 5.0.100-rc.2.20479.15
       - name: Build Core
         run: |
           dotnet build -c Release UltralightSharp.Core.WinX64/UltralightSharp.Core.WinX64.csproj
