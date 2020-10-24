@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
@@ -53,9 +53,9 @@
         </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
-            <PackageCopyToOutput>False</PackageCopyToOutput>
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+            <PackageCopyToOutput>True</PackageCopyToOutput>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>
