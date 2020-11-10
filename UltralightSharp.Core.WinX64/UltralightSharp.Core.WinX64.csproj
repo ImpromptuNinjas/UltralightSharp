@@ -55,7 +55,7 @@
             <Pack>True</Pack>
             <PackageCopyToOutput>False</PackageCopyToOutput>
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>
