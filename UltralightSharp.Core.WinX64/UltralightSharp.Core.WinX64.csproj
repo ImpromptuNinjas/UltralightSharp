@@ -53,8 +53,8 @@
         </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
-            <PackageCopyToOutput>True</PackageCopyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <PackageCopyToOutput>False</PackageCopyToOutput>
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
