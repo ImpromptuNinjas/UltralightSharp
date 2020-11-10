@@ -44,9 +44,9 @@
         </Content>
         <None Include="runtimes\*\**">
             <Pack>True</Pack>
-            <PackageCopyToOutput>True</PackageCopyToOutput>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <PackageCopyToOutput>False</PackageCopyToOutput>
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>
