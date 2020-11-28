@@ -8,8 +8,8 @@ namespace ImpromptuNinjas.UltralightSharp {
   [PublicAPI]
   public readonly unsafe ref struct View {
 
-    public static View* Create(Renderer* renderer, uint width, uint height, bool transparent, Session* session)
-      => Ultralight.CreateView(renderer, width, height, transparent, session);
+    public static View* Create(Renderer* renderer, uint width, uint height, bool transparent, Session* session, bool force_cpu_renderer)
+      => Ultralight.CreateView(renderer, width, height, transparent, session, force_cpu_renderer);
 
   }
 
@@ -275,17 +275,17 @@ namespace ImpromptuNinjas.UltralightSharp {
         _refOnly = refOnly;
       }
 
-      public View(UltralightSharp.Renderer* renderer, uint width, uint height, bool transparent, UltralightSharp.Session* session)
-        => _ = UltralightSharp.View.Create(renderer, width, height, transparent, session);
+      public View(UltralightSharp.Renderer* renderer, uint width, uint height, bool transparent, UltralightSharp.Session* session, bool force_cpu_renderer)
+        => _ = UltralightSharp.View.Create(renderer, width, height, transparent, session, force_cpu_renderer);
 
-      public View(UltralightSharp.Renderer* renderer, uint width, uint height, bool transparent, Session session)
-        => _ = UltralightSharp.View.Create(renderer, width, height, transparent, session._);
+      public View(UltralightSharp.Renderer* renderer, uint width, uint height, bool transparent, Session session, bool force_cpu_renderer)
+        => _ = UltralightSharp.View.Create(renderer, width, height, transparent, session._, force_cpu_renderer);
 
-      public View(Renderer renderer, uint width, uint height, bool transparent, UltralightSharp.Session* session)
-        => _ = UltralightSharp.View.Create(renderer._, width, height, transparent, session);
+      public View(Renderer renderer, uint width, uint height, bool transparent, UltralightSharp.Session* session, bool force_cpu_renderer)
+        => _ = UltralightSharp.View.Create(renderer._, width, height, transparent, session, force_cpu_renderer);
 
-      public View(Renderer renderer, uint width, uint height, bool transparent, Session session)
-        => _ = UltralightSharp.View.Create(renderer._, width, height, transparent, session._);
+      public View(Renderer renderer, uint width, uint height, bool transparent, Session session, bool force_cpu_renderer)
+        => _ = UltralightSharp.View.Create(renderer._, width, height, transparent, session._, force_cpu_renderer);
 
       public void Dispose() {
         if (!_refOnly) _->Destroy();

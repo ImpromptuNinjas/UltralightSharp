@@ -158,7 +158,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulCreateView", ExactSpelling = true)]
     [return: NativeTypeName("ULView")]
     public static extern View* CreateView([NativeTypeName("ULRenderer")] Renderer* renderer, [NativeTypeName("unsigned int")] uint width, [NativeTypeName("unsigned int")] uint height, OneByteBoolean transparent,
-      [NativeTypeName("ULSession")] Session* session);
+      [NativeTypeName("ULSession")] Session* session, OneByteBoolean force_cpu_renderer);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulDestroyView", ExactSpelling = true)]
     public static extern void DestroyView([NativeTypeName("ULView")] View* view);
