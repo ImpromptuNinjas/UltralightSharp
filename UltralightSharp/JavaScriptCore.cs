@@ -147,6 +147,13 @@ namespace ImpromptuNinjas.UltralightSharp {
     [DllImport("WebCore", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "JSClassRelease")]
     public static extern void JsClassRelease([NativeTypeName("JSClassRef")] JsClass* jsClass);
 
+    [DllImport("WebCore", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "JSClassGetPrivate")]
+    [return: NativeTypeName("JSObjectRef")]
+    public static extern void* JsClassGetPrivate([NativeTypeName("JSClassRef")] JsClass* jsClass);
+
+    [DllImport("WebCore", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "JSClassSetPrivate")]
+    public static extern bool JsClassSetPrivate([NativeTypeName("JSClassRef")] JsClass* jsClass, [NativeTypeName("void*")] void* data);
+
     [DllImport("WebCore", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "JSObjectMake")]
     [return: NativeTypeName("JSObjectRef")]
     public static extern JsValue* JsObjectMake([NativeTypeName("JSContextRef")] JsContext* ctx, [NativeTypeName("JSClassRef")] JsClass* jsClass, [NativeTypeName("void *")] void* data);
