@@ -64,7 +64,7 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       var sessionName = String.Create("Demo");
       var session = Session.Create(renderer, false, sessionName);
 
-      var view = View.Create(renderer, 640, 480, false, session);
+      var view = View.Create(renderer, 640, 480, false, session, false);
 
       {
         var htmlString = String.Create("<i>Loading...</i>");

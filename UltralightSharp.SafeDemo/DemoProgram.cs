@@ -56,7 +56,7 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         var sessionName = "Demo";
         using var session = new Safe.Session(renderer, false, sessionName);
 
-        using var view = new Safe.View(renderer, 640, 480, false, session);
+        using var view = new Safe.View(renderer, 640, 480, false, session, false);
 
         //var htmlString = "<i>Loading...</i>";
         //Console.WriteLine($"Loading HTML: {htmlString}");

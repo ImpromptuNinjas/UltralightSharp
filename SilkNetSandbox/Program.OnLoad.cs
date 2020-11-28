@@ -76,7 +76,7 @@ partial class Program {
     var width = (uint) (_scaleX * wndWidth);
     var height = (uint) (_scaleY * wndHeight);
 
-    _ulView = new View(_ulRenderer, width, height, false, _ulSession);
+    _ulView = new View(_ulRenderer, width, height, false, _ulSession, false);
     _ulView.SetAddConsoleMessageCallback(ConsoleMessageCallback, default);
 
     if (_snView is IWindow wnd)
