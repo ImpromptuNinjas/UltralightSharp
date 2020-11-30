@@ -119,13 +119,6 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     public static IntPtr LibWebCore => LazyLoadedLibWebCore.Value;
 
-    // these following 3 are only preloaded by osx, their file names differ per platform
-    private static IntPtr LibIcudata => LazyLoadedIcudata.Value;
-
-    private static IntPtr LibIcuuc => LazyLoadedIcuuc.Value;
-
-    private static IntPtr LibIcui18n => LazyLoadedIcui18n.Value;
-
     static Native()
       => NativeLibrary.SetDllImportResolver(typeof(Native).GetAssembly(),
         (name, assembly, path)
