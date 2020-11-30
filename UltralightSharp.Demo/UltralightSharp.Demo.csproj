@@ -35,12 +35,14 @@
 
     <ItemGroup>
         <ProjectReference Include="../UltralightSharp/UltralightSharp.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
             <ExcludeAssets>all</ExcludeAssets>
         </ProjectReference>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Ansi" Version="1.0.3" />
+		<PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
     </ItemGroup>
 
