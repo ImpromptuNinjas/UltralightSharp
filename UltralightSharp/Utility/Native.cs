@@ -143,15 +143,6 @@ namespace ImpromptuNinjas.UltralightSharp {
             case "WebCoreCore":
               Debug.Assert(LibWebCore != default);
               return LibWebCore;
-            case "icudata":
-              Debug.Assert(LibIcudata != default);
-              return LibIcudata;
-            case "icuuc":
-              Debug.Assert(LibIcuuc != default);
-              return LibIcuuc;
-            case "icui18n":
-              Debug.Assert(LibIcui18n != default);
-              return LibIcui18n;
             default:
               return default;
           }
