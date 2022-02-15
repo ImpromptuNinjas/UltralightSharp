@@ -27,7 +27,7 @@ Full support for all LTS versions and the latest version of Unity is planned.
 Acknowlegedments
 ----------------
 
-* [Ultralight](https://utralig.ht)
+* [Ultralight](https://ultralig.ht)
 * [Ultralight on GitHub](https://github.com/ultralight-ux/Ultralight)
 
 This project includes binary distributions of Ultralight SDK libraries.
