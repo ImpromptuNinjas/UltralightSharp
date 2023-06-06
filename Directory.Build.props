@@ -1,8 +1,9 @@
 <Project>
     <PropertyGroup>
-        <Version>1.2.0-beta-r11</Version>
+        <Version>1.2.0-beta-r13</Version>
         <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
         <PackageOutputPath>$(SolutionDir)</PackageOutputPath>
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
     
     <Target Name="UpdatePackageCacheForDependencies" AfterTargets="Pack">

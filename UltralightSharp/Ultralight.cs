@@ -12,7 +12,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     static Ultralight() => Native.Init();
 
     [NativeTypeName("const ULFileHandle")]
-    public static readonly UIntPtr InvalidFileHandle = (UIntPtr) (-1);
+    public static readonly UIntPtr InvalidFileHandle = new UIntPtr(0);
 
     [DllImport("Ultralight", CallingConvention = CallingConvention.Cdecl, EntryPoint = "ulVersionString", ExactSpelling = true)]
     [return: NativeTypeName("const char *")]
@@ -568,7 +568,7 @@ namespace ImpromptuNinjas.UltralightSharp {
     [PublicAPI]
     public static unsafe class Ultralight {
 
-      public static readonly UIntPtr InvalidFileHandle = (UIntPtr) (-1);
+      public static readonly UIntPtr InvalidFileHandle = new UIntPtr(0);
 
       public static string GetVersionString()
         => new string(UltralightSharp.Ultralight.GetVersionString());

@@ -22,6 +22,8 @@ Full support for all LTS versions and the latest version of Unity is planned.
 * Currently the native dependencies are shipped with this NuGet package for all platforms.
   _Separate NuGet runtime packages should be created to provide each specific platform dependency._
 * Demo but no tests, no WebCore bindings yet.
+* Upstream MacOS builds seem to have no `@rpath` specified in the dylibs (you can check this by e.g. `otool -D libAppCore.dylib`) so we need to add one pointing at `.`;
+  - `install_name_tool -add_rpath . *.dylib`
 
 
 Acknowlegedments

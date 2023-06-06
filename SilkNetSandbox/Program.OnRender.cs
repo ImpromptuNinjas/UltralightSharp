@@ -19,8 +19,8 @@ partial class Program {
 
     {
       var wndSize = _snView.Size;
-      var wndWidth = (uint) wndSize.Width;
-      var wndHeight = (uint) wndSize.Height;
+      var wndWidth = (uint) wndSize.X;
+      var wndHeight = (uint) wndSize.Y;
       var width = (uint) (_scaleX * wndWidth);
       var height = (uint) (_scaleY * wndHeight);
 

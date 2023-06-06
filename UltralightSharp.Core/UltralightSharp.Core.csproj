@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Library</OutputType>
-        <TargetFrameworks>net5.0;net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
     </PropertyGroup>
     
@@ -27,19 +27,6 @@
         <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core.OsxX64" Version="[$(Version)]" IncludeAssets="native" />
     </ItemGroup>
     
-    <Choose>
-        <When Condition="'$(TargetFramework)'=='net45'">
-            <ItemGroup>
-                <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
-
-                <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
-                    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-                    <ExcludeAssets>all</ExcludeAssets>
-                </ProjectReference>
-            </ItemGroup>
-        </When>
-        <Otherwise>
-
             <ItemGroup>
                 <ProjectReference Include="..\UltralightSharp.Core.WinX64\UltralightSharp.Core.WinX64.csproj">
                     <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -54,8 +41,6 @@
                     <ExcludeAssets>all</ExcludeAssets>
                 </ProjectReference>
             </ItemGroup>
-        </Otherwise>
-    </Choose>
 
     <ItemGroup>
         <None Include="..\icon.png">
@@ -90,7 +75,7 @@
             <PackagePath>%(Identity)</PackagePath>
             <Link>%(Identity)</Link>
         </None>
-        <Content Remove="runtimes\*\**"/>
+        <Content Remove="runtimes\*\**" />
     </ItemGroup>
 
 </Project>

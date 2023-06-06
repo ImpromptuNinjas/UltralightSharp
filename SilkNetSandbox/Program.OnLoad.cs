@@ -5,8 +5,7 @@ using ImpromptuNinjas.UltralightSharp.Safe;
 using Silk.NET.Core;
 using Silk.NET.Input;
 using Silk.NET.OpenGLES;
-using Silk.NET.Windowing.Common;
-using Ultz.SuperInvoke;
+using Silk.NET.Windowing;
 
 partial class Program {
 
@@ -28,12 +27,17 @@ partial class Program {
   private static unsafe void OnLoad() {
     Console.WriteLine($"Loading...");
     //Getting the opengl api for drawing to the screen.
-    _gl = LibraryActivator.CreateInstance<GL>(
-      new CustomGlEsLibNameContainer().GetLibraryName(),
-      TemporarySuperInvokeClass.GetLoader(_snView.GLContext)
-    );
+    if (!_useOpenGl)
+    {
+      _gl = _snView.CreateOpenGLES();
+    }
+    else
+    {
+      // _gl = _snView.CreateOpenGL();
+      throw new NotImplementedException();
+    }
 
-    var glVersionInfo = _gl.GetString(StringName.Version);
+    var glVersionInfo = _gl.GetStringS(StringName.Version);
     var glVersionMajor = _gl.GetInteger(GetPName.MajorVersion);
     if (glVersionMajor == 0) {
       Console.WriteLine("Unable to retrieve API major version.");
@@ -42,11 +46,11 @@ partial class Program {
     var glVersionMinor = _gl.GetInteger(GetPName.MinorVersion);
     Console.WriteLine($"{(_useOpenGl?"OpenGL":"OpenGL ES")} v{glVersionMajor}.{glVersionMinor} ({glVersionInfo})");
 
-    var glVendor = _gl.GetString(StringName.Vendor);
-    var glDevice = _gl.GetString(StringName.Renderer);
+    var glVendor = _gl.GetStringS(StringName.Vendor);
+    var glDevice = _gl.GetStringS(StringName.Renderer);
     Console.WriteLine($"{glVendor} {glDevice}");
 
-    var glShaderVersionInfo = _gl.GetString(StringName.ShadingLanguageVersion);
+    var glShaderVersionInfo = _gl.GetStringS(StringName.ShadingLanguageVersion);
     Console.WriteLine($"Shader Language: {glShaderVersionInfo}");
 
     _gpuDriverSite = new OpenGlEsGpuDriverSite(_gl, _dbg);
@@ -71,8 +75,8 @@ partial class Program {
     _ulRenderer = new Renderer(cfg);
     _ulSession = new Session(_ulRenderer, false, "Demo");
     var wndSize = _snView.Size;
-    var wndWidth = (uint) wndSize.Width;
-    var wndHeight = (uint) wndSize.Height;
+    var wndWidth = (uint) wndSize.X;
+    var wndHeight = (uint) wndSize.Y;
     var width = (uint) (_scaleX * wndWidth);
     var height = (uint) (_scaleY * wndHeight);
 
@@ -87,10 +91,18 @@ partial class Program {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
       var monitors = _glfw.GetMonitors(out var monitorCount);
       var monitorInterface = ((IWindow) _snView).Monitor;
-      var monitor = monitors[monitorInterface.Index];
-      _glfw.GetMonitorContentScale(monitor, out var xScale, out var yScale);
-      _scaleX = xScale;
-      _scaleY = yScale;
+      if (monitorInterface != null)
+      {
+        var monitor = monitors[monitorInterface.Index];
+        _glfw.GetMonitorContentScale(monitor, out var xScale, out var yScale);
+        _scaleX = xScale;
+        _scaleY = yScale;
+      }
+      else
+      {
+        _scaleX = 1;
+        _scaleY = 1;
+      }
     }
 
     EnableDebugExtension();
@@ -127,13 +139,13 @@ partial class Program {
     _qvb = _gl.GenBuffer(); //Creating the buffer.
     _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _qvb); //Binding the buffer.
     LabelObject(ObjectIdentifier.Buffer, _qvb, "Quad VBO");
-    _gl.BufferData(BufferTargetARB.ArrayBuffer, quadVertsLen, new Span<float>(_quadVerts), BufferUsageARB.StaticDraw); //Setting buffer data.
+    _gl.BufferData(BufferTargetARB.ArrayBuffer, quadVertsLen, new ReadOnlySpan<float>(_quadVerts), BufferUsageARB.StaticDraw); //Setting buffer data.
 
     //Initializing a element buffer that holds the index data.
     _qeb = _gl.GenBuffer(); //Creating the buffer.
     _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _qeb); //Binding the buffer.
     LabelObject(ObjectIdentifier.Buffer, _qeb, "Quad EBO");
-    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, indicesSize, new Span<uint>(_quadIndices), BufferUsageARB.StaticDraw); //Setting buffer data.
+    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, indicesSize, new ReadOnlySpan<uint>(_quadIndices), BufferUsageARB.StaticDraw); //Setting buffer data.
 
     //Creating a vertex shader.
     var qvs = _gl.CreateShader(ShaderType.VertexShader);
