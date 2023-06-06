@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>8</LangVersion>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <Platform>x64</Platform>
         <PlatformTarget>x64</PlatformTarget>
@@ -44,7 +44,7 @@
     <ItemGroup>
         <PackageReference Include="Ansi" Version="1.0.3" />
         <PackageReference Include="ImpromptuNinjas.UltralightSharp" Version="[$(Version)]" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-rc0003" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>

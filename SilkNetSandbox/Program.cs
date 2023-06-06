@@ -14,9 +14,8 @@ using Nvidia.Nsight.Injection;
 using Silk.NET.Core;
 using Silk.NET.EGL;
 using Silk.NET.GLFW;
-using Silk.NET.Windowing.Common;
-using Ultz.SuperInvoke;
-using Ultz.SuperInvoke.Loader;
+using Silk.NET.Maths;
+using Silk.NET.Windowing;
 using ErrorCode = Silk.NET.GLFW.ErrorCode;
 using Renderer = ImpromptuNinjas.UltralightSharp.Safe.Renderer;
 using Window = Silk.NET.Windowing.Window;
@@ -34,7 +33,7 @@ partial class Program {
 
   private static int _majOES = 3;
 
-  private static readonly string AsmPath = new Uri(typeof(Program).Assembly.CodeBase!).LocalPath;
+  private static readonly string AsmPath = new Uri(typeof(Program).Assembly.Location!).LocalPath;
 
   private static readonly string AsmDir = Path.GetDirectoryName(AsmPath)!;
 
@@ -110,13 +109,13 @@ partial class Program {
 
     var options = WindowOptions.Default;
 
-    var size = new Size(1024, 576);
+    var size = new Vector2D<int>(1024, 576);
 
     var title = "UltralightSharp - Silk.NET";
 
     options.Size = size;
     options.Title = title;
-    options.VSync = VSyncMode.On;
+    options.VSync = true;
     options.TransparentFramebuffer = false;
     options.PreferredDepthBufferBits = null;
     //options.VSync = true;
@@ -229,11 +228,11 @@ partial class Program {
           break;
         }
 
-        var code = _glfw.GetError(out char* pDesc);
+        var code = _glfw.GetError(out byte* pDesc);
         if (code == ErrorCode.NoError || pDesc == null)
           throw new PlatformNotSupportedException("Can't create a window via GLFW. Unknown error.");
 
-        var strLen = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
+        var strLen = new ReadOnlySpan<byte>(pDesc, 32768).IndexOf<byte>(0);
         if (strLen == -1) strLen = 0;
         var str = new string((sbyte*) pDesc, 0, strLen, Encoding.UTF8);
         var errMsg = $"{code}: {str}";
@@ -283,27 +282,23 @@ partial class Program {
     _snView.Closing += OnClose;
     _snView.Resize += OnResize;
 
-    var glCtx = _snView.GLContext;
-
-    if (!_useOpenGl) {
-      Console.WriteLine("Binding to LibGLES...");
-      _gl = LibraryActivator.CreateInstance<GL>
-      (
-        new CustomGlEsLibNameContainer().GetLibraryName(),
-        TemporarySuperInvokeClass.GetLoader(glCtx)
-      );
-    }
+    // var glCtx = _snView.GLContext;
 
     Console.WriteLine("Initializing window...");
 
     _snView.Initialize();
 
-    if (_snView.Handle == null) {
-      var code = _glfw.GetError(out char* pDesc);
+    if (!_useOpenGl) {
+      Console.WriteLine("Binding to LibGLES...");
+      _gl = _snView.CreateOpenGLES();
+    }
+
+    if (_snView.Handle == default) {
+      var code = _glfw.GetError(out byte* pDesc);
       if (code == ErrorCode.NoError || pDesc == null)
         throw new PlatformNotSupportedException("Can't create a window via GLFW. Unknown error.");
 
-      var strLen = new ReadOnlySpan<byte>((byte*) pDesc, 32768).IndexOf<byte>(0);
+      var strLen = new ReadOnlySpan<byte>(pDesc, 32768).IndexOf<byte>(0);
       if (strLen == -1) strLen = 0;
       var str = new string((sbyte*) pDesc, 0, strLen, Encoding.UTF8);
       throw new GlfwException($"{code}: {str}");
@@ -366,8 +361,8 @@ partial class Program {
     }
   }
 
-  private static unsafe void OnResize(Size size) {
-    _ulView.Resize((uint) size.Width, (uint) size.Height);
+  private static unsafe void OnResize(Vector2D<int> size) {
+    _ulView.Resize((uint) size.X, (uint) size.Y);
   }
 
   private static void InjectRenderDoc() {
@@ -405,7 +400,9 @@ partial class Program {
         if (r != NsightInjectionResult.Ok) throw new Exception(r.ToString());
 
         // ReSharper disable once StackAllocInsideLoop
+#pragma warning disable CA2014
         var activities = stackalloc NsightInjectionActivity[activityCount];
+#pragma warning restore CA2014
         r = Nsight.EnumerateActivities(install, (uint*) &activityCount, activities);
         if (r != NsightInjectionResult.Ok) throw new Exception(r.ToString());
 

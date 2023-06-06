@@ -41,7 +41,17 @@ namespace ImpromptuNinjas.UltralightSharp {
 #endif
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NETFRAMEWORK || NETSTANDARD2_0
+    public readonly unsafe ReadOnlySpan<float> AsReadOnlySpan() => new ReadOnlySpan<float>(Unsafe.AsPointer(ref Unsafe.AsRef(_0)), 8);
+#else
+    public readonly ReadOnlySpan<float> AsReadOnlySpan() => MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(_0), 8);
+#endif
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Span<float>(UniformScalars o) => o.AsSpan();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ReadOnlySpan<float>(UniformScalars o) => o.AsReadOnlySpan();
 
     float IReadOnlyList<float>.this[int index] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

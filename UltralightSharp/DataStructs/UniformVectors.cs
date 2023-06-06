@@ -51,16 +51,36 @@ namespace ImpromptuNinjas.UltralightSharp {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #if NETFRAMEWORK || NETSTANDARD2_0
+    public readonly unsafe ReadOnlySpan<Vector4> AsReadOnlySpan() => new ReadOnlySpan<Vector4>(Unsafe.AsPointer(ref Unsafe.AsRef(_0)), 8);
+#else
+      public readonly ReadOnlySpan<Vector4> AsReadOnlySpan() => MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(_0), 8);
+#endif
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NETFRAMEWORK || NETSTANDARD2_0
     public unsafe Span<float> AsFloatSpan() => new Span<float>(Unsafe.AsPointer(ref _0), 8*4);
 #else
     public Span<float> AsFloatSpan() => MemoryMarshal.CreateSpan(ref _0.W, 8 * 4);
 #endif
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NETFRAMEWORK || NETSTANDARD2_0
+    public readonly unsafe ReadOnlySpan<float> AsFloatReadOnlySpan() => new ReadOnlySpan<float>(Unsafe.AsPointer(ref Unsafe.AsRef(_0.W)), 8*8);
+#else
+      public readonly ReadOnlySpan<float> AsFloatReadOnlySpan() => MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(_0.W), 8*4);
+#endif
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Span<Vector4>(UniformVectors o) => o.AsSpan();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ReadOnlySpan<Vector4>(UniformVectors o) => o.AsReadOnlySpan();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator Span<float>(UniformVectors o) => o.AsFloatSpan();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ReadOnlySpan<float>(UniformVectors o) => o.AsFloatReadOnlySpan();
 
     Vector4 IReadOnlyList<Vector4>.this[int index] {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

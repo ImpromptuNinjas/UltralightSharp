@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors.Dithering;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace ImpromptuNinjas.UltralightSharp.Demo {
@@ -13,29 +13,22 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
     public static void GetConsoleSize(out int width, out int height) {
       width = 0;
       try { width = Console.WindowWidth; }
-      catch {
-        /* ok */
-      }
-
-      if (width <= 0) width = 78;
+      catch { width = 72; }
 
       height = 0;
       try { height = Console.WindowHeight; }
-      catch {
-        /* ok */
-      }
-
-      if (height <= 0) height = 24;
+      catch { height = 25; }
     }
 
-    public static unsafe int RenderAnsi<TColor>(Stream o, IntPtr pixels,
+    public static unsafe void RenderAnsi<TColor>(IntPtr pixels,
       uint w, uint h,
       uint reduceLineCount = 0, int maxLineCount = -1, int maxWidth = -1,
-      bool borderless = false, AnsiColors colors = AnsiColors.TrueColor,
-      IDither? customDither = null, float customDitherScale = 1f
+      bool borderless = false
     ) where TColor : unmanaged, IPixel<TColor> {
-      GetConsoleSize(out var cw, out var ch);
+      var aspect = w / (double) h;
 
+      GetConsoleSize(out var cw, out var ch);
+      
       if (maxWidth >= 0)
         cw = maxWidth;
 
@@ -45,51 +38,27 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
       cw -= 1;
       ch -= (int) reduceLineCount;
 
-      if (cw == 0 || ch == 0) return 0;
+      if (cw == 0 || ch == 0) return;
 
-      var aw = cw;
-      var ah = ch * 2;
+      // come up with an aperture that fits the console window (minus drawn borders, accounting for 2v/c)
+      var borderCost = borderless ? 0 : -2;
+      var wsq = borderCost + cw / aspect;
+      var hsq = borderCost + (ch * 2) * aspect;
+      var sq = Math.Min(wsq, hsq);
+
+      var aw = (int) Math.Floor(sq * aspect);
+      var ah = (int) Math.Floor(sq / aspect);
 
       var pPixels = (byte*) pixels;
       var span = new ReadOnlySpan<TColor>(pPixels, checked((int) (w * h)));
       using var img = Image.LoadPixelData(span, (int) w, (int) h);
       img.Mutate(x => x
-          .Resize(aw, ah, LanczosResampler.Lanczos3)
-        //.Crop(aw, ah)
-      );
+        .Resize(aw, ah, LanczosResampler.Lanczos3)
+        .Crop(aw, ah));
+      using var stdOut = Console.OpenStandardOutput(256);
+      using var o = new BufferedStream(stdOut, (42 * aw * (ah / 2)) + 1);
 
-      IndexedImageFrame<TColor>? indexedImg = null;
-      var isTrueColor = colors == AnsiColors.TrueColor;
-      if (!isTrueColor) {
-        switch (colors) {
-          case AnsiColors.Palette16: {
-            var opts = AnsiPalette16.Options;
-            if (customDither != null) {
-              opts.Dither = customDither;
-              opts.DitherScale = customDitherScale;
-            }
-
-            indexedImg = AnsiPalette16
-              .CreatePixelSpecificQuantizer<TColor>(Configuration.Default, opts)
-              .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
-            break;
-          }
-          case AnsiColors.Palette256: {
-            var opts = AnsiPalette256.Options;
-            if (customDither != null) {
-              opts.Dither = customDither;
-              opts.DitherScale = customDitherScale;
-            }
-
-            indexedImg = AnsiPalette256
-              .CreatePixelSpecificQuantizer<TColor>(Configuration.Default, opts)
-              .QuantizeFrame(img.Frames[0], new Rectangle(0, 0, img.Width, img.Height));
-            break;
-          }
-        }
-      }
-
-      void WriteNumberTriplet(byte b) {
+      void WriteTriplet(byte b) {
         var ones = b % 10;
         var tens = b / 10 % 10;
         var hundreds = b / 100;
@@ -157,120 +126,52 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         if (!borderless)
           DrawVerticalFrame();
         // write 2 lines at a time
+        var u = img.DangerousGetPixelRowMemory(y).Span;
         var haveL = y + 1 < ah;
-
-        var u = isTrueColor
-          ? img.GetPixelRowSpan(y)
-          : default;
-        var l = haveL && isTrueColor
-          ? img.GetPixelRowSpan(y + 1)
-          : default;
-
-        var up = !isTrueColor
-          ? indexedImg!.GetPixelRowSpan(y)
-          : default;
-        var lp = haveL && !isTrueColor
-          ? indexedImg!.GetPixelRowSpan(y + 1)
-          : default;
+        var l = haveL
+          ? img.DangerousGetPixelRowMemory(y + 1).Span
+          : new Span<TColor>(default, 0);
 
         for (var x = 0; x < aw; ++x) {
           // upper color
-          switch (colors) {
-            case AnsiColors.Palette16: {
-              var upx = (byte) (30 + up[x]);
-              if (upx > 37) upx += 52;
-              o.WriteByte(0x1B);
-              o.WriteByte((byte) '[');
-              WriteNumberTriplet(upx);
-              o.WriteByte((byte) 'm');
-              break;
-            }
-            case AnsiColors.Palette256: {
-              var upx = up[x];
-              o.WriteByte(0x1B);
-              o.WriteByte((byte) '[');
-              o.WriteByte((byte) '3');
-              o.WriteByte((byte) '8');
-              o.WriteByte((byte) ';');
-              o.WriteByte((byte) '5');
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet(upx);
-              o.WriteByte((byte) 'm');
-              break;
-            }
-            case AnsiColors.TrueColor: {
-              Rgba32 upx = default;
-              u[x].ToRgba32(ref upx);
-              var ua = 255.0f / upx.A;
-              o.WriteByte(0x1B);
-              o.WriteByte((byte) '[');
-              o.WriteByte((byte) '3');
-              o.WriteByte((byte) '8');
-              o.WriteByte((byte) ';');
-              o.WriteByte((byte) '2');
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) ';');
-              WriteNumberTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
-              o.WriteByte((byte) 'm');
-              break;
-            }
-          }
+          Rgba32 upx = default;
+          u[x].ToRgba32(ref upx);
+          var ua = 255.0f / upx.A;
+          o.WriteByte(0x1B);
+          o.WriteByte((byte) '[');
+          o.WriteByte((byte) '3');
+          o.WriteByte((byte) '8');
+          o.WriteByte((byte) ';');
+          o.WriteByte((byte) '2');
+          o.WriteByte((byte) ';');
+          WriteTriplet((byte) MathF.Round(upx.R * ua, MidpointRounding.AwayFromZero));
+          o.WriteByte((byte) ';');
+          WriteTriplet((byte) MathF.Round(upx.G * ua, MidpointRounding.AwayFromZero));
+          o.WriteByte((byte) ';');
+          WriteTriplet((byte) MathF.Round(upx.B * ua, MidpointRounding.AwayFromZero));
+          o.WriteByte((byte) 'm');
 
           if (!haveL) // full block
-          {
-            o.WriteByte(0xE2);
-            o.WriteByte(0x96);
-            o.WriteByte(0x88);
-          }
+            o.WriteByte(0xDB);
 
           else {
             // lower color
-            switch (colors) {
-              case AnsiColors.Palette16: {
-                var lpx = (byte) (40 + lp[x]);
-                if (lpx > 47) lpx += 52;
-                o.WriteByte(0x1B);
-                o.WriteByte((byte) '[');
-                WriteNumberTriplet(lpx);
-                o.WriteByte((byte) 'm');
-                break;
-              }
-              case AnsiColors.Palette256: {
-                var lpx = lp[x];
-                o.WriteByte(0x1B);
-                o.WriteByte((byte) '[');
-                o.WriteByte((byte) '4');
-                o.WriteByte((byte) '8');
-                o.WriteByte((byte) ';');
-                o.WriteByte((byte) '5');
-                o.WriteByte((byte) ';');
-                WriteNumberTriplet(lpx);
-                o.WriteByte((byte) 'm');
-                break;
-              }
-              case AnsiColors.TrueColor: {
-                Rgba32 lpx = default;
-                l[x].ToRgba32(ref lpx);
-                var la = 255.0f / lpx.A;
-                o.WriteByte(0x1B);
-                o.WriteByte((byte) '[');
-                o.WriteByte((byte) '4');
-                o.WriteByte((byte) '8');
-                o.WriteByte((byte) ';');
-                o.WriteByte((byte) '2');
-                o.WriteByte((byte) ';');
-                WriteNumberTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
-                o.WriteByte((byte) ';');
-                WriteNumberTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
-                o.WriteByte((byte) ';');
-                WriteNumberTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
-                o.WriteByte((byte) 'm');
-                break;
-              }
-            }
+            Rgba32 lpx = default;
+            l[x].ToRgba32(ref lpx);
+            var la = 255.0f / lpx.A;
+            o.WriteByte(0x1B);
+            o.WriteByte((byte) '[');
+            o.WriteByte((byte) '4');
+            o.WriteByte((byte) '8');
+            o.WriteByte((byte) ';');
+            o.WriteByte((byte) '2');
+            o.WriteByte((byte) ';');
+            WriteTriplet((byte) Math.Round(lpx.R * la, MidpointRounding.AwayFromZero));
+            o.WriteByte((byte) ';');
+            WriteTriplet((byte) Math.Round(lpx.G * la, MidpointRounding.AwayFromZero));
+            o.WriteByte((byte) ';');
+            WriteTriplet((byte) Math.Round(lpx.B * la, MidpointRounding.AwayFromZero));
+            o.WriteByte((byte) 'm');
 
             // half block
             o.WriteByte(0xE2);
@@ -296,9 +197,8 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         o.WriteByte((byte) '\n');
       }
 
-      //o.Flush();
-
-      return lastY;
+      o.Flush();
+      stdOut.Flush();
     }
 
   }

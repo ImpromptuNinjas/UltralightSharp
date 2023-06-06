@@ -6,7 +6,7 @@ using ImpromptuNinjas.UltralightSharp.Enums;
 using JetBrains.Annotations;
 using Silk.NET.OpenGLES;
 using Silk.NET.OpenGLES.Extensions.KHR;
-using Silk.NET.Windowing.Common;
+using Silk.NET.Windowing;
 using SixLabors.ImageSharp.PixelFormats;
 using ShaderType = Silk.NET.OpenGLES.ShaderType;
 using ULShaderType = ImpromptuNinjas.UltralightSharp.Enums.ShaderType;
@@ -158,14 +158,12 @@ public class OpenGlEsGpuDriverSite {
     _gl.ActiveTexture(TextureUnit.Texture0);
     _gl.BindTexture(TextureTarget.Texture2D, tex);
 
-    var linear = (int) GLEnum.Linear;
-    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, ref linear);
-    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, ref linear);
+    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) GLEnum.Linear);
+    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) GLEnum.Linear);
     CheckGl();
 
-    var clampToEdge = (int) GLEnum.ClampToEdge;
-    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, ref clampToEdge);
-    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, ref clampToEdge);
+    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) GLEnum.ClampToEdge);
+    _gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) GLEnum.ClampToEdge);
     CheckGl();
 
     if (bitmap.IsEmpty()) {
@@ -287,15 +285,15 @@ public class OpenGlEsGpuDriverSite {
     CheckGl();
 
     _gl.BindBuffer(BufferTargetARB.ArrayBuffer, entry.Vertices);
-    _gl.BufferData(BufferTargetARB.ArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
+    _gl.BufferData<byte>(BufferTargetARB.ArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
     CheckGl();
 
     _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, entry.Vertices);
-    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
+    _gl.BufferData<byte>(BufferTargetARB.ElementArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
     CheckGl();
 
     _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, entry.Indices);
-    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, indices.Size, indices.Data, BufferUsageARB.StaticDraw);
+    _gl.BufferData<float>(BufferTargetARB.ElementArrayBuffer, indices.Size, indices.Data, BufferUsageARB.StaticDraw);
     CheckGl();
   }
 
@@ -317,7 +315,7 @@ public class OpenGlEsGpuDriverSite {
     entry.Vertices = buf;
     _gl.BindBuffer(BufferTargetARB.ArrayBuffer, buf);
     LabelObject(ObjectIdentifier.Buffer, buf, $"Ultralight Geometry VBO {id}");
-    _gl.BufferData(BufferTargetARB.ArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
+    _gl.BufferData<byte>(BufferTargetARB.ArrayBuffer, vertices.Size, vertices.DataSpan, BufferUsageARB.DynamicDraw);
     CheckGl();
 
     switch (vertices.Format) {
@@ -372,7 +370,7 @@ public class OpenGlEsGpuDriverSite {
     entry.Indices = buf;
     _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, buf);
     LabelObject(ObjectIdentifier.Buffer, buf, $"Ultralight Geometry EBO {id}");
-    _gl.BufferData(BufferTargetARB.ElementArrayBuffer, indices.Size, indices.Data, BufferUsageARB.StaticDraw);
+    _gl.BufferData<float>(BufferTargetARB.ElementArrayBuffer, indices.Size, indices.Data, BufferUsageARB.StaticDraw);
     CheckGl();
   }
 
@@ -690,11 +688,11 @@ public class OpenGlEsGpuDriverSite {
             (float*) Unsafe.AsPointer(ref Unsafe.AsRef(txf))
           );
           _gl.Uniform4(
-            _gl.GetUniformLocation(pg, "Scalar4"), 2,
+            _gl.GetUniformLocation(pg, "Scalar4"), 
             state.UniformScalars
           );
           _gl.Uniform4(
-            _gl.GetUniformLocation(pg, "Vector"), 8,
+            _gl.GetUniformLocation(pg, "Vector"),
             state.UniformVectors
           );
           _gl.Uniform1(

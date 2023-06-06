@@ -17,7 +17,7 @@ namespace ImpromptuNinjas.UltralightSharp {
 
         var fileName = mod.FileName;
 
-        if (!fileName.Contains("libc"))
+        if (fileName is null || !fileName.Contains("libc"))
           continue;
 
         if (fileName.Contains("musl"))

@@ -9,6 +9,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B71A2B2C-ED1C-4DC8-8ECC-408B15FF6661}"
 ProjectSection(SolutionItems) = preProject
 	Directory.Build.props = Directory.Build.props
+	nuget.config = nuget.config
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilkNetSandbox", "SilkNetSandbox\SilkNetSandbox.csproj", "{F93DEF58-2AAD-451E-A82F-E6D1AD6790B2}"

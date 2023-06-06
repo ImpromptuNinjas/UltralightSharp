@@ -3,8 +3,8 @@
     <PropertyGroup>
         <AssemblyName>ImpromptuNinjas.UltralightSharp</AssemblyName>
         <IncludeSource>False</IncludeSource>
-        <LangVersion>8</LangVersion>
-        <TargetFrameworks>net5.0;net45;netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
+        <LangVersion>11</LangVersion>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
         <Nullable>enable</Nullable>
@@ -27,12 +27,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
-        <PackageReference Include="Fody" Version="6.2.4" PrivateAssets="all" />
-        <PackageReference Include="InlineIL.Fody" Version="1.5.0" PrivateAssets="all" />
-        <PackageReference Include="InfoOf.Fody" Version="2.0.1" PrivateAssets="all" />
-        <PackageReference Include="ModuleInit.Fody" Version="2.1.0" PrivateAssets="all" />
+        <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="all" />
+        <PackageReference Include="Fody" Version="6.7.0" PrivateAssets="all" />
+        <PackageReference Include="InlineIL.Fody" Version="1.7.4" PrivateAssets="all" />
+        <PackageReference Include="InfoOf.Fody" Version="2.1.1" PrivateAssets="all" />
+        <PackageReference Include="ModuleInit.Fody" Version="2.1.1" PrivateAssets="all" />
         <PackageReference Include="ImpromptuNinjas.UltralightSharp.Core" Version="[$(Version)]" IncludeAssets="native;contentfiles" />
     </ItemGroup>
 
@@ -49,12 +49,12 @@
             <Choose>
                 <When Condition="$(TargetFramework.EndsWith('2.1'))">
                     <ItemGroup>
-                        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" />
+                        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
                     </ItemGroup>
                 </When>
                 <When Condition="$(TargetFramework.EndsWith('2.0'))">
                     <ItemGroup>
-                        <PackageReference Include="System.Memory" Version="4.5.4" />
+                        <PackageReference Include="System.Memory" Version="4.5.5" />
                     </ItemGroup>
                 </When>
             </Choose>

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors.Transforms;
@@ -123,10 +124,10 @@ namespace ImpromptuNinjas.UltralightSharp.Demo {
         if (!borderless)
           DrawVerticalFrame();
         // write 2 lines at a time
-        var u = img.GetPixelRowSpan(y);
+        var u = img.DangerousGetPixelRowMemory(y).Span;
         var haveL = y + 1 < ah;
         var l = haveL
-          ? img.GetPixelRowSpan(y + 1)
+          ? img.DangerousGetPixelRowMemory(y + 1).Span
           : new Span<TColor>(default, 0);
 
         for (var x = 0; x < aw; ++x) {
